@@ -1,0 +1,28 @@
+/* ==========================================================================
+   ARQUITECTURA DE ESTILOS GLOBALES - LANDING PAGE FINCRM
+   Importación modular de hojas de estilo por sección/componente
+   ========================================================================== */
+
+/* Pantalla de carga e indicador de progreso inicial antes del renderizado */
+@import './components/preloader.css';
+
+/* Sección principal de cabecera (Hero Section), títulos de impacto y CTA principal */
+@import './components/hero.css';
+
+/* Cinta deslizante continua (Marquee) con logotipos, clientes o métricas clave */
+@import './components/marquee.css';
+
+/* Sección del manifiesto, propuesta de valor y pilares de la plataforma */
+@import './components/manifesto.css';
+
+/* Grilla interactiva y modales explicativos de las funcionalidades del sistema */
+@import './components/modules-section.css';
+
+/* Tarjetas apilables con ScrollTrigger sobre regulación y cumplimiento legal */
+@import './components/ley2300-section.css';
+
+/* Sección de formulario de contacto, ilustraciones vectoriales e interacción de envío */
+@import './components/contact-section.css';
+
+/* Elementos gráficos decorativos, formas geométricas animadas y tótem 3D/Parallax */
+@import './components/totem.css';

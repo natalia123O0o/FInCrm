@@ -1,0 +1,47 @@
+body { background: var(--bg); color: var(--ink); font-size: 16px; line-height: 1.55; }
+
+h1, h2, h3, h4 { font-weight: 800; letter-spacing: var(--tracking-tight); line-height: 1.08; color: var(--navy); }
+h1 { font-size: clamp(2rem, 5.4vw, 4rem); }
+h2 { font-size: clamp(1.75rem, 3.6vw, 2.8rem); }
+h3 { font-size: clamp(1.15rem, 2vw, 1.5rem); }
+p  { color: var(--muted); }
+
+.container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+.section { position: relative; padding-block: clamp(72px, 10vw, 140px); }
+
+.section-label {
+  display: inline-block;
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--blue); margin-bottom: 16px;
+}
+
+.site-bg { position: fixed; inset: 0; z-index: -1; background: var(--bg); transition: background 0.5s ease; }
+
+/* Botones pill */
+.btn {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 14px 26px; border-radius: var(--r-pill);
+  font-weight: 700; font-size: 0.95rem; letter-spacing: -0.01em;
+  overflow: hidden; isolation: isolate;
+  transition: transform 0.1s ease;
+}
+.btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--orange-dark); transform: scaleX(0); transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+  z-index: -1; border-radius: inherit;
+}
+.btn:hover::before { transform: scaleX(1); }
+.btn:active { transform: scale(0.97); }
+
+.btn--primary { background: var(--orange); color: var(--navy); }
+.btn--ghost { background: transparent; color: var(--navy); border: 2px solid var(--navy); }
+.btn--ghost::before { background: var(--navy); }
+.btn--ghost:hover { color: var(--bg); }
+.btn--onDark { background: var(--cyan); color: var(--navy); }
+.btn--onDark::before { background: var(--blue); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn::before { transition: none; }
+}

@@ -1,0 +1,11 @@
+.totem { display: inline-flex; flex-direction: column; align-items: center; gap: 14px; }
+.totem__square, .totem__circle { display: block; }
+.totem__square--navy { width: 56px; height: 56px; border-radius: 18px; background: var(--navy); border: 2px solid var(--cyan); }
+.totem__circle--cyan { width: 56px; height: 56px; border-radius: 50%; background: var(--cyan); }
+.totem__square--orange { width: 56px; height: 56px; border-radius: 18px; background: var(--orange); }
+.totem--sm .totem__square, .totem--sm .totem__circle { width: 32px; height: 32px; border-radius: 10px; }
+.totem--sm .totem__circle { border-radius: 50%; }
+.totem--sm { gap: 8px; }
+.totem--lg .totem__square, .totem--lg .totem__circle { width: 96px; height: 96px; border-radius: 28px; }
+.totem--lg .totem__circle { border-radius: 50%; }
+.totem--lg { gap: 20px; }

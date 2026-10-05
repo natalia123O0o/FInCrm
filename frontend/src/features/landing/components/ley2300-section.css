@@ -1,0 +1,407 @@
+.ley {
+  position: relative;
+  background: var(--navy);
+  color: var(--bg);
+  overflow: hidden;
+  padding-block: clamp(80px, 10vw, 140px);
+}
+
+.ley__wedge {
+  position: absolute;
+  inset: 0;
+  background: var(--navy);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.ley__big-totem {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  opacity: 0.25;
+  pointer-events: none;
+
+  animation: ley-totem-float 7s ease-in-out infinite;
+}
+
+.ley__big-square {
+  width: 60vh;
+  height: 60vh;
+  max-width: 340px;
+  max-height: 340px;
+  border-radius: 40px;
+  display: block;
+}
+
+.ley__big-square--navy {
+  background: var(--navy-2);
+  border: 2px solid var(--cyan);
+}
+
+.ley__big-square--orange {
+  background: var(--orange);
+}
+
+.ley__big-circle {
+  width: 60vh;
+  height: 60vh;
+  max-width: 340px;
+  max-height: 340px;
+  border-radius: 50%;
+  background: var(--cyan);
+  display: block;
+}
+
+.ley__intro {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin-bottom: 60px;
+
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.65s ease,
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ley--visible .ley__intro {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ley__title {
+  color: var(--bg);
+  margin-bottom: 16px;
+}
+
+.ley__lead {
+  color: rgba(248, 250, 252, 0.75);
+  font-size: 1.05rem;
+}
+
+.ley__stack {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 24px;
+}
+
+.ley-card {
+  position: relative;
+  display: grid;
+  gap: 20px;
+  background: var(--navy-2);
+  color: var(--bg);
+  border-radius: var(--r-lg);
+  padding: 40px 32px;
+  min-height: 340px;
+  border: 1px solid rgba(6, 182, 212, 0.25);
+
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ley--visible .ley-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ley--visible .ley-card:nth-child(1) {
+  transition-delay: 0.12s;
+}
+
+.ley--visible .ley-card:nth-child(2) {
+  transition-delay: 0.24s;
+}
+
+.ley--visible .ley-card:nth-child(3) {
+  transition-delay: 0.36s;
+}
+
+.ley-card--frecuencia {
+  background: var(--cyan);
+  color: var(--navy);
+  border-color: transparent;
+}
+
+.ley-card--bitacora {
+  background: var(--bg);
+  color: var(--navy);
+  border-color: transparent;
+}
+
+.ley-card--bitacora p {
+  color: var(--muted);
+}
+
+.ley-card__head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ley-card__num {
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  background: var(--orange);
+  color: var(--navy);
+}
+
+.ley-card h3 {
+  color: inherit;
+  font-size: 1.4rem;
+}
+
+.ley-card p {
+  color: inherit;
+  opacity: 0.85;
+  font-size: 0.98rem;
+}
+
+.ley__schedule {
+  display: grid;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.ley__schedule-row {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ley__schedule-bar {
+  height: 12px;
+  border-radius: var(--r-pill);
+  background: rgba(248, 250, 252, 0.15);
+  overflow: hidden;
+}
+
+.ley__schedule-fill {
+  height: 100%;
+  background: var(--orange);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 0.9s
+    cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ley--visible .ley__schedule-fill {
+  transform: scaleX(1);
+}
+
+.ley__schedule-row:nth-child(2)
+  .ley__schedule-fill {
+  transition-delay: 0.15s;
+}
+
+.ley__week {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.ley__day {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(15, 23, 42, 0.12);
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.ley__day--active {
+  background: var(--orange);
+  color: var(--navy);
+}
+
+.ley--visible .ley__day--active {
+  animation: ley-day-pulse 0.55s
+    cubic-bezier(0.34, 1.56, 0.64, 1)
+    0.65s both;
+}
+
+.ley__table {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.ley__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  padding: 10px 12px;
+  background: var(--bg-2);
+  border-radius: var(--r-sm);
+
+  opacity: 0;
+  transform: translateX(-12px);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
+
+.ley--visible .ley__row {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.ley--visible .ley__row:nth-child(1) {
+  transition-delay: 0.55s;
+}
+
+.ley--visible .ley__row:nth-child(2) {
+  transition-delay: 0.65s;
+}
+
+.ley--visible .ley__row:nth-child(3) {
+  transition-delay: 0.75s;
+}
+
+.ley__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+}
+
+.ley__badge::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.ley__badge--ok {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--success);
+}
+
+.ley__badge--warn {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--warning);
+}
+
+.ley__badge--danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+}
+
+.ley-card__mini-totem {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.mini {
+  display: block;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+}
+
+.mini--navy {
+  background: var(--navy-2);
+  border: 2px solid var(--cyan);
+}
+
+.mini--cyan {
+  background: var(--cyan);
+  border-radius: 50%;
+}
+
+.mini--orange {
+  background: var(--orange);
+}
+
+@keyframes ley-totem-float {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-18px);
+  }
+}
+
+@keyframes ley-day-pulse {
+  0% {
+    transform: scale(0.65);
+  }
+
+  75% {
+    transform: scale(1.08);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (min-width: 1024px) {
+  .ley__stack {
+    grid-template-columns: repeat(3, 1fr);
+    align-items: stretch;
+  }
+
+  .ley-card {
+    min-height: 420px;
+    grid-template-columns: 1fr;
+    align-content: center;
+  }
+
+  .ley-card p {
+    max-width: 520px;
+  }
+
+  .ley-card__mini-totem {
+    flex-direction: column;
+    align-self: end;
+    justify-self: end;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ley__big-totem,
+  .ley__intro,
+  .ley-card,
+  .ley__schedule-fill,
+  .ley__row,
+  .ley__day--active {
+    animation: none;
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .ley__schedule-fill {
+    transform: scaleX(1);
+  }
+}

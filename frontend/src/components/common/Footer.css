@@ -1,0 +1,167 @@
+/* ==========================================================================
+   ESTILOS PRINCIPALES DEL PIE DE PÁGINA (FOOTER)
+   ========================================================================== */
+
+/* Contenedor principal del pie de página */
+.footer {
+  background: var(--navy); /* Fondo oscuro principal usando variable CSS */
+  color: var(--bg); /* Texto claro de contraste */
+  padding-block: 72px 32px; /* Espaciado interno: 72px arriba, 32px abajo */
+}
+
+/* Grilla de contenidos (Mobile-First: 1 sola columna por defecto) */
+.footer__grid {
+  display: grid;
+  gap: 40px; /* Separación vertical entre bloques en pantallas pequeñas */
+  grid-template-columns: 1fr;
+}
+
+
+/* ==========================================================================
+   SECCIÓN DE MARCA Y DESCRIPCIÓN (COLUMNA 1)
+   ========================================================================== */
+
+/* Envoltorio del isotipo SVG y el texto del nombre de marca */
+.footer__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: var(--tracking-tight); /* Trareado/interlineado ajustado */
+  margin-bottom: 12px;
+}
+
+/* Dimensiones fijas para el isotipo gráfico SVG */
+.footer__mark {
+  width: 42px;
+  height: 40px;
+}
+
+/* Párrafo descriptivo debajo de la marca */
+.footer__col p {
+  color: rgba(248, 250, 252, 0.7); /* Blanco con 70% de opacidad para jerarquía visual */
+  font-size: 0.95rem;
+  max-width: 320px; /* Limita el ancho de lectura del párrafo */
+}
+
+
+/* ==========================================================================
+   NAVEGACIÓN Y LISTAS LEGALES (COLUMNAS 2 Y 3)
+   ========================================================================== */
+
+/* Títulos de sección de cada columna */
+.footer__col h4 {
+  color: var(--cyan); /* Color de acento cyan definido en variables */
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em; /* Espaciado entre letras ampliado */
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+/* Listas verticales dentro de cada columna */
+.footer__col ul {
+  display: grid;
+  gap: 10px; /* Distancia entre ítems de lista */
+}
+
+/* Estilos para ítems informativos y enlaces */
+.footer__col ul li,
+.footer__col ul a {
+  color: rgba(248, 250, 252, 0.75);
+  font-size: 0.92rem;
+}
+
+/* Estado al pasar el cursor sobre los hipervínculos */
+.footer__col ul a:hover {
+  color: var(--orange); /* Cambia al color de marca principal */
+}
+
+
+/* ==========================================================================
+   ELEMENTO DECORATIVO ANIMADO (TOTEM)
+   ========================================================================== */
+
+/* Alineación de la columna del tótem en móviles */
+.footer__col--totem {
+  display: flex;
+  justify-content: center;
+}
+
+/* Estructura del tótem (eje de rotación configurado para la animación de GSAP) */
+.footer__totem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transform-origin: 50% 100%; /* Pivota en el centro de la base para oscilar libremente */
+}
+
+/* Estilo base para las figuras geométricas del tótem */
+.footer__shape {
+  display: block;
+}
+
+/* Figura 1: Cuadrado azul noche con borde cyan */
+.footer__shape--navy {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--navy-2);
+  border: 2px solid var(--cyan);
+}
+
+/* Figura 2: Círculo cyan */
+.footer__shape--circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--cyan);
+}
+
+/* Figura 3: Cuadrado naranja redondeado */
+.footer__shape--orange {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: var(--orange);
+}
+
+
+/* ==========================================================================
+   BARRA DE CRÉDITOS Y DERECHOS RESERVADOS (INFERIOR)
+   ========================================================================== */
+
+/* Borde y contenedor de la parte inferior */
+.footer__bottom {
+  margin-top: 56px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(248, 250, 252, 0.12); /* Línea divisoria sutil */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: rgba(248, 250, 252, 0.55);
+  font-size: 0.85rem;
+}
+
+
+/* ==========================================================================
+   ADAPTACIONES RESPONSIVAS (MEDIA QUERIES)
+   ========================================================================== */
+
+/* Pantallas medianas en adelante (Tablets y Desktop: >= 640px) */
+@media (min-width: 640px) {
+  /* Distribuye el footer en 4 columnas con proporciones personalizadas */
+  .footer__grid {
+    grid-template-columns: 1.4fr 1fr 1fr auto;
+    gap: 48px;
+  }
+
+  /* Alinea los créditos y la atribución en extremos opuestos */
+  .footer__bottom {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+

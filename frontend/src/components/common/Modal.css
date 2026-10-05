@@ -1,0 +1,126 @@
+/* ==========================================
+   CAPA DE FONDO / OVERLAY
+   ========================================== */
+.modal-overlay {
+  /* Posicionamiento fijo respecto a la ventana gráfica (Viewport) */
+  position: fixed; 
+  /* Atajo para top: 0, right: 0, bottom: 0, left: 0 (cubre toda la pantalla) */
+  inset: 0; 
+  /* Prioridad alta de apilamiento para superponerse a otros componentes o headers */
+  z-index: 200; 
+  
+  /* Color de fondo oscuro semi-transparente (Slate 900 con 55% de opacidad) */
+  background: rgba(15, 23, 42, 0.55); 
+  
+  /* Centrado perfecto del panel modal en pantalla usando CSS Grid */
+  display: grid; 
+  place-items: center; 
+  
+  /* Espaciado de seguridad para evitar que el modal toque los bordes en dispositivos móviles */
+  padding: 20px; 
+  
+  /* Efecto de desenfoque de fondo estilo Glassmorphism (4px) */
+  backdrop-filter: blur(4px); 
+  -webkit-backdrop-filter: blur(4px); /* Soporte para Safari y WebKit */
+}
+
+/* ==========================================
+   PANEL CONTENEDOR DEL MODAL
+   ========================================== */
+.modal {
+  /* Referencia de posición para el botón absoluto de cierre (.modal__close) */
+  position: relative; 
+  
+  /* Diseño responsivo: ocupa el 100% disponible hasta un máximo de 620px */
+  width: 100%; 
+  max-width: 620px; 
+  
+  /* Limita la altura al 88% de la pantalla para garantizar usabilidad */
+  max-height: 88vh; 
+  
+  /* Muestra barra de desplazamiento vertical interna si el contenido excede la altura */
+  overflow-y: auto; 
+  
+  /* Asignación de variables CSS del tema (fondo, bordes y sombras) */
+  background: var(--bg); 
+  border-radius: var(--r-lg); 
+  padding: 40px 32px 32px; /* Mayor relleno superior para dejar espacio al botón de cierre */
+  box-shadow: var(--shadow-lg); 
+}
+
+/* ==========================================
+   BOTÓN DE CIERRE (CORTINILLA)
+   ========================================== */
+.modal__close {
+  /* Fijado en la esquina superior derecha dentro del panel (.modal) */
+  position: absolute; 
+  top: 14px; 
+  right: 14px; 
+  
+  /* Dimensiones fijas creando un área de toque/clic accesible (40x40px) */
+  width: 40px; 
+  height: 40px; 
+  border-radius: 50%; /* Forma circular */
+  
+  /* Estilos de color usando tokens/variables de tema */
+  background: var(--bg-2); 
+  color: var(--navy); 
+  font-size: 1.5rem; 
+  line-height: 1; 
+  
+  /* Centrado absoluto del icono/símbolo '×' */
+  display: grid; 
+  place-items: center; 
+  
+  /* Transición suave al pasar el cursor sobre el botón */
+  transition: background 0.2s ease; 
+}
+
+/* Estado al pasar el cursor sobre el botón de cierre */
+.modal__close:hover { 
+  background: var(--border); 
+}
+
+/* ==========================================
+   ETIQUETA Y TÍTULO DEL MODAL
+   ========================================== */
+/* Badge/Etiqueta superior en mayúsculas (ej: "MÓDULO") */
+.modal__label { 
+  font-size: 0.72rem; 
+  font-weight: 700; 
+  letter-spacing: 0.14em; /* Espaciado entre letras para estética tipográfica */
+  text-transform: uppercase; 
+  color: var(--blue); 
+}
+
+/* Título principal del modal */
+.modal__title { 
+  margin-top: 6px; 
+  margin-bottom: 24px; 
+  font-size: 1.5rem; 
+}
+
+/* ==========================================
+   SECCIONES Y CONTENIDO INTERNO
+   ========================================== */
+/* Contenedor de cada bloque de información */
+.modal__section { 
+  margin-bottom: 20px; 
+}
+
+/* Subtítulos de sección (ej: "Descripción técnica") */
+.modal__section h4 { 
+  font-size: 0.8rem; 
+  text-transform: uppercase; 
+  letter-spacing: 0.1em; 
+  color: var(--orange-dark); 
+  margin-bottom: 6px; 
+  font-weight: 700; 
+}
+
+/* Párrafos y textos descriptivos */
+.modal__section p { 
+  color: var(--ink); 
+  font-size: 0.95rem; 
+  line-height: 1.6; /* Interlineado optimizado para lectura cómoda */
+}

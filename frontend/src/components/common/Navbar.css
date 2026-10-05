@@ -1,0 +1,211 @@
+/* ==========================================================================
+   ESTILOS PRINCIPALES DE LA BARRA DE NAVEGACIÓN (NAVBAR)
+   ========================================================================== */
+
+/* Contenedor principal fijado en la parte superior de la ventana */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100; /* Asegura que la barra flote sobre el resto del contenido */
+  background: transparent; /* Fondo transparente por defecto */
+  /* Transiciones suaves para la alternancia de estados (solid / dark) */
+  transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+}
+
+/* Estado al hacer scroll: barra semitransparente con desenfoque (Glassmorphism) */
+.navbar.is-solid {
+  background: rgba(248, 250, 252, 0.82);
+  backdrop-filter: blur(10px); /* Desenfoque de fondo para navegadores modernos */
+  -webkit-backdrop-filter: blur(10px); /* Soporte para Safari */
+  box-shadow: var(--shadow-sm); /* Sombra ligera definida en variables globales */
+}
+
+/* Estado del tema oscuro */
+.navbar.is-dark {
+  color: var(--bg); /* Invierte el color del texto utilizando la variable de fondo */
+}
+
+/* Estado sólido bajo el tema oscuro */
+.navbar.is-dark.is-solid {
+  background: rgba(15, 23, 42, 0.72); /* Fondo azul oscuro semitransparente */
+}
+
+
+/* ==========================================================================
+   ESTRUCTURA INTERNA Y LOGOTIPO
+   ========================================================================== */
+
+/* Contenedor interno que limita el ancho y alinea los elementos */
+.navbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 16px; /* Espaciado vertical interno (16px arriba y abajo) */
+  gap: 16px;
+}
+
+/* Enlace contenedor del logo */
+.navbar__logo {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Envoltorio del logo adaptado para la animación de escala con GSAP */
+.navbar__logo-wrap {
+  width: 120px;
+  transform-origin: left center; /* Punto de origen a la izquierda para escalar correctamente */
+  will-change: transform; /* Optimización de renderizado en GPU para animaciones fluidas */
+}
+
+/* Ajuste de dimensión del recurso gráfico */
+.navbar__logo img {
+  width: 100%;
+  height: auto;
+}
+
+
+/* ==========================================================================
+   ENLACES DE NAVEGACIÓN DESKTOP & INDICADOR FLOTANTE
+   ========================================================================== */
+
+/* Lista de enlaces principal (oculta por defecto en dispositivos móviles) */
+.navbar__links {
+  position: relative; /* Posición relativa requerida para ubicar el .navbar__underline absoluto */
+  display: none;
+  gap: 32px;
+  align-items: center;
+}
+
+/* Estilos de los hipervínculos del menú */
+.navbar__links a {
+  font-weight: 600;
+  font-size: 0.95rem;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+  padding: 8px 0;
+}
+
+/* Hover y estado activo de los enlaces */
+.navbar__links a:hover,
+.navbar__links a.is-active {
+  opacity: 1;
+}
+
+/* Subrayado dinámico o indicador deslizante animado por GSAP */
+.navbar__underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 0; /* Ancho dinámico calculado por JS */
+  background: var(--orange); /* Color de acento */
+  border-radius: var(--r-pill); /* Bordes redondeados tipo píldora */
+  opacity: 0; /* Oculto por defecto hasta ser posicionado por GSAP */
+}
+
+
+/* ==========================================================================
+   BOTONES DE ACCIÓN Y MENÚ HAMBURGUESA
+   ========================================================================== */
+
+/* Contenedor derecho para botones de acción y menú móvil */
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Botón de llamada a la acción (CTA) */
+.navbar__cta {
+  display: none; /* Oculto por defecto en pantallas muy pequeñas */
+  padding: 12px 22px;
+  font-size: 0.9rem;
+}
+
+/* Botón hamburguesa para dispositivos móviles */
+.navbar__burger {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  gap: 6px;
+}
+
+/* Líneas internas del botón hamburguesa */
+.navbar__burger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: currentColor; /* Hereda el color actual del texto */
+  transition: transform 0.3s ease;
+}
+
+/* Animación a icono "X" al abrir el menú móvil */
+.navbar__burger.is-open span:nth-child(1) {
+  transform: translateY(4px) rotate(45deg);
+}
+
+.navbar__burger.is-open span:nth-child(2) {
+  transform: translateY(-4px) rotate(-45deg);
+}
+
+
+/* ==========================================================================
+   PANEL RESPONSIVO MÓVIL (DESPLEGABLE)
+   ========================================================================== */
+
+/* Panel desplegable que cubre la pantalla en dispositivos móviles */
+.navbar__panel {
+  display: none; /* Controlado dinámicamente mediante GSAP en React */
+  position: absolute;
+  top: 100%; /* Se despliega inmediatamente debajo de la barra */
+  left: 0;
+  right: 0;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px var(--gutter) 32px;
+  background: var(--bg);
+  color: var(--navy);
+  box-shadow: var(--shadow-md);
+  /* Recorte inicial para la animación de desenrollado (clip-path) ejecutada con GSAP */
+  clip-path: inset(0 0 100% 0);
+}
+
+/* Enlaces dentro del panel móvil */
+.navbar__panel a {
+  font-weight: 700;
+  font-size: 1.15rem;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Ajuste del botón CTA en el panel móvil */
+.navbar__panel .btn {
+  margin-top: 16px;
+  align-self: flex-start;
+}
+
+
+/* ==========================================================================
+   PUNTOS DE QUIEBRE (MEDIA QUERIES)
+   ========================================================================== */
+
+/* Dispositivos medianos (Tablets en adelante: >= 640px) */
+@media (min-width: 640px) {
+  .navbar__cta {
+    display: inline-flex; /* Muestra el botón de acción principal */
+  }
+}
+
+/* Dispositivos grandes (Escritorio: >= 1024px) */
+@media (min-width: 1024px) {
+  .navbar__links {
+    display: flex; /* Muestra el menú horizontal desktop */
+  }
+
+  .navbar__burger {
+    display: none; /* Oculta el menú hamburguesa */
+  }
+}
