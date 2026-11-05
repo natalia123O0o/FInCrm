@@ -1,0 +1,6 @@
+$kind: http-request
+name: http://localhost:4000/api/auth/me
+description: ""
+url: http://localhost:4000/api/auth/me
+method: GET
+order: 3000

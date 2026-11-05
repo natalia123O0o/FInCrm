@@ -97,3 +97,6 @@ Desktop.ini
 # =========================================================
 
 *.local
+# Archivos ZIP locales
+/backend/src.zip
+/frontend/src.zip

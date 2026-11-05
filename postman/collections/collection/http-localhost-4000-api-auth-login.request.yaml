@@ -1,0 +1,9 @@
+$kind: http-request
+name: http://localhost:4000/api/auth/login
+description: ""
+url: http://localhost:4000/api/auth/login
+method: POST
+body:
+  type: json
+  content: ""
+order: 2000
