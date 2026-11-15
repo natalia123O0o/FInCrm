@@ -1,0 +1,25 @@
+$kind: http-request
+name: http://localhost:4000/api/clients
+description: ""
+url: http://localhost:4000/api/clients
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"Cliente Prueba Eliminacion\",\r
+
+    \  \"documentNumber\": \"1098765432\",\r
+
+    \  \"email\": \"prueba.eliminacion@example.com\",\r
+
+    \  \"phone\": \"3001234567\",\r
+
+    \  \"address\": \"Bogota\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_1dnl}}"
+order: 9000

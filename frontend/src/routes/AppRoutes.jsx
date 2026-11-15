@@ -1,28 +1,55 @@
-import { Routes, Route } from 'react-router-dom'; // Importa los componentes principales de React Router v6 para definir el árbol de navegación
-import LandingPage from '../features/landing/pages/LandingPage.jsx'; // Vista/Página principal pública (Landing de FinCRM)
-import { PATHS } from './paths.js'; // Objeto que centraliza las constantes de rutas URL de la aplicación
 
-/**
- * Componente principal de rutas (`AppRoutes`).
- * Mapea las URLs de la aplicación con sus respectivos componentes y pantallas placeholder.
- */
+import { Routes, Route } from "react-router-dom";
+
+import LandingPage from "../features/landing/pages/LandingPage.jsx";
+import LoginPage from "../features/auth/pages/LoginPage.jsx";
+import AdminDashboardPage from "../features/admin/pages/AdminDashboardPage.jsx";
+import ClientsListPage from "../features/clients/pages/ClientsListPage.jsx";
+import DebtsListPage from "../features/debts/pages/DebtsListPage.jsx";
+
+import ProtectedRoute from "./ProtectedRoute.jsx";
+import { PATHS } from "./paths.js";
+
 export default function AppRoutes() {
   return (
-    // Contenedor principal que gestiona el renderizado de la ruta que coincida con la URL actual
     <Routes>
-      {/* Ruta para la landing page principal */}
-      <Route path={PATHS.landing} element={<LandingPage />} />
-      
-      {/* Ruta temporal para el Login (Placeholder a la espera del módulo de Autenticación) */}
+      {/* Rutas públicas */}
+      <Route
+        path={PATHS.landing}
+        element={<LandingPage />}
+      />
+
       <Route
         path={PATHS.login}
+        element={<LoginPage />}
+      />
+
+      {/* Rutas privadas para ADMIN */}
+      <Route
         element={
-          <div style={{ padding: 40, fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-            <h1>Login</h1>
-            <p>Pantalla placeholder — se implementará en el módulo de Auth.</p>
-            <a href="/" style={{ color: 'var(--orange)' }}>← Volver al inicio</a>
-          </div>
+          <ProtectedRoute allowedRoles={["ADMIN"]} />
         }
+      >
+        <Route
+          path="/dashboard"
+          element={<AdminDashboardPage />}
+        />
+
+        <Route
+          path="/clients"
+          element={<ClientsListPage />}
+        />
+
+        <Route
+          path="/debts"
+          element={<DebtsListPage />}
+        />
+      </Route>
+
+      {/* Página para rutas desconocidas */}
+      <Route
+        path="*"
+        element={<h1>Página no encontrada</h1>}
       />
     </Routes>
   );

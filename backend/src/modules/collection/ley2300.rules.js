@@ -21,7 +21,7 @@ const validateBasicContactRules = ({
   date = new Date(),
   tenantSettings = {}
 }) => {
-  const collection = tenantSettings.collection || {};
+  const collection = tenantSettings.collectionSettings || {};
 
   // 1. Verificar el canal
   const allowedChannels = Array.isArray(collection.allowedChannels)

@@ -1,0 +1,21 @@
+$kind: http-request
+name: http://localhost:4000/api/tenants/6ae38849249a147b320957e5/admin
+description: ""
+url: http://localhost:4000/api/tenants/6ae38849249a147b320957e5/admin
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"Laura Martinez\",\r
+
+    \  \"email\": \"admin.empresab@example.com\",\r
+
+    \  \"password\": \"AdminSegura2026!\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_11rz}}"
+order: 7000

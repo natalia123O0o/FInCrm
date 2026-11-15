@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 // Configuraciones de cobranza y negociación
 const tenantSettingsSchema = new mongoose.Schema({
-  collection: {
+  collectionSettings: {
     weekdaysStart: { type: String, default: '07:00' },
     weekdaysEnd: { type: String, default: '19:00' },
     saturdayStart: { type: String, default: '08:00' },

@@ -9,6 +9,7 @@ const userRoutes = require('./modules/users/user.routes');
 const clientRoutes = require('./modules/clients/client.routes');
 const paymentRoutes = require('./modules/payments/payment.routes')
 const collectionRoutes = require('./modules/collection/collection.routes');
+const aiRoutes = require('./modules/ai/chatbot.routes');
 
 // NUEVO: Importar rutas de deudas
 const debtRoutes = require('./modules/debts/debt.routes');
@@ -25,10 +26,9 @@ app.use('/api/tenants', tenantRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/payments', paymentRoutes);
-app.use('api/collection', collectionRoutes);
-
-// NUEVO: Registrar rutas de deudas
+app.use('/api/collection', collectionRoutes);
 app.use('/api/debts', debtRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Verificar funcionamiento del servidor
 app.get('/api/health', (req, res) => {

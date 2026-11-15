@@ -1,20 +1,23 @@
-import { BrowserRouter } from 'react-router-dom';
-import AppRoutes from './routes/AppRoutes.jsx';
-import ErrorBoundary from './components/common/ErrorBoundary.jsx';
-import { useLenis } from './hooks/useLenis.js';
-import { useReducedMotion } from './hooks/useReducedMotion.js';
+import { BrowserRouter } from "react-router-dom";
+import AppRoutes from "./routes/AppRoutes.jsx";
+import ErrorBoundary from "./components/common/ErrorBoundary.jsx";
+import { useLenis } from "./hooks/useLenis.js";
+import { useReducedMotion } from "./hooks/useReducedMotion.js";
+
+// Importamos nuestro contexto
+import { AuthProvider } from "./features/auth/context/AuthContext.jsx";
 
 export default function App() {
   const reduced = useReducedMotion();
 
-  // Lenis permanece disponible para scrollToSection(),
-  // pero NO controla el scroll normal del navegador.
   useLenis(!reduced);
 
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <AppRoutes />
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
       </BrowserRouter>
     </ErrorBoundary>
   );

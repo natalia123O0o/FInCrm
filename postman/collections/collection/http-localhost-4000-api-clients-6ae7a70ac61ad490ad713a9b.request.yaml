@@ -1,0 +1,19 @@
+$kind: http-request
+name: http://localhost:4000/api/clients/6ae7a70ac61ad490ad713a9b
+description: ""
+url: http://localhost:4000/api/clients/6ae7a70ac61ad490ad713a9b
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \  \"phone\": \"3109876573\",\r
+
+    \  \"address\": \"Carrera 16 No. 85-20, Bogota\"\r
+
+    }\r\n"
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_19ot}}"
+order: 12000

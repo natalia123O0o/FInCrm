@@ -21,7 +21,7 @@ const validateContactFrequency = async ({
   // 1. Obtiene el límite máximo de contactos permitidos por semana desde la configuración de la empresa.
   // Si no está definido, por defecto se establece en 1 contacto por semana.
   const maxContacts =
-    tenantSettings.collection?.maxContactsPerWeek ?? 1;
+    tenantSettings.collectionSettings?.maxContactsPerWeek ?? 1;
 
   // Valida que el límite configurado sea obligatoriamente un número entero mayor o igual a 0.
   if (!Number.isInteger(maxContacts) || maxContacts < 0) {
