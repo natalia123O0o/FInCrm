@@ -6,6 +6,7 @@ import LoginPage from "../features/auth/pages/LoginPage.jsx";
 import AdminDashboardPage from "../features/admin/pages/AdminDashboardPage.jsx";
 import ClientsListPage from "../features/clients/pages/ClientsListPage.jsx";
 import DebtsListPage from "../features/debts/pages/DebtsListPage.jsx";
+import ChatbotPage from "../features/ai/pages/ChatbotPage.jsx";
 
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import { PATHS } from "./paths.js";
@@ -43,6 +44,18 @@ export default function AppRoutes() {
         <Route
           path="/debts"
           element={<DebtsListPage />}
+        />
+      </Route>
+
+      {/* Asistente de IA para ADMIN y USER */}
+      <Route
+        element={
+          <ProtectedRoute allowedRoles={["ADMIN", "USER"]} />
+        }
+      >
+        <Route
+          path="/ai/chat"
+          element={<ChatbotPage />}
         />
       </Route>
 

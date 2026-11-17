@@ -185,6 +185,12 @@ export default function AdminDashboardPage() {
         <Link to="/debts">
           Ver deudas de mi empresa
         </Link>
+
+        {" | "}
+
+        <Link to="/ai/chat">
+          Asistente inteligente FinCRM
+        </Link>
       </nav>
 
       {/* Verificación de autenticación */}
