@@ -149,3 +149,61 @@
     padding: 12px;
   }
 }
+
+
+/* Encabezado con botón de descarga */
+.chatbot-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Botón para descargar el Excel */
+.chatbot-download-button {
+  flex-shrink: 0;
+  padding: 11px 16px;
+  background: #e97732;
+  color: #ffffff;
+  border: none;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.chatbot-download-button:hover:not(:disabled) {
+  background: #cf6221;
+}
+
+.chatbot-download-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.chatbot-download-error {
+  margin-top: 12px;
+  color: #ffd9d9;
+  font-size: 13px;
+}
+
+.chatbot-download-success {
+  margin-top: 12px;
+  color: #c9f7dc;
+  font-size: 13px;
+}
+
+/* Adaptación a celulares */
+@media (max-width: 600px) {
+  .chatbot-header-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .chatbot-download-button {
+    width: 100%;
+  }
+}
