@@ -360,7 +360,7 @@ export default function ImportDebtsCsv({ token, onImported }) {
           <p style={{ color: "#c62828" }}>
             Corrige los errores antes de importar.
           </p>
-          )}
+          )
 
           <p>
             <strong>Importante:</strong> esta es una vista

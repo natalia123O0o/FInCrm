@@ -360,7 +360,6 @@ export default function DebtsListPage() {
             <input
               id="saldo-maximo-deuda"
               type="number"
-              min="0"
               step="1"
               placeholder="Ej. 1000000"
               value={saldoMaximo}
