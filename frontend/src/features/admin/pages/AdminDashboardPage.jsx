@@ -1,49 +1,55 @@
-
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  ArrowUpRight,
+  CreditCard,
+  HandCoins,
+  LayoutList,
+  LoaderCircle,
+  LogOut,
+  ShieldCheck,
+  Sparkles,
+  UsersRound,
+} from "lucide-react";
 
 import { useAuth } from "../../auth/context/AuthContext.jsx";
 import { getAuthenticatedUser } from "../../auth/services/auth.api.js";
-
 import { getClients } from "../../clients/services/clients.api.js";
-
 import { getDebts } from "../../debts/services/debts.api.js";
-
 import { getPayments } from "../../payments/services/payments.api.js";
+import { PATHS } from "../../../routes/paths.js";
 
+import "./AdminDashboardPage.css";
+
+const formatoCOP = new Intl.NumberFormat("es-CO", {
+  style: "currency",
+  currency: "COP",
+  maximumFractionDigits: 0,
+});
 
 export default function AdminDashboardPage() {
-  // Permite navegar entre páginas.
   const navigate = useNavigate();
-
-  // Obtenemos los datos de la sesión.
   const { user, token, logout } = useAuth();
 
-
-  // Almacena los indicadores del dashboard.
   const [stats, setStats] = useState({
     totalClients: 0,
     totalDebts: 0,
     outstandingBalance: 0,
     totalPayments: 0,
   });
-
-  // Controla la carga y los posibles errores.
   const [statsLoading, setStatsLoading] = useState(true);
   const [statsError, setStatsError] = useState("");
-
-
-  // Guarda el resultado de la verificación.
   const [verification, setVerification] = useState("");
-
-  // Controla si se está verificando la sesión.
   const [verifying, setVerifying] = useState(false);
 
-
+  // Conservamos las consultas reales que ya funcionan en FinCRM.
   useEffect(() => {
     let active = true;
 
     async function loadStats() {
+      setStatsLoading(true);
+      setStatsError("");
+
       try {
         const [clients, debts, payments] = await Promise.all([
           getClients(token),
@@ -52,8 +58,7 @@ export default function AdminDashboardPage() {
         ]);
 
         const outstandingBalance = debts.reduce(
-          (total, debt) =>
-            total + Number(debt.outstandingBalance || 0),
+          (total, debt) => total + Number(debt.outstandingBalance || 0),
           0
         );
 
@@ -67,17 +72,17 @@ export default function AdminDashboardPage() {
         }
       } catch (err) {
         if (active) {
-          setStatsError(err.message);
+          setStatsError(err.message || "No se pudieron cargar los indicadores.");
         }
       } finally {
-        if (active) {
-          setStatsLoading(false);
-        }
+        if (active) setStatsLoading(false);
       }
     }
 
     if (token) {
       loadStats();
+    } else {
+      setStatsLoading(false);
     }
 
     return () => {
@@ -85,139 +90,159 @@ export default function AdminDashboardPage() {
     };
   }, [token]);
 
-
-
-  // Verifica el JWT consultando al backend.
   async function handleVerifySession() {
     setVerifying(true);
     setVerification("");
 
     try {
       const verifiedUser = await getAuthenticatedUser(token);
-
-      setVerification(
-        `Sesión válida. Usuario: ${verifiedUser.email}`
-      );
-    } catch (error) {
-      setVerification(`Error: ${error.message}`);
+      setVerification(`Sesión válida. Usuario: ${verifiedUser.email}`);
+    } catch (err) {
+      setVerification(`Error: ${err.message}`);
     } finally {
       setVerifying(false);
     }
   }
 
-  // Cierra la sesión y regresa al login.
   function handleLogout() {
     logout();
-    navigate("/login", { replace: true });
+    navigate(PATHS.login, { replace: true });
   }
 
   return (
-    <main style={{ padding: "32px" }}>
-      <h1>Panel administrativo de FinCRM</h1>
+    <main className="fincrm-dashboard">
+      <header className="fincrm-dashboard__header">
+        <div className="fincrm-dashboard__heading">
+          <h1>Panel administrativo de FinCRM</h1>
+          <p>Bienvenido a FinCRM</p>
+        </div>
+        <div className="fincrm-dashboard__identity" aria-label="Sesión actual">
+          <p>
+            <span>Usuario</span>
+            <strong>{user?.name || user?.email || "Sin nombre"}</strong>
+          </p>
+          <p>
+            <span>Rol</span>
+            <strong className="fincrm-dashboard__role">{user?.role || "Sin rol"}</strong>
+          </p>
+        </div>
+      </header>
 
-      <h2>Bienvenido a FinCRM</h2>
+      <section className="fincrm-dashboard__section" aria-labelledby="resumen-financiero">
+        <h2 id="resumen-financiero">Resumen financiero</h2>
 
-      <p>
-        Usuario: {user?.name || user?.email || "Sin nombre"}
-      </p>
-
-      <p>Rol: {user?.role}</p>
-
-
-      <section style={{ marginTop: "24px" }}>
-        <h2>Resumen financiero</h2>
-
-        {statsLoading && <p>Cargando indicadores...</p>}
-
+        {statsLoading && (
+          <p className="fincrm-dashboard__notice" role="status">
+            Cargando indicadores...
+          </p>
+        )}
         {statsError && (
-          <p role="alert" style={{ color: "#c62828" }}>
+          <p className="fincrm-dashboard__notice fincrm-dashboard__notice--error" role="alert">
             {statsError}
           </p>
         )}
 
         {!statsLoading && !statsError && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit, minmax(180px, 1fr))",
-              gap: "16px",
-            }}
-          >
-            <article>
-              <h3>Clientes</h3>
-              <p>{stats.totalClients}</p>
+          <div className="fincrm-dashboard__kpis">
+            <article className="fincrm-dashboard__kpi">
+              <div className="fincrm-dashboard__kpi-top">
+                <h3>Clientes</h3>
+                <UsersRound size={20} aria-hidden="true" />
+              </div>
+              <p className="fincrm-dashboard__value">{stats.totalClients}</p>
             </article>
 
-            <article>
-              <h3>Deudas</h3>
-              <p>{stats.totalDebts}</p>
+            <article className="fincrm-dashboard__kpi">
+              <div className="fincrm-dashboard__kpi-top">
+                <h3>Deudas</h3>
+                <LayoutList size={20} aria-hidden="true" />
+              </div>
+              <p className="fincrm-dashboard__value">{stats.totalDebts}</p>
             </article>
 
-            <article>
-              <h3>Saldo por cobrar</h3>
-              <p>
-                {stats.outstandingBalance.toLocaleString("es-CO", {
-                  style: "currency",
-                  currency: "COP",
-                  maximumFractionDigits: 0,
-                })}
+            <article className="fincrm-dashboard__kpi fincrm-dashboard__kpi--featured">
+              <div className="fincrm-dashboard__kpi-top">
+                <h3>Saldo por cobrar</h3>
+                <HandCoins size={20} aria-hidden="true" />
+              </div>
+              <p className="fincrm-dashboard__value fincrm-dashboard__value--money">
+                {formatoCOP.format(stats.outstandingBalance)}
               </p>
             </article>
 
-            <article>
-              <h3>Pagos registrados</h3>
-              <p>{stats.totalPayments}</p>
+            <article className="fincrm-dashboard__kpi">
+              <div className="fincrm-dashboard__kpi-top">
+                <h3>Pagos registrados</h3>
+                <CreditCard size={20} aria-hidden="true" />
+              </div>
+              <p className="fincrm-dashboard__value">{stats.totalPayments}</p>
             </article>
           </div>
         )}
       </section>
 
-
-      {/* Navegación a clientes */}
-      <nav style={{ marginTop: "24px" }}>
-        <Link to="/clients">
-          Ver clientes de mi empresa
+      <nav className="fincrm-dashboard__quicklinks" aria-label="Accesos rápidos">
+        <Link className="fincrm-dashboard__quicklink" to={PATHS.clients}>
+          <span className="fincrm-dashboard__quicklink-icon" aria-hidden="true">
+            <UsersRound size={20} />
+          </span>
+          <h3>Ver clientes de mi empresa</h3>
+          <ArrowUpRight className="fincrm-dashboard__quicklink-arrow" size={18} aria-hidden="true" />
         </Link>
-
-        {" | "}
-
-        <Link to="/debts">
-          Ver deudas de mi empresa
+        <Link className="fincrm-dashboard__quicklink" to={PATHS.debts}>
+          <span className="fincrm-dashboard__quicklink-icon" aria-hidden="true">
+            <LayoutList size={20} />
+          </span>
+          <h3>Ver deudas de mi empresa</h3>
+          <ArrowUpRight className="fincrm-dashboard__quicklink-arrow" size={18} aria-hidden="true" />
         </Link>
-
-        {" | "}
-
-        <Link to="/ai/chat">
-          Asistente inteligente FinCRM
+        <Link className="fincrm-dashboard__quicklink" to={PATHS.aiChat}>
+          <span className="fincrm-dashboard__quicklink-icon fincrm-dashboard__quicklink-icon--ai" aria-hidden="true">
+            <Sparkles size={20} />
+          </span>
+          <h3>Asistente inteligente FinCRM</h3>
+          <ArrowUpRight className="fincrm-dashboard__quicklink-arrow" size={18} aria-hidden="true" />
         </Link>
       </nav>
 
-      {/* Verificación de autenticación */}
-      <section style={{ marginTop: "24px" }}>
-        <h3>Verificación de sesión</h3>
-
-        <button
-          type="button"
-          onClick={handleVerifySession}
-          disabled={verifying}
-        >
-          {verifying
-            ? "Verificando..."
-            : "Verificar mi sesión"}
-        </button>
-
-        <p role="status">{verification}</p>
+      <section className="fincrm-dashboard__session" aria-labelledby="verificacion-sesion">
+        <div className="fincrm-dashboard__session-content">
+          <div>
+            <h2 id="verificacion-sesion">Verificación de sesión</h2>
+            <button
+              type="button"
+              className="fincrm-dashboard__button fincrm-dashboard__button--outline"
+              onClick={handleVerifySession}
+              disabled={verifying}
+            >
+              {verifying ? (
+                <LoaderCircle size={18} className="fincrm-dashboard__spinner" aria-hidden="true" />
+              ) : (
+                <ShieldCheck size={18} aria-hidden="true" />
+              )}
+              {verifying ? "Verificando..." : "Verificar mi sesión"}
+            </button>
+          </div>
+          <button
+            type="button"
+            className="fincrm-dashboard__button fincrm-dashboard__button--dark"
+            onClick={handleLogout}
+          >
+            <LogOut size={18} aria-hidden="true" />
+            Cerrar sesión
+          </button>
+        </div>
+        {verification && (
+          <p
+            role="status"
+            className={`fincrm-dashboard__verification ${
+              verification.startsWith("Error:") ? "fincrm-dashboard__verification--error" : ""
+            }`}
+          >
+            {verification}
+          </p>
+        )}
       </section>
-
-      {/* Cerrar sesión */}
-      <button
-        type="button"
-        onClick={handleLogout}
-        style={{ marginTop: "24px" }}
-      >
-        Cerrar sesión
-      </button>
     </main>
   );
 }

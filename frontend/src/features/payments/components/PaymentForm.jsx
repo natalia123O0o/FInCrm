@@ -7,11 +7,12 @@ import { createPayment } from "../services/payments.api.js";
 export default function PaymentForm({
   debts,
   onPaymentCreated,
+  initialDebtId = "",
 }) {
   const { token } = useAuth();
 
   // Datos del formulario.
-  const [debtId, setDebtId] = useState("");
+  const [debtId, setDebtId] = useState(initialDebtId);
   const [amount, setAmount] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("CASH");
   const [reference, setReference] = useState("");

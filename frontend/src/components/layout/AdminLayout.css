@@ -1,0 +1,47 @@
+
+/* CONTENEDOR PRINCIPAL */
+
+.fincrm-admin-layout {
+  min-height: 100dvh;
+  background-color: #F8FAFC;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+/* CONTENIDO JUNTO AL SIDEBAR */
+
+.fincrm-admin-content {
+  margin-left: 248px;
+  min-height: 100dvh;
+  min-width: 0;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+/* CENTRAR LAS PÁGINAS INTERNAS */
+
+.fincrm-admin-content > * {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* TABLET */
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .fincrm-admin-content {
+    margin-left: 72px;
+    padding: 0 16px;
+  }
+}
+
+/* CELULARES */
+
+@media (max-width: 767px) {
+  .fincrm-admin-content {
+    margin-left: 0;
+    min-height: calc(100dvh - 56px);
+    padding: 0;
+  }
+}

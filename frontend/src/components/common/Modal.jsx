@@ -54,7 +54,7 @@ export default function Modal({ open, onClose, title, label, children }) {
 
     // Manejador de eventos de teclado (Escape para cerrar, Tab para mantener el foco atrapado)
     const onKey = (e) => {
-      if (e.key === 'Escape') return onClose();
+      if (e.key === 'Escape') return handleClose();
       if (e.key === 'Tab') {
         // Shift + Tab en el primer elemento vuelve al último elemento del modal
         if (e.shiftKey && document.activeElement === first) { 

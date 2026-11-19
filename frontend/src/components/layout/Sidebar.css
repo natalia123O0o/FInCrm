@@ -1,0 +1,175 @@
+/* NAVEGACIÓN FINCRM */
+
+.fincrm-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 248px;
+  height: 100dvh;
+  padding: 24px 16px;
+  box-sizing: border-box;
+  background: #0F172A;
+  color: #F8FAFC;
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.fincrm-sidebar-brand {
+  padding: 4px 12px 28px;
+}
+
+.fincrm-brand {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: #F8FAFC;
+}
+
+.fincrm-brand span {
+  color: #F97316;
+}
+
+.fincrm-sidebar-brand small {
+  display: block;
+  margin-top: 5px;
+  color: #CBD5E1;
+  font-size: 11px;
+}
+
+.fincrm-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fincrm-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  color: #F8FAFC;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.fincrm-sidebar-link:hover,
+.fincrm-sidebar-link--active {
+  background: #1E293B;
+}
+
+.fincrm-sidebar-link--active {
+  font-weight: 700;
+}
+
+.fincrm-sidebar-link:focus-visible,
+.fincrm-menu-button:focus-visible {
+  outline: 2px solid #0284C7;
+  outline-offset: 2px;
+}
+
+.fincrm-mobile-header {
+  display: none;
+}
+
+.fincrm-sidebar-backdrop {
+  display: none;
+}
+
+/* TABLET */
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .fincrm-sidebar {
+    width: 72px;
+    padding: 20px 12px;
+  }
+
+  .fincrm-sidebar-brand {
+    padding: 4px 0 24px;
+    text-align: center;
+  }
+
+  .fincrm-sidebar-brand .fincrm-brand {
+    font-size: 12px;
+    letter-spacing: -0.5px;
+  }
+
+  .fincrm-sidebar-brand small,
+  .fincrm-sidebar-link span {
+    display: none;
+  }
+
+  .fincrm-sidebar-link {
+    justify-content: center;
+    padding: 12px;
+  }
+}
+
+/* MÓVIL */
+
+@media (max-width: 767px) {
+  .fincrm-mobile-header {
+    position: sticky;
+    top: 0;
+    z-index: 110;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 56px;
+    padding: 0 16px;
+    background: #0F172A;
+  }
+
+  .fincrm-menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 8px;
+    color: #F8FAFC;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .fincrm-sidebar {
+    top: 56px;
+    width: min(280px, 85vw);
+    height: calc(100dvh - 56px);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 105;
+  }
+
+  .fincrm-sidebar--open {
+    transform: translateX(0);
+  }
+
+  .fincrm-sidebar-brand {
+    display: none;
+  }
+
+  .fincrm-sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 56px 0 0;
+    width: 100%;
+    border: none;
+    background: rgba(15, 23, 42, 0.5);
+    z-index: 104;
+    cursor: pointer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fincrm-sidebar,
+  .fincrm-sidebar-link {
+    transition: none;
+  }
+}

@@ -7,36 +7,53 @@ import { getClients } from "../services/clients.api.js";
 
 import ClientForm from "../components/ClientForm.jsx";
 import EditClientForm from "../components/EditClientForm.jsx";
-
 import ImportClientsCsv from "../components/ImportClientsCsv.jsx";
+
+import { exportarClientesCsv } from "../services/exportClientsCsv.js";
+import { exportarClientesXlsx } from "../services/exportClientsXlsx.js";
+import { exportarClientesPdf } from "../services/exportClientsPdf.js";
+
+import ExportButtons from "../../../components/ExportButtons.jsx";
+import Modal from "../../../components/common/Modal.jsx";
+
+import "./ClientsListPage.css";
 
 export default function ClientsListPage() {
   const { token } = useAuth();
 
-  // Clientes obtenidos desde MongoDB.
+  // Datos de clientes.
   const [clients, setClients] = useState([]);
 
-  // Filtros de búsqueda.
+  // Filtros.
   const [busquedaCliente, setBusquedaCliente] = useState("");
   const [fechaDesde, setFechaDesde] = useState("");
   const [fechaHasta, setFechaHasta] = useState("");
 
-  // Estados de la página.
+  // Estados de consulta.
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Cliente seleccionado para editar.
+  // Control de modales.
+  const [showClientForm, setShowClientForm] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   const [editingClient, setEditingClient] = useState(null);
 
-  // Actualiza la lista cuando se crea un cliente.
+  // Paginación.
+  const [paginaActual, setPaginaActual] = useState(1);
+  const clientesPorPagina = 10;
+
+  // Actualizar lista después de registrar.
   function handleClientCreated(newClient) {
     setClients((previousClients) => [
       newClient,
       ...previousClients,
     ]);
+
+    setShowClientForm(false);
+    setPaginaActual(1);
   }
 
-  // Actualiza la lista cuando se modifica un cliente.
+  // Actualizar lista después de editar.
   function handleClientUpdated(updatedClient) {
     setClients((previousClients) =>
       previousClients.map((client) =>
@@ -49,7 +66,15 @@ export default function ClientsListPage() {
     setEditingClient(null);
   }
 
-  // Obtener clientes desde el backend.
+  // Actualizar lista después de importar CSV.
+  async function handleClientsImported() {
+    const data = await getClients(token);
+    setClients(data);
+    setPaginaActual(1);
+    setShowImportModal(false);
+  }
+
+  // Consultar clientes del backend.
   useEffect(() => {
     let active = true;
 
@@ -62,6 +87,7 @@ export default function ClientsListPage() {
 
         if (active) {
           setClients(data);
+          setPaginaActual(1);
         }
       } catch (err) {
         if (active) {
@@ -88,13 +114,11 @@ export default function ClientsListPage() {
     };
   }, [token]);
 
-  // Aplicar filtros a los clientes cargados.
+  // Filtrar clientes.
   const clientesFiltrados = clients.filter((client) => {
-    // Buscar por nombre o documento.
     const textoBusqueda = busquedaCliente.trim().toLowerCase();
 
     const nombre = String(client.name || "").toLowerCase();
-
     const documento = String(
       client.documentNumber || ""
     ).toLowerCase();
@@ -103,7 +127,6 @@ export default function ClientsListPage() {
       nombre.includes(textoBusqueda) ||
       documento.includes(textoBusqueda);
 
-    // Fecha de creación del cliente.
     const fechaRegistro = client.createdAt
       ? String(client.createdAt).slice(0, 10)
       : "";
@@ -123,75 +146,111 @@ export default function ClientsListPage() {
     );
   });
 
-  // Restablecer los filtros.
+  // Calcular paginación.
+  const totalPaginas = Math.max(
+    1,
+    Math.ceil(clientesFiltrados.length / clientesPorPagina)
+  );
+
+  const paginaVisible = Math.min(paginaActual, totalPaginas);
+
+  const indiceInicial = (paginaVisible - 1) * clientesPorPagina;
+
+  const clientesPaginados = clientesFiltrados.slice(
+    indiceInicial,
+    indiceInicial + clientesPorPagina
+  );
+
+  const indiceFinal = Math.min(
+    indiceInicial + clientesPorPagina,
+    clientesFiltrados.length
+  );
+
+  // Limpiar filtros.
   function limpiarFiltros() {
     setBusquedaCliente("");
     setFechaDesde("");
     setFechaHasta("");
+    setPaginaActual(1);
   }
 
-  const inputStyle = {
-    width: "100%",
-    padding: "10px",
-    marginTop: "6px",
-    border: "1px solid #cbd5e1",
-    borderRadius: "8px",
-    boxSizing: "border-box",
-  };
-
-  const thStyle = {
-    padding: "12px",
-    borderBottom: "2px solid #e2e8f0",
-    textAlign: "left",
-    backgroundColor: "#f1f5f9",
-  };
-
-  const tdStyle = {
-    padding: "12px",
-    borderBottom: "1px solid #e2e8f0",
-  };
-
   return (
-    <main style={{ padding: "24px" }}>
-      <Link to="/dashboard">
-        Volver al panel
-      </Link>
+    <main className="clients-page">
 
-      <h1>Clientes de FinCRM</h1>
+      {/* ENCABEZADO */}
+      <header className="clients-header">
+        <div>
+          <Link to="/dashboard" className="clients-back">
+            ← Volver al panel
+          </Link>
 
-      <p>Consulta y administra los clientes de tu empresa.</p>
+          <h1>Clientes</h1>
 
-      {/* FORMULARIO PARA REGISTRAR CLIENTES */}
-      <section style={{ marginTop: "24px" }}>
-        <ClientForm onClientCreated={handleClientCreated} />
-      </section>
+          <p>
+            Administra la información y las relaciones
+            comerciales de tus clientes.
+          </p>
+        </div>
 
-      <ImportClientsCsv token={token} />
+        <div className="clients-actions">
+          <button
+            type="button"
+            className="clients-btn clients-btn-primary"
+            onClick={() => setShowClientForm(true)}
+          >
+            + Nuevo cliente
+          </button>
+
+          <button
+            type="button"
+            className="clients-btn clients-btn-secondary"
+            onClick={() => setShowImportModal(true)}
+          >
+            Importar CSV
+          </button>
+        </div>
+      </header>
+
+      {/* MODAL NUEVO CLIENTE */}
+      <Modal
+        open={showClientForm}
+        onClose={() => setShowClientForm(false)}
+        title="Registrar nuevo cliente"
+        label="GESTIÓN DE CLIENTES"
+      >
+        <ClientForm
+          onClientCreated={handleClientCreated}
+        />
+      </Modal>
+
+      {/* MODAL IMPORTACIÓN CSV */}
+      <Modal
+        open={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        title="Importar clientes"
+        label="GESTIÓN DE DATOS"
+      >
+        <ImportClientsCsv
+          token={token}
+          onImported={handleClientsImported}
+        />
+      </Modal>
 
       {/* FILTROS */}
       <section
+        className="clients-filters"
         aria-label="Filtros de clientes"
-        style={{
-          marginTop: "32px",
-          marginBottom: "24px",
-          padding: "20px",
-          border: "1px solid #e2e8f0",
-          borderRadius: "12px",
-          backgroundColor: "#f8fafc",
-        }}
       >
-        <h2>Buscar y filtrar clientes</h2>
+        <div className="clients-section-heading">
+          <h2>Buscar clientes</h2>
+          <p>
+            Encuentra clientes por nombre, documento
+            o fecha de registro.
+          </p>
+        </div>
 
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "flex-end",
-            gap: "16px",
-          }}
-        >
-          {/* BUSCAR POR NOMBRE O DOCUMENTO */}
-          <div style={{ flex: "1 1 220px" }}>
+        <div className="clients-filter-grid">
+          <div className="clients-field clients-search">
             <label htmlFor="buscar-cliente">
               Nombre o documento
             </label>
@@ -199,17 +258,16 @@ export default function ClientsListPage() {
             <input
               id="buscar-cliente"
               type="search"
-              placeholder="Ej. Ana o 10203040"
+              placeholder="Buscar cliente..."
               value={busquedaCliente}
-              onChange={(evento) =>
-                setBusquedaCliente(evento.target.value)
-              }
-              style={inputStyle}
+              onChange={(evento) => {
+                setBusquedaCliente(evento.target.value);
+                setPaginaActual(1);
+              }}
             />
           </div>
 
-          {/* FECHA INICIAL */}
-          <div style={{ flex: "1 1 180px" }}>
+          <div className="clients-field">
             <label htmlFor="cliente-fecha-desde">
               Registrado desde
             </label>
@@ -219,15 +277,14 @@ export default function ClientsListPage() {
               type="date"
               value={fechaDesde}
               max={fechaHasta || undefined}
-              onChange={(evento) =>
-                setFechaDesde(evento.target.value)
-              }
-              style={inputStyle}
+              onChange={(evento) => {
+                setFechaDesde(evento.target.value);
+                setPaginaActual(1);
+              }}
             />
           </div>
 
-          {/* FECHA FINAL */}
-          <div style={{ flex: "1 1 180px" }}>
+          <div className="clients-field">
             <label htmlFor="cliente-fecha-hasta">
               Registrado hasta
             </label>
@@ -237,24 +294,17 @@ export default function ClientsListPage() {
               type="date"
               value={fechaHasta}
               min={fechaDesde || undefined}
-              onChange={(evento) =>
-                setFechaHasta(evento.target.value)
-              }
-              style={inputStyle}
+              onChange={(evento) => {
+                setFechaHasta(evento.target.value);
+                setPaginaActual(1);
+              }}
             />
           </div>
 
-          {/* LIMPIAR FILTROS */}
           <button
             type="button"
+            className="clients-btn clients-btn-secondary"
             onClick={limpiarFiltros}
-            style={{
-              padding: "10px 16px",
-              border: "1px solid #cbd5e1",
-              borderRadius: "8px",
-              backgroundColor: "#ffffff",
-              cursor: "pointer",
-            }}
           >
             Limpiar filtros
           </button>
@@ -262,109 +312,156 @@ export default function ClientsListPage() {
       </section>
 
       {/* ESTADOS DE CARGA */}
-      {loading && <p>Cargando clientes...</p>}
+      {loading && (
+        <p className="clients-message">
+          Cargando clientes...
+        </p>
+      )}
 
       {error && (
-        <p role="alert" style={{ color: "#c62828" }}>
+        <p className="clients-error" role="alert">
           {error}
         </p>
       )}
 
-      {/* LISTADO DE CLIENTES */}
+      {/* LISTADO */}
       {!loading && !error && (
-        <section aria-label="Listado de clientes">
-          <p>
-            Mostrando {clientesFiltrados.length} de {clients.length} clientes
-          </p>
+        <section
+          className="clients-list"
+          aria-label="Listado de clientes"
+        >
+          <div className="clients-list-header">
+            <div>
+              <h2>Directorio de clientes</h2>
+              <p>
+                {clientesFiltrados.length} de {clients.length} clientes
+              </p>
+            </div>
+
+            <div className="clients-export">
+              <ExportButtons
+                data={clientesFiltrados}
+                onExportCsv={exportarClientesCsv}
+                onExportXlsx={exportarClientesXlsx}
+                onExportPdf={exportarClientesPdf}
+              />
+            </div>
+          </div>
 
           {clientesFiltrados.length === 0 ? (
-            <p>
-              {clients.length === 0
-                ? "No hay clientes activos registrados."
-                : "No se encontraron clientes con los filtros seleccionados."}
-            </p>
-          ) : (
-            <div style={{ overflowX: "auto" }}>
-              <table
-                style={{
-                  width: "100%",
-                  borderCollapse: "collapse",
-                  textAlign: "left",
-                }}
-              >
-                <thead>
-                  <tr>
-                    <th style={thStyle}>Nombre</th>
-                    <th style={thStyle}>Documento</th>
-                    <th style={thStyle}>Correo</th>
-                    <th style={thStyle}>Teléfono</th>
-                    <th style={thStyle}>Acciones</th>
-                  </tr>
-                </thead>
+            <div className="clients-empty">
+              <h3>
+                {clients.length === 0
+                  ? "Todavía no tienes clientes"
+                  : "No encontramos resultados"}
+              </h3>
 
-                <tbody>
-                  {clientesFiltrados.map((client) => (
-                    <tr key={client._id}>
-                      <td style={tdStyle}>{client.name}</td>
-
-                      <td style={tdStyle}>
-                        {client.documentNumber}
-                      </td>
-
-                      <td style={tdStyle}>
-                        {client.email || "Sin correo"}
-                      </td>
-
-                      <td style={tdStyle}>
-                        {client.phone || "Sin teléfono"}
-                      </td>
-
-                      <td style={tdStyle}>
-                        <button
-                          type="button"
-                          onClick={() => setEditingClient(client)}
-                          style={{
-                            padding: "8px 14px",
-                            backgroundColor: "#142c49",
-                            color: "#ffffff",
-                            border: "none",
-                            borderRadius: "8px",
-                            cursor: "pointer",
-                          }}
-                        >
-                          Editar
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <p>
+                {clients.length === 0
+                  ? "Registra tu primer cliente para comenzar."
+                  : "Prueba con otros criterios de búsqueda."}
+              </p>
             </div>
+          ) : (
+            <>
+              <div className="clients-table-scroll">
+                <table className="clients-table">
+                  <thead>
+                    <tr>
+                      <th>Nombre</th>
+                      <th>Documento</th>
+                      <th>Correo electrónico</th>
+                      <th>Teléfono</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {clientesPaginados.map((client) => (
+                      <tr key={client._id}>
+                        <td className="clients-name">
+                          {client.name}
+                        </td>
+
+                        <td>{client.documentNumber}</td>
+
+                        <td>
+                          {client.email || "Sin correo"}
+                        </td>
+
+                        <td>
+                          {client.phone || "Sin teléfono"}
+                        </td>
+
+                        <td>
+                          <button
+                            type="button"
+                            className="clients-btn-edit"
+                            onClick={() => setEditingClient(client)}
+                          >
+                            Editar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* PAGINACIÓN */}
+              <div className="clients-pagination">
+                <p>
+                  Mostrando {indiceInicial + 1}–{indiceFinal} de{" "}
+                  {clientesFiltrados.length}
+                </p>
+
+                <div className="clients-pagination-controls">
+                  <button
+                    type="button"
+                    disabled={paginaVisible === 1}
+                    onClick={() =>
+                      setPaginaActual(paginaVisible - 1)
+                    }
+                  >
+                    Anterior
+                  </button>
+
+                  <span>
+                    Página {paginaVisible} de {totalPaginas}
+                  </span>
+
+                  <button
+                    type="button"
+                    disabled={paginaVisible === totalPaginas}
+                    onClick={() =>
+                      setPaginaActual(paginaVisible + 1)
+                    }
+                  >
+                    Siguiente
+                  </button>
+                </div>
+              </div>
+            </>
           )}
         </section>
       )}
 
-      {/* FORMULARIO PARA EDITAR CLIENTES */}
-      {editingClient && (
-        <section
-          style={{
-            marginTop: "32px",
-            padding: "20px",
-            border: "1px solid #e2e8f0",
-            borderRadius: "12px",
-            backgroundColor: "#ffffff",
-          }}
-        >
-          <h2>Editar cliente</h2>
-
+      {/* MODAL EDITAR CLIENTE */}
+      <Modal
+        open={Boolean(editingClient)}
+        onClose={() => setEditingClient(null)}
+        title="Editar cliente"
+        label="GESTIÓN DE CLIENTES"
+      >
+        {editingClient && (
           <EditClientForm
             key={editingClient._id}
             client={editingClient}
             onClientUpdated={handleClientUpdated}
             onCancel={() => setEditingClient(null)}
           />
-        </section>
-      )}
+        )}
+      </Modal>
     </main>
   );
 }

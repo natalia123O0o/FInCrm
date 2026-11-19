@@ -1,0 +1,242 @@
+/* FinCRM: pagina de cartera. Estilos limitados a este modulo. */
+.debts-page {
+  --debts-navy: #0F172A;
+  --debts-muted: #64748B;
+  --debts-border: #E2E8F0;
+  --debts-orange: #F97316;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 16px 48px;
+  box-sizing: border-box;
+  color: var(--debts-navy);
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+}
+
+.debts-page-header,
+.debts-table-heading,
+.debts-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.debts-page-header { margin-bottom: 28px; }
+.debts-page-header h1 {
+  margin: 0;
+  font-size: clamp(32px, 3vw, 40px);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+.debts-page-header p,
+.debts-panel-heading p,
+.debts-table-heading p {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--debts-muted);
+  line-height: 1.45;
+}
+.debts-main-actions,
+.debts-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.debts-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 9px 17px;
+  border-radius: 12px;
+  font: 700 14px/1.25 "Plus Jakarta Sans", system-ui, sans-serif;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.debts-btn--primary { border: 1px solid var(--debts-orange); background: var(--debts-orange); color: var(--debts-navy); }
+.debts-btn--primary:hover { background: #EA580C; }
+.debts-btn--outline { border: 1px solid #CBD5E1; background: #FFFFFF; color: var(--debts-navy); }
+.debts-btn--outline:hover { background: #F8FAFC; border-color: var(--debts-navy); }
+.debts-btn--dark { border: 1px solid var(--debts-navy); background: var(--debts-navy); color: #F8FAFC; }
+.debts-btn--dark:hover { background: #1E293B; }
+.debts-btn--small { min-height: 36px; padding: 7px 13px; font-size: 12px; border-radius: 9px; }
+.debts-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.debts-btn:focus-visible, .debts-page button:focus-visible, .debts-page summary:focus-visible,
+.debts-page :is(input,select):focus-visible { outline: 2px solid #0284C7; outline-offset: 2px; }
+
+.debts-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.debts-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  min-height: 114px;
+  padding: 24px;
+  border: 1px solid var(--debts-border);
+  border-radius: 16px;
+  background: #FFFFFF;
+  box-sizing: border-box;
+}
+.debts-kpi span { color: var(--debts-muted); font-size: 13px; font-weight: 600; }
+.debts-kpi strong { color: var(--debts-navy); font-size: clamp(22px, 2vw, 30px); font-weight: 800; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.debts-kpi--featured { background: var(--debts-navy); border-color: var(--debts-navy); }
+.debts-kpi--featured span { color: #F8FAFC; }
+.debts-kpi--featured strong { color: #F97316; }
+
+.debts-panel {
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 1px solid var(--debts-border);
+  border-radius: 16px;
+  background: #FFFFFF;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  min-width: 0;
+}
+.debts-panel h2 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.25; }
+.debts-panel-heading { margin-bottom: 20px; }
+.debts-filter-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; align-items: end; }
+.debts-field { grid-column: span 2; min-width: 0; }
+.debts-field--search { grid-column: span 3; }
+.debts-filter-grid .debts-field:nth-child(2) { grid-column: span 3; }
+.debts-field label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--debts-navy); }
+.debts-field input, .debts-field select {
+  width: 100%; height: 48px; padding: 10px 12px; box-sizing: border-box;
+  border: 1px solid #CBD5E1; border-radius: 12px; background: #FFFFFF;
+  color: #18181B; font: 400 14px "Plus Jakarta Sans", system-ui, sans-serif;
+}
+.debts-clear { grid-column: span 2; }
+.debts-table-heading { margin-bottom: 20px; align-items: center; }
+.debts-tools { gap: 8px; }
+.debts-tools .debts-btn { font-size: 12px; padding-inline: 12px; }
+
+.debts-export-dropdown { position: relative; }
+.debts-export-dropdown summary { list-style: none; user-select: none; }
+.debts-export-dropdown summary::-webkit-details-marker { display: none; }
+.debts-export-dropdown summary span { margin-left: 7px; }
+.debts-export-options {
+  position: absolute; top: calc(100% + 8px); right: 0; z-index: 40;
+  min-width: 184px; padding: 8px;
+  border: 1px solid var(--debts-border); border-radius: 12px; background: white;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, .12);
+}
+.debts-export-options [aria-label="Exportar datos"] > div {
+  display: flex !important;
+  flex-direction: column;
+  gap: 4px !important;
+  margin: 0 !important;
+}
+.debts-export-options button {
+  display: block; width: 100%; min-height: 40px;
+  padding: 10px 12px !important;
+  border: 0 !important; border-radius: 7px !important;
+  background-color: #FFFFFF !important; color: var(--debts-navy) !important;
+  text-align: left; font: 600 13px "Plus Jakarta Sans", system-ui, sans-serif !important;
+}
+.debts-export-options button:hover:not(:disabled) { background-color: #F8FAFC !important; }
+.debts-export-options button:disabled { opacity: .4; cursor: not-allowed; }
+.debts-export-options [role="alert"] { margin: 8px; font-size: 12px; }
+
+.debts-table-scroll { overflow-x: auto; border: 1px solid var(--debts-border); border-radius: 12px; }
+.debts-table { width: 100%; min-width: 950px; border-collapse: collapse; text-align: left; }
+.debts-table thead { background: #F8FAFC; }
+.debts-table th {
+  padding: 14px 16px; color: #64748B; font-size: 13px; font-weight: 600;
+  border-bottom: 1px solid var(--debts-border);
+}
+.debts-table td { padding: 14px 16px; color: #18181B; font-size: 13px; border-bottom: 1px solid var(--debts-border); vertical-align: middle; }
+.debts-table tr:last-child td { border-bottom: 0; }
+.debts-table tbody tr:hover { background: #F8FAFC; }
+.debts-table .debts-number { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.debts-balance { font-weight: 700; color: #0F172A !important; }
+.debts-client-name { display: block; color: #0F172A; font-weight: 700; }
+.debts-client-document { display: block; margin-top: 3px; font-size: 12px; color: var(--debts-muted); }
+.debts-status { display: inline-block; padding: 6px 9px; border-radius: 8px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.debts-status--pendiente, .debts-status--parcial { background: #FEF3C7; color: #78350F; }
+.debts-status--pagada { background: #D1FAE5; color: #065F46; }
+.debts-status--vencida { background: #FEE2E2; color: #991B1B; }
+.debts-pagination { margin-top: 20px; gap: 14px; }
+.debts-pagination p { margin: 0; color: var(--debts-muted); font-size: 13px; }
+.debts-pagination-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.debts-pagination-controls label, .debts-pagination-controls span { font-size: 13px; color: var(--debts-navy); }
+.debts-pagination-controls button, .debts-pagination-controls select {
+  padding: 9px 12px; border: 1px solid #CBD5E1; border-radius: 9px;
+  font: 600 12px "Plus Jakarta Sans", system-ui, sans-serif; background: #FFFFFF; color: #0F172A;
+}
+.debts-pagination-controls button { cursor: pointer; }
+.debts-pagination-controls button:disabled { opacity: .45; cursor: not-allowed; }
+.debts-empty { text-align: center; padding: 36px 12px; }
+.debts-empty h3 { margin: 0; font-size: 18px; }
+.debts-empty p { font-size: 14px; color: var(--debts-muted); }
+.debts-notice { padding: 24px; text-align: center; color: var(--debts-muted); }
+.debts-notice--error { background: #FEF2F2; color: #991B1B; border-radius: 9px; }
+
+/* Estilos de los componentes ya existentes al utilizarlos dentro de modales. */
+.debts-modal-body { min-width: 0; }
+.debts-modal-body form { width: 100%; max-width: 100% !important; gap: 10px !important; }
+.debts-modal-body form > h2,
+.debts-modal-body > section > h2 { display: none; } /* Modal ya muestra el titulo. */
+.debts-modal-body form label { display: block; margin-top: 5px; font-size: 13px; font-weight: 600; color: #0F172A; }
+.debts-modal-body form :is(input:not([type="checkbox"]), select, textarea) {
+  display: block; width: 100%; min-width: 0; min-height: 46px;
+  padding: 10px 12px; border: 1px solid #CBD5E1; border-radius: 10px;
+  box-sizing: border-box; font: 400 14px "Plus Jakarta Sans", system-ui, sans-serif;
+  background: #FFFFFF; color: #18181B;
+}
+.debts-modal-body form input[type="file"] { padding: 10px 0; }
+.debts-modal-body form textarea { min-height: 82px; resize: vertical; }
+.debts-modal-body form :is(input, select, textarea):focus-visible {
+  outline: 2px solid #0284C7; outline-offset: 2px;
+}
+.debts-modal-body form button[type="submit"] {
+  min-height: 44px; border: none; border-radius: 12px;
+  padding: 12px 16px; font: 700 14px "Plus Jakarta Sans", system-ui, sans-serif;
+  background: #F97316; color: #0F172A; cursor: pointer;
+}
+.debts-modal-body form button[type="submit"]:disabled { opacity: .5; cursor: not-allowed; }
+.debts-modal-body--import > section,
+.debts-modal-body--history > section {
+  margin-top: 0 !important; padding: 0 !important;
+  background: transparent !important; border: none !important;
+}
+.debts-modal-body--import p,
+.debts-modal-body--history p { font-size: 14px; line-height: 1.5; }
+.debts-modal-body--import code { display: block; overflow-wrap: anywhere; font-size: 12px; }
+.debts-modal-body--import button:not(.modal__close) { border-radius: 10px !important; }
+.debts-modal-body--import :is(input[type="file"]) { width: 100%; max-width: 100%; }
+.debts-modal-body--history table { min-width: 550px; width: 100%; }
+.debts-modal-body--history table th,
+.debts-modal-body--history table td { padding: 10px; border-bottom: 1px solid var(--debts-border); font-size: 12px; text-align: left; }
+
+@media (max-width: 1180px) {
+  .debts-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 800px) {
+  .debts-page { padding: 24px 16px 36px; }
+  .debts-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .debts-filter-grid .debts-field, .debts-filter-grid .debts-field--search,
+  .debts-filter-grid .debts-field:nth-child(2), .debts-clear { grid-column: span 1; }
+  .debts-field--search { grid-column: 1 / -1 !important; }
+  .debts-tools { width: 100%; }
+}
+@media (max-width: 560px) {
+  .debts-summary { grid-template-columns: 1fr; }
+  .debts-panel { padding: 16px; }
+  .debts-panel h2 { font-size: 20px; }
+  .debts-filter-grid { grid-template-columns: 1fr; }
+  .debts-filter-grid .debts-field, .debts-filter-grid .debts-field--search,
+  .debts-filter-grid .debts-field:nth-child(2), .debts-clear { grid-column: 1; }
+  .debts-main-actions { width: 100%; flex-direction: column; align-items: stretch; }
+  .debts-tools .debts-btn { flex: 1 1 auto; }
+  .debts-tools .debts-export-dropdown { width: 100%; }
+  .debts-tools .debts-export-dropdown summary { width: 100%; }
+  .debts-export-options { left: 0; right: 0; }
+  .debts-pagination { align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .debts-btn { transition: none; }
+}

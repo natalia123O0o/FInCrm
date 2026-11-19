@@ -1,20 +1,30 @@
 
 import { Routes, Route } from "react-router-dom";
 
+// Páginas públicas
 import LandingPage from "../features/landing/pages/LandingPage.jsx";
 import LoginPage from "../features/auth/pages/LoginPage.jsx";
+
+// Páginas del CRM
 import AdminDashboardPage from "../features/admin/pages/AdminDashboardPage.jsx";
 import ClientsListPage from "../features/clients/pages/ClientsListPage.jsx";
 import DebtsListPage from "../features/debts/pages/DebtsListPage.jsx";
+
+// Inteligencia artificial
 import ChatbotPage from "../features/ai/pages/ChatbotPage.jsx";
 
+// Seguridad y diseño
 import ProtectedRoute from "./ProtectedRoute.jsx";
+import AdminLayout from "../components/layout/AdminLayout.jsx";
+
+// Rutas centralizadas
 import { PATHS } from "./paths.js";
 
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* Rutas públicas */}
+
+      {/* RUTAS PÚBLICAS */}
       <Route
         path={PATHS.landing}
         element={<LandingPage />}
@@ -25,45 +35,60 @@ export default function AppRoutes() {
         element={<LoginPage />}
       />
 
-      {/* Rutas privadas para ADMIN */}
+      {/* RUTAS PRIVADAS: ADMIN Y USER */}
       <Route
         element={
-          <ProtectedRoute allowedRoles={["ADMIN"]} />
+          <ProtectedRoute
+            allowedRoles={["ADMIN", "USER"]}
+          />
         }
       >
-        <Route
-          path="/dashboard"
-          element={<AdminDashboardPage />}
-        />
+        {/* DISEÑO ADMINISTRATIVO COMPARTIDO */}
+        <Route element={<AdminLayout />}>
 
-        <Route
-          path="/clients"
-          element={<ClientsListPage />}
-        />
+          {/* ASISTENTE INTELIGENTE */}
+          <Route
+            path={PATHS.aiChat}
+            element={<ChatbotPage />}
+          />
 
-        <Route
-          path="/debts"
-          element={<DebtsListPage />}
-        />
+          {/* RUTAS EXCLUSIVAS DEL ADMIN */}
+          <Route
+            element={
+              <ProtectedRoute
+                allowedRoles={["ADMIN"]}
+              />
+            }
+          >
+            <Route
+              path={PATHS.dashboard}
+              element={<AdminDashboardPage />}
+            />
+
+            <Route
+              path={PATHS.clients}
+              element={<ClientsListPage />}
+            />
+
+            <Route
+              path={PATHS.debts}
+              element={<DebtsListPage />}
+            />
+          </Route>
+
+        </Route>
       </Route>
 
-      {/* Asistente de IA para ADMIN y USER */}
-      <Route
-        element={
-          <ProtectedRoute allowedRoles={["ADMIN", "USER"]} />
-        }
-      >
-        <Route
-          path="/ai/chat"
-          element={<ChatbotPage />}
-        />
-      </Route>
-
-      {/* Página para rutas desconocidas */}
+      {/* RUTA NO ENCONTRADA */}
       <Route
         path="*"
-        element={<h1>Página no encontrada</h1>}
+        element={
+          <main style={{ padding: "32px" }}>
+            <h1>Página no encontrada</h1>
+          </main>
+        }
       />
+
     </Routes>
   );
 }

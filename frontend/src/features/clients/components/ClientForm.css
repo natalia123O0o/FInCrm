@@ -1,0 +1,50 @@
+
+.client-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.client-form label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0F172A;
+}
+
+.client-form input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  font: inherit;
+  background: #FFFFFF;
+  color: #0F172A;
+}
+
+.client-form input:focus-visible {
+  outline: 2px solid #0284C7;
+  outline-offset: 2px;
+}
+
+.client-form button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #F97316;
+  color: #0F172A;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.client-form button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

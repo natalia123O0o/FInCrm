@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../auth/context/AuthContext";
 import { createClient } from "../services/clients.api";
+import "./ClientForm.css";
 
 export default function ClientForm({ onClientCreated }) {
   const { token } = useAuth();
@@ -76,8 +77,7 @@ export default function ClientForm({ onClientCreated }) {
 
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Registrar nuevo cliente</h2>
+    <form className="client-form" onSubmit={handleSubmit}>
 
       <label htmlFor="name">
         Nombre completo
