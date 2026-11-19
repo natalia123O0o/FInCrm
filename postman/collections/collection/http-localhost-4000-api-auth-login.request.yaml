@@ -5,5 +5,11 @@ url: http://localhost:4000/api/auth/login
 method: POST
 body:
   type: json
-  content: ""
+  content: "{\r
+
+    \  \"email\": \"admin.comercialabc@example.com\",\r
+
+    \  \"password\": \"ClaveSegura2026!\"\r
+
+    }"
 order: 2000

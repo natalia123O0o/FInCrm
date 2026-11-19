@@ -1,0 +1,19 @@
+$kind: http-request
+name: http://localhost:4000/api/payments/import/preview
+description: ""
+url: http://localhost:4000/api/payments/import/preview
+method: POST
+body:
+  type: formdata
+  content:
+    - type: file
+      key: file
+      src:
+        - /C:/Users/yinaa/OneDrive/Desktop/Archibos proyecto crm/FinCRM_QA_abonos_acumulados.csv
+      description: ""
+      disabled: false
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_1ag1}}"
+order: 16000

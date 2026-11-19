@@ -11,7 +11,8 @@ const router = express.Router();
 const {
   createTenant,
   createTenantAdmin,
-  updateTenant
+  updateTenant,
+  listTenants,
 } = require('./tenant.controller');
 
 // Importamos el middleware que verifica el token JWT.
@@ -44,6 +45,14 @@ router.patch(
   authorizeRoles("SUPER_ADMIN"),
   updateTenant
 );
+
+router.get(
+  "/",
+  protect,
+  authorizeRoles("SUPER_ADMIN"),
+  listTenants
+);
+
 
 // Exportamos las rutas para utilizarlas en app.js.
 module.exports = router;

@@ -1,0 +1,17 @@
+$kind: http-request
+name: "\thttp://localhost:4000/api/ai/chat"
+description: ""
+url: "\thttp://localhost:4000/api/ai/chat"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"pregunta\": \"Explica en dos frases qué es un CRM y cómo ayuda a las pequeñas empresas.\"\r
+
+    }\r\n"
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_15i3}}"
+order: 17000

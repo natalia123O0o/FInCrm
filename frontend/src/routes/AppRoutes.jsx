@@ -17,6 +17,9 @@ import ChatbotPage from "../features/ai/pages/ChatbotPage.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import AdminLayout from "../components/layout/AdminLayout.jsx";
 
+import SuperAdminDashboardPage from "../features/superadmin/pages/SuperAdminDashboardPage.jsx";
+
+
 // Rutas centralizadas
 import { PATHS } from "./paths.js";
 
@@ -78,6 +81,20 @@ export default function AppRoutes() {
 
         </Route>
       </Route>
+
+
+      {/* PANEL EXCLUSIVO DEL SUPER_ADMIN */}
+      <Route
+        element={
+          <ProtectedRoute allowedRoles={["SUPER_ADMIN"]} />
+        }
+      >
+        <Route
+          path={PATHS.superAdminDashboard}
+          element={<SuperAdminDashboardPage />}
+        />
+      </Route>
+
 
       {/* RUTA NO ENCONTRADA */}
       <Route

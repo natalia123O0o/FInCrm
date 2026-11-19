@@ -8,6 +8,9 @@ import { loginUser } from "../services/auth.api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 // Define y exporta por defecto el componente funcional 'LoginForm' (formulario de inicio de sesión).
 
+import { PATHS } from "../../../routes/paths.js";
+
+
 import { getAuthenticatedUser } from "../services/auth.api.js";
 export default function LoginForm() {
     // Inicializa el hook de navegación para cambiar de ruta programáticamente.
@@ -39,16 +42,43 @@ export default function LoginForm() {
             const data = await loginUser(email.trim(), password);
 
             // Verificamos el JWT consultando el backend.
-            const verifiedUser = await getAuthenticatedUser(data.token);
+
+            const respuestaUsuario = await getAuthenticatedUser(data.token);
+
+            // Admite tanto una respuesta { user: {...} }
+            // como un objeto de usuario directamente.
+            const verifiedUser = respuestaUsuario?.user ?? respuestaUsuario;
+
+            console.log("Rol recibido:", verifiedUser?.role);
+
 
             // Guardamos el token y el usuario verificado.
+
+
+            const rutasPorRol = {
+                SUPER_ADMIN: PATHS.superAdminDashboard,
+                ADMIN: PATHS.dashboard,
+                USER: PATHS.aiChat,
+            };
+
+            const rol = verifiedUser.role?.trim().toUpperCase();
+            const destino = rutasPorRol[rol];
+
+            console.log("Rol:", rol);
+            console.log("Ruta de destino:", destino);
+
+            if (!destino) {
+                throw new Error("No se encontró una ruta para este rol.");
+            }
+
+
             login({
                 token: data.token,
                 user: verifiedUser,
             });
 
-            // Redirigimos al panel administrativo.
-            navigate("/dashboard");
+            navigate(destino, { replace: true });
+
 
         } catch (err) {
             // Si ocurre cualquier error durante la petición (capturado en 'loginUser'), lo guarda en el estado 'error'.

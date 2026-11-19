@@ -1,0 +1,10 @@
+$kind: http-request
+name: http://localhost:4000/api/payments
+description: ""
+url: http://localhost:4000/api/payments
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_036d}}"
+order: 19000

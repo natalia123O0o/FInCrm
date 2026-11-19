@@ -9,4 +9,5 @@ export const PATHS = {
 
   // Asistente compartido por ADMIN y USER.
   aiChat: "/ai/chat",
+  superAdminDashboard: "/super-admin/dashboard",
 };

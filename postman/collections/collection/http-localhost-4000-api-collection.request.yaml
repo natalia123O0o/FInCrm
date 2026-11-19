@@ -1,0 +1,25 @@
+$kind: http-request
+name: http://localhost:4000/api/collection
+description: ""
+url: http://localhost:4000/api/collection
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"clientId\": \"6ae7a70ac61ad490ad713a9b\",\r
+
+    \  \"debtId\": \"6ae8c3c4d13d7ddd5ae149bb\",\r
+
+    \  \"channel\": \"email\",\r
+
+    \  \"result\": \"NO_ANSWER\",\r
+
+    \  \"notes\": \"Se realizó la gestión, pero no hubo respuesta.\"\r
+
+    }\r\n"
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_12gh}}"
+order: 20000

@@ -422,8 +422,27 @@ const updateTenant = async (req, res) => {
 };
 
 
+const listTenants = async (req, res) => {
+  try {
+    const tenants = await Tenant.find()
+      .select("_id name nit subdomain status email")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return res.status(200).json({ tenants });
+  } catch (error) {
+    console.error("Error al consultar empresas:", error);
+
+    return res.status(500).json({
+      message: "No fue posible consultar las empresas",
+    });
+  }
+};
+
+
 module.exports = {
   createTenant,
   createTenantAdmin,
-  updateTenant
+  updateTenant,
+  listTenants,
 };
