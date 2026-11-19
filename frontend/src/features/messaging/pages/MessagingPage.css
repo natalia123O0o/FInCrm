@@ -1,0 +1,216 @@
+
+.fin-messaging {
+  max-width: 1380px;
+  padding: 32px;
+  margin: 0 auto;
+  color: #0f172a;
+}
+
+.fin-messaging * {
+  box-sizing: border-box;
+}
+
+.fin-messaging-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.fin-messaging-header h1 {
+  font-size: clamp(26px, 3vw, 36px);
+  margin: 8px 0;
+}
+
+.fin-messaging-header p {
+  color: #64748b;
+}
+
+.fin-messaging-eyebrow {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #ea580c !important;
+}
+
+.fin-messaging-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 20px;
+  background: #ecfeff;
+  color: #0e7490;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.fin-messaging-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.fin-messaging-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 26px;
+}
+
+.fin-messaging-card h2 {
+  font-size: 21px;
+  margin: 0 0 22px;
+}
+
+.fin-messaging-card label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  margin: 18px 0 7px;
+}
+
+.fin-messaging-card input,
+.fin-messaging-card select,
+.fin-messaging-card textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font: inherit;
+  background: white;
+  color: #0f172a;
+}
+
+.fin-messaging-card textarea {
+  resize: vertical;
+  line-height: 1.7;
+}
+
+.fin-messaging-card input:focus,
+.fin-messaging-card select:focus,
+.fin-messaging-card textarea:focus {
+  outline: 2px solid #06b6d4;
+  outline-offset: 1px;
+}
+
+.fin-messaging-hint {
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.fin-messaging-error {
+  color: #b91c1c;
+  font-size: 14px;
+}
+
+.fin-messaging-preview-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  color: #0e7490;
+}
+
+.fin-messaging-preview-title h2 {
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.fin-messaging-preview-title p {
+  color: #64748b;
+  font-size: 14px;
+  margin: 0 0 20px;
+}
+
+.fin-messaging-preview {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 20px;
+  background: #f8fafc;
+  min-height: 320px;
+}
+
+.fin-messaging-preview p {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.fin-messaging-preview hr {
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+  margin: 18px 0;
+}
+
+.fin-messaging-preview-body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.fin-messaging-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.fin-messaging-actions button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #f97316;
+  color: #0f172a;
+  border: none;
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.fin-messaging-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fin-messaging-actions .fin-messaging-reset {
+  background: #f1f5f9;
+}
+
+.fin-messaging-notice {
+  color: #047857;
+  font-size: 14px;
+}
+
+.fin-messaging-warning {
+  margin-top: 20px;
+  padding: 14px;
+  background: #f8fafc;
+  border-left: 3px solid #06b6d4;
+  border-radius: 8px;
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+@media (max-width: 900px) {
+  .fin-messaging-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .fin-messaging {
+    padding: 18px;
+  }
+
+  .fin-messaging-card {
+    padding: 18px;
+  }
+}

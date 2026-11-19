@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../features/auth/context/AuthContext.jsx";
@@ -11,6 +10,8 @@ import {
   Sparkles,
   Menu,
   X,
+  UserRoundPlus,
+  Mail,
 } from "lucide-react";
 
 import "./Sidebar.css";
@@ -22,6 +23,7 @@ export default function Sidebar() {
   const role = user?.role;
 
   // Solo incluimos rutas que ya existen.
+
   const enlaces = [
     {
       nombre: "Inicio",
@@ -36,9 +38,21 @@ export default function Sidebar() {
       roles: ["ADMIN"],
     },
     {
+      nombre: "Empleados",
+      ruta: PATHS.users,
+      icono: UserRoundPlus,
+      roles: ["ADMIN"],
+    },
+    {
       nombre: "Deudas",
       ruta: PATHS.debts,
       icono: Wallet,
+      roles: ["ADMIN"],
+    },
+    {
+      nombre: "Mensajería",
+      ruta: PATHS.messaging,
+      icono: Mail,
       roles: ["ADMIN"],
     },
     {
@@ -49,6 +63,7 @@ export default function Sidebar() {
       ia: true,
     },
   ];
+
 
   const enlacesVisibles = enlaces.filter((enlace) =>
     enlace.roles.includes(role)
@@ -87,9 +102,8 @@ export default function Sidebar() {
       {/* Navegación principal */}
       <aside
         id="fincrm-sidebar"
-        className={`fincrm-sidebar ${
-          menuAbierto ? "fincrm-sidebar--open" : ""
-        }`}
+        className={`fincrm-sidebar ${menuAbierto ? "fincrm-sidebar--open" : ""
+          }`}
       >
         <div className="fincrm-sidebar-brand">
           <span className="fincrm-brand">
@@ -112,8 +126,7 @@ export default function Sidebar() {
                 title={enlace.nombre}
                 onClick={() => setMenuAbierto(false)}
                 className={({ isActive }) =>
-                  `fincrm-sidebar-link ${
-                    isActive ? "fincrm-sidebar-link--active" : ""
+                  `fincrm-sidebar-link ${isActive ? "fincrm-sidebar-link--active" : ""
                   }`
                 }
               >

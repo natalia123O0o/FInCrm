@@ -1,32 +1,28 @@
-
 import { Routes, Route } from "react-router-dom";
 
-// Páginas públicas
 import LandingPage from "../features/landing/pages/LandingPage.jsx";
 import LoginPage from "../features/auth/pages/LoginPage.jsx";
 
-// Páginas del CRM
 import AdminDashboardPage from "../features/admin/pages/AdminDashboardPage.jsx";
 import ClientsListPage from "../features/clients/pages/ClientsListPage.jsx";
 import DebtsListPage from "../features/debts/pages/DebtsListPage.jsx";
-
-// Inteligencia artificial
-import ChatbotPage from "../features/ai/pages/ChatbotPage.jsx";
-
-// Seguridad y diseño
-import ProtectedRoute from "./ProtectedRoute.jsx";
-import AdminLayout from "../components/layout/AdminLayout.jsx";
+import UsersPage from "../features/user/pages/UsersPage.jsx";
 
 import SuperAdminDashboardPage from "../features/superadmin/pages/SuperAdminDashboardPage.jsx";
+import UserDashboardPage from "../features/user/pages/UserDashboardPage.jsx";
 
+import ChatbotPage from "../features/ai/pages/ChatbotPage.jsx";
 
-// Rutas centralizadas
+import AdminLayout from "../components/layout/AdminLayout.jsx";
+import ProtectedRoute from "./ProtectedRoute.jsx";
+
+import MessagingPage from "../features/messaging/pages/MessagingPage.jsx";
+
 import { PATHS } from "./paths.js";
 
 export default function AppRoutes() {
   return (
     <Routes>
-
       {/* RUTAS PÚBLICAS */}
       <Route
         path={PATHS.landing}
@@ -38,52 +34,7 @@ export default function AppRoutes() {
         element={<LoginPage />}
       />
 
-      {/* RUTAS PRIVADAS: ADMIN Y USER */}
-      <Route
-        element={
-          <ProtectedRoute
-            allowedRoles={["ADMIN", "USER"]}
-          />
-        }
-      >
-        {/* DISEÑO ADMINISTRATIVO COMPARTIDO */}
-        <Route element={<AdminLayout />}>
-
-          {/* ASISTENTE INTELIGENTE */}
-          <Route
-            path={PATHS.aiChat}
-            element={<ChatbotPage />}
-          />
-
-          {/* RUTAS EXCLUSIVAS DEL ADMIN */}
-          <Route
-            element={
-              <ProtectedRoute
-                allowedRoles={["ADMIN"]}
-              />
-            }
-          >
-            <Route
-              path={PATHS.dashboard}
-              element={<AdminDashboardPage />}
-            />
-
-            <Route
-              path={PATHS.clients}
-              element={<ClientsListPage />}
-            />
-
-            <Route
-              path={PATHS.debts}
-              element={<DebtsListPage />}
-            />
-          </Route>
-
-        </Route>
-      </Route>
-
-
-      {/* PANEL EXCLUSIVO DEL SUPER_ADMIN */}
+      {/* SUPER_ADMIN */}
       <Route
         element={
           <ProtectedRoute allowedRoles={["SUPER_ADMIN"]} />
@@ -95,8 +46,69 @@ export default function AppRoutes() {
         />
       </Route>
 
+      {/* ADMIN */}
+      <Route
+        element={
+          <ProtectedRoute allowedRoles={["ADMIN"]} />
+        }
+      >
+        <Route element={<AdminLayout />}>
+          {/* Panel principal */}
+          <Route
+            path={PATHS.dashboard}
+            element={<AdminDashboardPage />}
+          />
 
-      {/* RUTA NO ENCONTRADA */}
+          {/* Clientes */}
+          <Route
+            path={PATHS.clients}
+            element={<ClientsListPage />}
+          />
+
+          {/* Deudas */}
+          <Route
+            path={PATHS.debts}
+            element={<DebtsListPage />}
+          />
+
+          {/* NUEVA RUTA: EMPLEADOS */}
+          <Route
+            path={PATHS.users}
+            element={<UsersPage />}
+          />
+        </Route>
+
+        <Route
+          path={PATHS.messaging}
+          element={<MessagingPage />}
+        />
+      </Route>
+
+      {/* USER */}
+      <Route
+        element={
+          <ProtectedRoute allowedRoles={["USER"]} />
+        }
+      >
+        <Route
+          path={PATHS.userDashboard}
+          element={<UserDashboardPage />}
+        />
+      </Route>
+
+      {/* ASISTENTE PARA ADMIN Y USER */}
+      <Route
+        element={
+          <ProtectedRoute allowedRoles={["ADMIN", "USER"]} />
+        }
+      >
+        <Route
+          path={PATHS.aiChat}
+          element={<ChatbotPage />}
+        />
+      </Route>
+
+      {/* PÁGINA NO ENCONTRADA */}
       <Route
         path="*"
         element={
@@ -105,7 +117,6 @@ export default function AppRoutes() {
           </main>
         }
       />
-
     </Routes>
   );
 }

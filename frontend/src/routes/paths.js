@@ -1,13 +1,23 @@
+
 export const PATHS = {
   landing: "/",
   login: "/login",
 
-  // Rutas administrativas que ya existen.
+  // ADMIN
   dashboard: "/dashboard",
   clients: "/clients",
   debts: "/debts",
 
-  // Asistente compartido por ADMIN y USER.
-  aiChat: "/ai/chat",
+  // SUPER_ADMIN
   superAdminDashboard: "/super-admin/dashboard",
+
+  // USER
+  userDashboard: "/user/dashboard",
+
+  // ADMIN y USER
+  aiChat: "/ai/chat",
+
+  users: "/users",
+
+  messaging: "/messaging",
 };
