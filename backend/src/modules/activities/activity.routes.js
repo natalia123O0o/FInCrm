@@ -1,0 +1,10 @@
+const router = require('express').Router();
+const protect = require('../../middlewares/auth.middleware');
+const authorizeRoles = require('../../middlewares/role.middleware');
+const { createActivity, listActivities, editActivity, completeActivity } = require('./activity.controller');
+router.use(protect);
+router.get('/', authorizeRoles('ADMIN', 'USER'), listActivities);
+router.post('/', authorizeRoles('ADMIN'), createActivity);
+router.put('/:id', authorizeRoles('ADMIN'), editActivity);
+router.patch('/:id/complete', authorizeRoles('USER'), completeActivity);
+module.exports = router;

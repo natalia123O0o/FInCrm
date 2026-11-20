@@ -1,0 +1,16 @@
+'use strict';
+const router=require('express').Router();
+const protect=require('../../middlewares/auth.middleware');
+const roles=require('../../middlewares/role.middleware');
+const c=require('./quote.controller');
+router.use(protect);
+router.get('/options',roles('ADMIN'),c.options);
+router.get('/policy',roles('ADMIN'),c.getPolicy);
+router.put('/policy',roles('ADMIN'),c.updatePolicy);
+router.get('/',roles('ADMIN','USER'),c.list);
+router.post('/',roles('ADMIN'),c.create);
+router.get('/:id',roles('ADMIN','USER'),c.detail);
+router.put('/:id',roles('ADMIN'),c.update);
+router.post('/:id/transition',roles('ADMIN'),c.transition);
+router.post('/:id/recommend',roles('ADMIN','USER'),c.recommend);
+module.exports=router;

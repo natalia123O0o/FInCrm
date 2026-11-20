@@ -1,225 +1,97 @@
-
-import { Link, useNavigate } from "react-router-dom";
-import {
-  LayoutDashboard,
-  CalendarDays,
-  Target,
-  Bell,
-  Sparkles,
-  LogOut,
-  UserRound,
-  ArrowRight,
-} from "lucide-react";
-
-import { useAuth } from "../../auth/context/AuthContext.jsx";
-import { PATHS } from "../../../routes/paths.js";
-import "./UserDashboardPage.css";
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { CalendarDays, Target, Sparkles, ArrowRight, RefreshCw, UserRound } from 'lucide-react';
+import { useAuth } from '../../auth/context/AuthContext.jsx';
+import { PATHS } from '../../../routes/paths.js';
+import { getActivities } from '../../activities/services/activities.api.js';
+import { isOverdue, isUpcoming } from '../../activities/activity.utils.js';
+import UserWorkspaceLayout from '../components/UserWorkspaceLayout.jsx';
+import './UserDashboardPage.css';
+import '../../activities/pages/ActivitiesPage.css';
 
 export default function UserDashboardPage() {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user, token } = useAuth();
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  function handleLogout() {
-    logout();
-    navigate(PATHS.login, { replace: true });
-  }
+  const load = useCallback(async () => {
+    if (!token) return;
+    try {
+      setLoading(true);
+      setError('');
+      setActivities(await getActivities(token));
+    } catch (requestError) {
+      setError(requestError.message || 'No fue posible cargar las actividades.');
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
 
-  const nombre = user?.name || "Colaborador";
+  useEffect(() => { load(); }, [load]);
+
+  const summary = useMemo(() => {
+    const pending = activities.filter(item => item.status === 'PENDING');
+    return {
+      pending: pending.length,
+      completed: activities.filter(item => item.status === 'COMPLETED').length,
+      upcoming: pending.filter(item => isUpcoming(item)).length,
+      overdue: pending.filter(item => isOverdue(item)),
+    };
+  }, [activities]);
 
   return (
-    <div className="user-panel">
-      <header className="user-topbar">
-        <Link
-          className="user-brand"
-          to={PATHS.userDashboard}
-        >
-          <span className="user-brand-mark">F</span>
-          <span>FinCRM</span>
-        </Link>
-
-        <div className="user-account">
-          <span className="user-account-name">
-            {nombre}
-          </span>
-
-          <button
-            type="button"
-            className="user-logout"
-            onClick={handleLogout}
-          >
-            <LogOut size={18} />
-            <span>Cerrar sesión</span>
+    <UserWorkspaceLayout>
+      <main className="fin-act fin-user-dashboard">
+        <header className="fin-act-page-heading">
+          <div>
+            <span className="fin-act-eyebrow">Espacio del colaborador</span>
+            <h1>Hola, {user?.name || 'colaborador'}</h1>
+            <p>Consulta tus actividades y mantén al día tus seguimientos comerciales.</p>
+          </div>
+          <button type="button" className="fin-act-btn fin-act-btn-outline" onClick={load} disabled={loading}>
+            <RefreshCw size={18} aria-hidden="true" /> {loading ? 'Actualizando…' : 'Actualizar'}
           </button>
-        </div>
-      </header>
+        </header>
 
-      <div className="user-shell">
-        <aside className="user-sidebar">
-          <div className="user-sidebar-label">
-            ESPACIO DE TRABAJO
-          </div>
+        {error && <div className="fin-act-feedback fin-act-feedback-error" role="alert">{error}</div>}
 
-          <Link
-            to={PATHS.userDashboard}
-            className="user-nav-link active"
-          >
-            <LayoutDashboard size={19} />
-            Mi panel
-          </Link>
+        <section className="fin-act-kpi-grid" aria-label="Resumen de mis actividades">
+          <div className="fin-act-kpi"><span>Pendientes</span><strong>{loading ? '—' : summary.pending}</strong></div>
+          <div className="fin-act-kpi"><span>Próximos 7 días</span><strong>{loading ? '—' : summary.upcoming}</strong></div>
+          <div className="fin-act-kpi"><span>Completadas</span><strong>{loading ? '—' : summary.completed}</strong></div>
+          <div className="fin-act-kpi"><span>Vencidas</span><strong>{loading ? '—' : summary.overdue.length}</strong></div>
+        </section>
 
-          <Link
-            to={PATHS.aiChat}
-            className="user-nav-link"
-          >
-            <Sparkles size={19} />
-            Asistente IA
-          </Link>
-
-          <div className="user-sidebar-note">
-            Las oportunidades, tareas y alertas se
-            habilitarán al conectar sus módulos.
-          </div>
-        </aside>
-
-        <main className="user-main">
-          <div className="user-heading">
-            <p className="user-eyebrow">
-              ESPACIO DEL COLABORADOR
-            </p>
-
-            <h1>¡Hola, {nombre}!</h1>
-
-            <p>
-              Bienvenido a tu espacio de trabajo.
-              Aquí podrás consultar tus actividades
-              comerciales y realizar seguimientos.
-            </p>
-          </div>
-
-          <section className="user-profile">
-            <div className="user-profile-icon">
-              <UserRound size={25} />
-            </div>
-
-            <div>
-              <h2>Mi información</h2>
-
-              <p>
-                <strong>Nombre:</strong> {nombre}
-              </p>
-
-              <p>
-                <strong>Correo:</strong>{" "}
-                {user?.email || "No disponible"}
-              </p>
-
-              <p>
-                <strong>Rol:</strong> USER
-              </p>
-            </div>
-          </section>
-
-          <h2 className="user-section-title">
-            Mis herramientas
-          </h2>
-
-          <div className="user-cards">
-            <article className="user-card">
-              <div className="user-card-icon">
-                <Target size={23} />
-              </div>
-
+        <section className="fin-act-section" aria-labelledby="tools-heading">
+          <div className="fin-act-section-heading"><div><h2 id="tools-heading">Mis herramientas</h2><p>Accesos rápidos a tus funciones de trabajo.</p></div></div>
+          <div className="fin-user-tools-grid">
+            <article className="fin-act-card fin-user-tool">
+              <Target aria-hidden="true" size={23} />
               <h3>Mis oportunidades</h3>
-
-              <p>
-                Consulta los clientes y negocios
-                comerciales que te asignen.
-              </p>
-
-              <span className="user-pending">
-                Próximamente
-              </span>
+              <p>Negocios y prospectos comerciales asignados a tu cuenta.</p>
+              <Link className="fin-act-inline-link" to={PATHS.userOpportunities}>Ver mis oportunidades <ArrowRight size={17} aria-hidden="true" /></Link>
             </article>
-
-            <article className="user-card">
-              <div className="user-card-icon">
-                <CalendarDays size={23} />
-              </div>
-
+            <article className="fin-act-card fin-user-tool">
+              <CalendarDays aria-hidden="true" size={23} />
               <h3>Mis actividades</h3>
-
-              <p>
-                Organiza llamadas, reuniones y
-                próximos seguimientos.
-              </p>
-
-              <span className="user-pending">
-                Próximamente
-              </span>
+              <p>Consulta tus llamadas, reuniones y tareas; registra sus resultados.</p>
+              <Link className="fin-act-inline-link" to={PATHS.userActivities}>Ver mis actividades <ArrowRight size={17} aria-hidden="true" /></Link>
             </article>
-
-            <article className="user-card">
-              <div className="user-card-icon">
-                <Bell size={23} />
-              </div>
-
-              <h3>Mis alertas</h3>
-
-              <p>
-                Revisa avisos de seguimientos
-                pendientes o vencidos.
-              </p>
-
-              <span className="user-pending">
-                Próximamente
-              </span>
-            </article>
-
-            <article className="user-card">
-              <div className="user-card-icon">
-                <Sparkles size={23} />
-              </div>
-
+            <article className="fin-act-card fin-user-tool">
+              <Sparkles aria-hidden="true" className="fin-user-ai-icon" size={23} />
               <h3>Asistente inteligente</h3>
-
-              <p>
-                Accede al asistente de FinCRM
-                según los permisos de tu usuario.
-              </p>
-
-              <Link
-                className="user-card-link"
-                to={PATHS.aiChat}
-              >
-                Abrir asistente
-                <ArrowRight size={17} />
-              </Link>
+              <p>Consulta el asistente de FinCRM con los permisos de tu sesión.</p>
+              <Link className="fin-act-inline-link" to={PATHS.userAssistant}>Abrir asistente <ArrowRight size={17} aria-hidden="true" /></Link>
             </article>
           </div>
+        </section>
 
-          <section className="user-info">
-            <h2>
-              <Bell size={20} />
-              Seguimiento comercial
-            </h2>
-
-            <p>
-              Cuando esté disponible el módulo
-              de oportunidades, FinCRM mostrará
-              aquí los seguimientos que requieren
-              tu atención.
-            </p>
-
-            <p>
-              Si una actividad vence, el sistema
-              podrá generar una alerta. Los
-              incumplimientos repetidos también
-              podrán notificarse al administrador,
-              según las reglas configuradas.
-            </p>
-          </section>
-        </main>
-      </div>
-    </div>
+        <section className="fin-act-card fin-user-profile" aria-labelledby="profile-heading">
+          <UserRound size={24} aria-hidden="true" />
+          <div><h2 id="profile-heading">Mi información</h2><p><strong>Correo:</strong> {user?.email || 'No disponible'} · <strong>Rol:</strong> USER</p></div>
+        </section>
+      </main>
+    </UserWorkspaceLayout>
   );
 }

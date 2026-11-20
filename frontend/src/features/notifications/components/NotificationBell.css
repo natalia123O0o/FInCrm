@@ -1,0 +1,28 @@
+/* FinCRM: manual de marca y sistema de reglas. */
+.fin-notifications { position:relative; display:flex; align-items:center; font-family:'Plus Jakarta Sans',sans-serif; }
+.fin-notifications-trigger { position:relative; width:44px; height:44px; border:1px solid #CBD5E1; border-radius:12px; background:#FFFFFF; color:#0F172A; cursor:pointer; display:grid; place-items:center; }
+.fin-notifications-trigger:hover { background:#F8FAFC; border-color:#0F172A; }
+.fin-notifications :is(button,a):focus-visible { outline:2px solid #0284C7; outline-offset:2px; }
+.fin-notifications-count { position:absolute; top:-7px; right:-7px; min-width:20px; height:20px; display:flex; justify-content:center; align-items:center; background:#0F172A; color:#F8FAFC; padding:0 5px; border:2px solid #F8FAFC; border-radius:20px; font-size:11px; font-weight:700; }
+.fin-notifications-popover { position:absolute; top:calc(100% + 10px); right:0; width:min(390px,calc(100vw - 32px)); max-height:min(550px,75dvh); background:#FFFFFF; border:1px solid #E2E8F0; border-radius:16px; box-shadow:0 10px 28px rgba(15,23,42,.13); z-index:140; overflow:hidden; display:flex; flex-direction:column; }
+.fin-notifications-heading { padding:20px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #E2E8F0; gap:12px; }
+.fin-notifications-heading h2 { margin:0; color:#0F172A; font-size:20px; line-height:1.25; font-weight:700; }
+.fin-notifications-heading p { font-size:13px; color:#64748B; margin:4px 0 0; }
+.fin-notifications-heading-actions { display:flex; gap:4px; }
+.fin-notifications-heading-actions button { display:grid; place-items:center; width:36px; height:36px; background:#FFFFFF; border:1px solid #E2E8F0; border-radius:10px; color:#0F172A; cursor:pointer; }
+.fin-notifications-heading-actions button:disabled { color:#64748B; cursor:not-allowed; background:#F8FAFC; }
+.fin-notifications-list { overflow:auto; }
+.fin-notifications-item { display:flex; gap:12px; align-items:flex-start; padding:14px 18px; color:#18181B; text-decoration:none; border-bottom:1px solid #E2E8F0; }
+.fin-notifications-item:hover,.fin-notifications-item-unread { background:#F8FAFC; }
+.fin-notifications-item:last-child { border-bottom:0; }
+.fin-notifications-type { width:34px; height:34px; flex:0 0 34px; display:grid; place-items:center; border:1px solid #E2E8F0; border-radius:10px; color:#0F172A; }
+.fin-notifications-type-ACTIVITY_DUE_SOON { background:#F59E0B; border-color:#F59E0B; }
+.fin-notifications-type-ACTIVITY_OVERDUE { background:#EF4444; border-color:#EF4444; }
+.fin-notifications-item-text { display:grid; gap:5px; flex:1; min-width:0; overflow-wrap:anywhere; }
+.fin-notifications-item-text strong { color:#0F172A; font-size:14px; line-height:1.3; font-weight:700; }
+.fin-notifications-item-text > span { font-size:13px; line-height:1.45; }
+.fin-notifications-item-text small { font-size:12px; color:#64748B; }
+.fin-notifications-dot { width:8px; height:8px; background:#0F172A; border-radius:100%; margin-top:7px; flex-shrink:0; }
+.fin-notifications-error { padding:12px 18px; font-size:13px; color:#18181B; border-bottom:2px solid #EF4444; margin:0; }
+.fin-notifications-empty { padding:32px 20px; color:#64748B; font-size:14px; text-align:center; margin:0; }
+@media(max-width:480px) { .fin-notifications-popover { right:-8px; width:min(370px,calc(100vw - 32px)); } }
