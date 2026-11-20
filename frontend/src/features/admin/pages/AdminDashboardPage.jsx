@@ -5,9 +5,7 @@ import {
   CreditCard,
   HandCoins,
   LayoutList,
-  LoaderCircle,
   LogOut,
-  ShieldCheck,
   MailCheck,
   KeyRound,
   Sparkles,
@@ -15,7 +13,6 @@ import {
 } from "lucide-react";
 
 import { useAuth } from "../../auth/context/AuthContext.jsx";
-import { getAuthenticatedUser } from "../../auth/services/auth.api.js";
 import { getClients } from "../../clients/services/clients.api.js";
 import { getDebts } from "../../debts/services/debts.api.js";
 import { getPayments } from "../../payments/services/payments.api.js";
@@ -31,7 +28,9 @@ const formatoCOP = new Intl.NumberFormat("es-CO", {
 
 export default function AdminDashboardPage() {
   const navigate = useNavigate();
-  const { user, token, logout } = useAuth();
+  const { user, token, logout, subscription, subscriptionLoading, hasFeature } = useAuth();
+
+  const crmEnabled = hasFeature("crm");
 
   const [stats, setStats] = useState({
     totalClients: 0,
@@ -41,8 +40,6 @@ export default function AdminDashboardPage() {
   });
   const [statsLoading, setStatsLoading] = useState(true);
   const [statsError, setStatsError] = useState("");
-  const [verification, setVerification] = useState("");
-  const [verifying, setVerifying] = useState(false);
 
   // Conservamos las consultas reales que ya funcionan en FinCRM.
   useEffect(() => {
@@ -81,7 +78,7 @@ export default function AdminDashboardPage() {
       }
     }
 
-    if (token) {
+    if (token && crmEnabled) {
       loadStats();
     } else {
       setStatsLoading(false);
@@ -90,21 +87,7 @@ export default function AdminDashboardPage() {
     return () => {
       active = false;
     };
-  }, [token]);
-
-  async function handleVerifySession() {
-    setVerifying(true);
-    setVerification("");
-
-    try {
-      const verifiedUser = await getAuthenticatedUser(token);
-      setVerification(`Sesión válida. Usuario: ${verifiedUser.email}`);
-    } catch (err) {
-      setVerification(`Error: ${err.message}`);
-    } finally {
-      setVerifying(false);
-    }
-  }
+  }, [token, crmEnabled]);
 
   function handleLogout() {
     logout();
@@ -130,7 +113,15 @@ export default function AdminDashboardPage() {
         </div>
       </header>
 
-      <section className="fincrm-dashboard__section" aria-labelledby="resumen-financiero">
+      <section className="fincrm-dashboard__session" aria-labelledby="plan-empresa" style={{ marginBottom: 24 }}>
+        <h2 id="plan-empresa">{subscriptionLoading ? "Consultando tu plan..." : subscription?.planName ? `Plan ${subscription.planName}` : "Plan pendiente de asignación"}</h2>
+        <p style={{ margin: "12px 0" }}>Consulta las funcionalidades, los cupos y la vigencia contratados para tu empresa.</p>
+        <Link className="fincrm-dashboard__button fincrm-dashboard__button--outline" to={PATHS.myPlan}>
+          <CreditCard size={18} aria-hidden="true" /> Ver mi plan
+        </Link>
+      </section>
+
+      {hasFeature('crm') && <section className="fincrm-dashboard__section" aria-labelledby="resumen-financiero">
         <h2 id="resumen-financiero">Resumen financiero</h2>
 
         {statsLoading && (
@@ -181,85 +172,52 @@ export default function AdminDashboardPage() {
             </article>
           </div>
         )}
-      </section>
+      </section>}
 
       <nav className="fincrm-dashboard__quicklinks" aria-label="Accesos rápidos">
-        <Link className="fincrm-dashboard__quicklink" to={PATHS.clients}>
+        {hasFeature("crm") && <Link className="fincrm-dashboard__quicklink" to={PATHS.clients}>
           <span className="fincrm-dashboard__quicklink-icon" aria-hidden="true">
             <UsersRound size={20} />
           </span>
           <h3>Ver clientes de mi empresa</h3>
           <ArrowUpRight className="fincrm-dashboard__quicklink-arrow" size={18} aria-hidden="true" />
-        </Link>
-        <Link className="fincrm-dashboard__quicklink" to={PATHS.debts}>
+        </Link>}
+        {hasFeature("crm") && <Link className="fincrm-dashboard__quicklink" to={PATHS.debts}>
           <span className="fincrm-dashboard__quicklink-icon" aria-hidden="true">
             <LayoutList size={20} />
           </span>
           <h3>Ver deudas de mi empresa</h3>
           <ArrowUpRight className="fincrm-dashboard__quicklink-arrow" size={18} aria-hidden="true" />
-        </Link>
-        <Link className="fincrm-dashboard__quicklink" to={PATHS.aiChat}>
+        </Link>}
+        {hasFeature("ai") && <Link className="fincrm-dashboard__quicklink" to={PATHS.aiChat}>
           <span className="fincrm-dashboard__quicklink-icon fincrm-dashboard__quicklink-icon--ai" aria-hidden="true">
             <Sparkles size={20} />
           </span>
           <h3>Asistente inteligente FinCRM</h3>
           <ArrowUpRight className="fincrm-dashboard__quicklink-arrow" size={18} aria-hidden="true" />
-        </Link>
+        </Link>}
       </nav>
 
       <section className="fincrm-dashboard__session" aria-labelledby="seguridad-cuenta" style={{ marginBottom: 24 }}>
         <h2 id="seguridad-cuenta">Seguridad de mi cuenta</h2>
         <p style={{ marginTop: 8, marginBottom: 16 }}>
-          Verifica tu correo electrónico y gestiona las verificaciones de tus clientes.
+          {user?.emailVerified ? "Tu correo está verificado." : "Confirma que puedes recibir mensajes en el correo de tu cuenta."}
         </p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
           <Link className="fincrm-dashboard__button fincrm-dashboard__button--outline" to="/verificar-mi-correo">
             <MailCheck size={18} aria-hidden="true" /> Verificar mi correo
           </Link>
-          <Link className="fincrm-dashboard__button fincrm-dashboard__button--outline" to="/admin/verificar-clientes">
+          {hasFeature("crm") && <Link className="fincrm-dashboard__button fincrm-dashboard__button--outline" to="/admin/verificar-clientes">
             <KeyRound size={18} aria-hidden="true" /> Verificar correo de clientes
-          </Link>
+          </Link>}
         </div>
       </section>
 
-      <section className="fincrm-dashboard__session" aria-labelledby="verificacion-sesion">
-        <div className="fincrm-dashboard__session-content">
-          <div>
-            <h2 id="verificacion-sesion">Verificación de sesión</h2>
-            <button
-              type="button"
-              className="fincrm-dashboard__button fincrm-dashboard__button--outline"
-              onClick={handleVerifySession}
-              disabled={verifying}
-            >
-              {verifying ? (
-                <LoaderCircle size={18} className="fincrm-dashboard__spinner" aria-hidden="true" />
-              ) : (
-                <ShieldCheck size={18} aria-hidden="true" />
-              )}
-              {verifying ? "Verificando..." : "Verificar mi sesión"}
-            </button>
-          </div>
-          <button
-            type="button"
-            className="fincrm-dashboard__button fincrm-dashboard__button--dark"
-            onClick={handleLogout}
-          >
-            <LogOut size={18} aria-hidden="true" />
-            Cerrar sesión
-          </button>
-        </div>
-        {verification && (
-          <p
-            role="status"
-            className={`fincrm-dashboard__verification ${
-              verification.startsWith("Error:") ? "fincrm-dashboard__verification--error" : ""
-            }`}
-          >
-            {verification}
-          </p>
-        )}
-      </section>
+      <footer>
+        <button type="button" className="fincrm-dashboard__button fincrm-dashboard__button--dark" onClick={handleLogout}>
+          <LogOut size={18} aria-hidden="true" /> Cerrar sesión
+        </button>
+      </footer>
     </main>
   );
 }

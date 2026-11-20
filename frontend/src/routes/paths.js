@@ -11,18 +11,21 @@ export const PATHS = {
   clients: "/clients",
   debts: "/debts",
   users: "/users",
+  myPlan: "/mi-plan",
   messaging: "/messaging",
   activities: "/activities",
   opportunities: "/opportunities",
   adminVerifyClients: "/admin/verificar-clientes",
   pos: "/pos",
-  // Planned modules. The routes show an informational screen only.
+  // Módulos comerciales.
   quotes: "/quotes",
   campaigns: "/campaigns",
   campaignAnalytics: "/campaigns/analytics",
 
   // SUPER_ADMIN
   superAdminDashboard: "/super-admin/dashboard",
+  superAdminPlans: "/super-admin/plans",
+  superAdminTenant: "/super-admin/tenants/:tenantId",
 
   // USER
   userDashboard: "/user/dashboard",

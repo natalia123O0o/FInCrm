@@ -13,6 +13,12 @@ const {
   createTenantAdmin,
   updateTenant,
   listTenants,
+  detailTenant,
+  updateSubscription,
+  updateStatus,
+  tenantUsers,
+  updateTenantUserStatus,
+  tenantAudit,
 } = require('./tenant.controller');
 
 // Importamos el middleware que verifica el token JWT.
@@ -55,4 +61,17 @@ router.get(
 
 
 // Exportamos las rutas para utilizarlas en app.js.
+router.get('/:tenantId', protect, authorizeRoles('SUPER_ADMIN'), detailTenant);
+router.patch('/:tenantId/subscription', protect, authorizeRoles('SUPER_ADMIN'), updateSubscription);
+router.patch('/:tenantId/status', protect, authorizeRoles('SUPER_ADMIN'), updateStatus);
+router.get('/:tenantId/users', protect, authorizeRoles('SUPER_ADMIN'), tenantUsers);
+router.patch('/:tenantId/users/:userId/status', protect, authorizeRoles('SUPER_ADMIN'), updateTenantUserStatus);
+router.get('/:tenantId/audit', protect, authorizeRoles('SUPER_ADMIN'), tenantAudit);
+router.delete('/:tenantId', protect, authorizeRoles('SUPER_ADMIN'), (req, res) => res.status(405).json({
+  code: 'DELETION_NOT_ALLOWED', message: 'Suspende la empresa para conservar su historial.',
+}));
+router.delete('/:tenantId/users/:userId', protect, authorizeRoles('SUPER_ADMIN'), (req, res) => res.status(405).json({
+  code: 'USER_DELETION_FORBIDDEN', message: 'Los usuarios no se eliminan. Cambia su estado para conservar su historial.',
+}));
+
 module.exports = router;

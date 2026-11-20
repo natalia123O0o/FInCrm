@@ -9,7 +9,7 @@ import './UserWorkspaceLayout.css';
 // Estructura exclusiva del USER; no cambia el AdminLayout existente.
 export default function UserWorkspaceLayout({ children }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, hasFeature } = useAuth();
   const navigate = useNavigate();
 
   function signOut() {
@@ -19,9 +19,9 @@ export default function UserWorkspaceLayout({ children }) {
 
   const links = [
     { to: PATHS.userDashboard, label: 'Mi panel', icon: LayoutDashboard, end: true },
-    { to: PATHS.userOpportunities, label: 'Mis oportunidades', icon: Target },
-    { to: PATHS.userActivities, label: 'Mis actividades', icon: CalendarDays },
-    { to: PATHS.userAssistant, label: 'Asistente IA', icon: Sparkles, ai: true },
+    { to: PATHS.userOpportunities, label: 'Mis oportunidades', feature: 'opportunities', icon: Target },
+    { to: PATHS.userActivities, label: 'Mis actividades', feature: 'activities', icon: CalendarDays },
+    { to: PATHS.userAssistant, label: 'Asistente IA', feature: 'ai', icon: Sparkles, ai: true },
   ];
 
   return (
@@ -47,7 +47,7 @@ export default function UserWorkspaceLayout({ children }) {
           <small>Espacio del colaborador</small>
         </div>
         <nav aria-label="Menú del colaborador" className="fin-user-sidebar-nav">
-          {links.map(({ to, label, icon: Icon, end, ai }) => (
+          {links.filter(item => !item.feature || hasFeature(item.feature)).map(({ to, label, icon: Icon, end, ai }) => (
             <NavLink key={to} to={to} end={end} title={label}
               onClick={() => setMenuOpen(false)}
               className={({ isActive }) => `fin-user-nav-link${isActive ? ' fin-user-nav-link--active' : ''}`}>

@@ -4,6 +4,7 @@ const router = express.Router();
 
 const protect = require("../../middlewares/auth.middleware");
 const authorizeRoles = require("../../middlewares/role.middleware");
+const { requireFeature } = require('../../middlewares/feature.middleware');
 
 const { consultarGemini } = require("./chatbot.controller");
 
@@ -15,6 +16,7 @@ router.post(
   "/chat",
   protect,
   authorizeRoles("ADMIN", "USER"),
+  requireFeature('ai'),
   consultarGemini
 );
 
@@ -24,6 +26,7 @@ router.get(
   "/reportes/cartera",
   protect,
   authorizeRoles("ADMIN"),
+  requireFeature('crm'),
   descargarReporteCartera
 );
 

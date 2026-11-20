@@ -6,12 +6,15 @@ const Client = require('../clients/client.model');
 const Opportunity = require('../opportunities/opportunity.model');
 const User = require('../users/user.model');
 const PosProduct = require('../pos/product.model');
+const { assertFeature, respondAccessError } = require('../../middlewares/feature.middleware');
+const { withQuota, consumeQuota, requestQuota } = require('../subscriptions/usage.service');
 const { isId,clean,calculate,parseDate,assess }=require('./quote.logic');
 const STATUSES = {submit:['DRAFT','PENDING_APPROVAL'],approve:['PENDING_APPROVAL','APPROVED'],send:['APPROVED','SENT'],accept:['SENT','ACCEPTED'],reject:['SENT','REJECTED'],revise:['APPROVED','DRAFT']};
 const policyFor = async tenantId => await Policy.findOne({tenantId}).lean() || {minimumMarginPct:20,approvalDiscountPct:10,stalledDays:5};
 const permitted = req => ({tenantId:req.user.tenantId,...(req.user.role==='USER'?{assignedTo:req.user._id}:{})});
 const populated = q => q.populate('clientId','name').populate('assignedTo','name').populate('opportunityId','title stage');
 function safeError(res,err,location) {
+ if (respondAccessError(res,err)) return;
  if (err?.name==='VersionError') return res.status(409).json({message:'La cotización cambió en otra sesión. Actualiza y vuelve a intentarlo.'});
  if (err?.code===11000) return res.status(409).json({message:'Conflicto al crear el código de cotización. Inténtalo de nuevo.'});
  console.error(`FinCotiza ${location}:`,err?.message);
@@ -28,7 +31,7 @@ function requireBody(b) {
 async function verifyReferences(tenantId, data) {
  const [client,user,opp]=await Promise.all([
    Client.findOne({_id:data.clientId,tenantId,isActive:true}).select('_id').lean(),
-   User.findOne({_id:data.assignedTo,tenantId,role:'USER',isActive:true}).select('_id').lean(),
+   User.findOne({...require('../users/user.status').activeUserFilter(tenantId),_id:data.assignedTo,role:'USER'}).select('_id').lean(),
    data.opportunityId?Opportunity.findOne({_id:data.opportunityId,tenantId,clientId:data.clientId,assignedTo:data.assignedTo}).select('_id').lean():Promise.resolve(true)
  ]);
  if(!client || !user || !opp) return false;
@@ -49,7 +52,7 @@ function present(quote,policy) {
 }
 async function options(req,res) {
  try {
-  const [products,policy]=await Promise.all([PosProduct.find({tenantId:req.user.tenantId,isActive:true}).select('name sku price stock').sort({name:1}).limit(200).lean(),policyFor(req.user.tenantId)]);
+  const [products,policy]=await Promise.all([req.entitlements.modules.includes('pos') ? PosProduct.find({tenantId:req.user.tenantId,isActive:true}).select('name sku price stock').sort({name:1}).limit(200).lean() : Promise.resolve([]),policyFor(req.user.tenantId)]);
   res.json({products,policy});
  }catch(err){safeError(res,err,'options');}
 }
@@ -80,17 +83,24 @@ async function detail(req,res) {
 async function create(req,res) {
  let data;try{data=requireBody(req.body);}catch(err){return res.status(400).json({message:err.message});}
  try {
+  if (data.lines.some(line=>line.kind==='PRODUCT')) assertFeature(req.tenant,'pos');
   if(!await verifyReferences(req.user.tenantId,data)) return res.status(404).json({message:'Cliente, empleado, oportunidad o producto no encontrados en tu empresa.'});
   const code=`COT-${new Date().toISOString().slice(2,10).replace(/-/g,'')}-${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
-  const q=new Quote({...data,code,tenantId:req.user.tenantId,createdBy:req.user._id});
-  q.versions.push(itemVersion(q,req.user._id));record(q,'CREATED',req.user._id);
-  await q.save();await q.populate('clientId','name');
+  const q=await withQuota(requestQuota(req,'quotes'),async(session,access)=>{
+   if (data.lines.some(line=>line.kind==='PRODUCT')) assertFeature(access.tenant,'pos');
+   const item=new Quote({...data,code,tenantId:req.user.tenantId,createdBy:req.user._id});
+   item.versions.push(itemVersion(item,req.user._id));record(item,'CREATED',req.user._id);
+   await item.save({session});return item;
+  });
+  await q.populate('clientId','name');
   res.status(201).json({quote:present(q,await policyFor(req.user.tenantId))});
  }catch(err){safeError(res,err,'create');}
 }
 async function update(req,res) {
  if(!isId(req.params.id))return res.status(400).json({message:'Identificador inválido.'});
  let data;try{data=requireBody(req.body);}catch(err){return res.status(400).json({message:err.message});}
+ try { if (data.lines.some(line=>line.kind==='PRODUCT')) assertFeature(req.tenant,'pos'); }
+ catch(err) { return safeError(res,err,'product-access'); }
  try {
   const q=await Quote.findOne({_id:req.params.id,tenantId:req.user.tenantId});
   if(!q)return res.status(404).json({message:'Cotización no encontrada.'});
@@ -149,6 +159,7 @@ async function recommend(req,res) {
   const data={status:q.status,marginPct:q.marginPct,minimumMarginPct:policy.minimumMarginPct,maxLineDiscount:q.maxLineDiscount,approvalDiscountPct:policy.approvalDiscountPct,risks:risk.flags,validUntil:q.validUntil,daysSinceSent:q.sentAt?Math.floor((Date.now()-new Date(q.sentAt).getTime())/86400000):null,opportunityStage:opp?.stage||null,encounters:history,numberOfLines:q.lines.length};
   const {GoogleGenAI}=require('@google/genai');
   const ai=new GoogleGenAI({apiKey:process.env.GEMINI_API_KEY});
+  await consumeQuota(requestQuota(req,'aiRequests','quotes'));
   const response=await ai.models.generateContent({model:process.env.FINCRM_OPPORTUNITY_GEMINI_MODEL||'gemini-3.5-flash-lite',contents:JSON.stringify(data),config:{systemInstruction:'Eres asistente comercial de FinCRM. Escribe en español como máximo 140 palabras. Recibes SOLO indicadores verificados y sin datos personales. Explica 1) riesgo, 2) próxima acción sugerida y 3) información que falta. No inventes probabilidad estadística, compromisos, ventas ni autorizaciones. No ordenes descuentos fuera de política, envíos automáticos ni facturas.',temperature:0.2,maxOutputTokens:400,httpOptions:{timeout:20000}}});
   const text=clean(response.text).slice(0,4000);
   if(!text) return res.status(502).json({message:'Gemini no generó una respuesta.'});

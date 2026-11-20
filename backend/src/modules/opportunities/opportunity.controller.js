@@ -39,7 +39,7 @@ function formData(body) {
 async function checkReferences(data, tenantId) {
   const [client, employee] = await Promise.all([
     Client.findOne({ _id: data.clientId, tenantId, isActive: true }).select('_id'),
-    User.findOne({ _id: data.assignedTo, tenantId, role: 'USER', isActive: true }).select('_id')
+    User.findOne({ ...require('../users/user.status').activeUserFilter(tenantId), _id: data.assignedTo, role: 'USER' }).select('_id')
   ]);
   return Boolean(client && employee);
 }
@@ -132,6 +132,9 @@ async function recommend(req, res) {
     const opportunity = await Opportunity.findOne({ ...allowed(req), _id: req.params.id });
     if (!opportunity) return res.status(404).json({ message: 'Oportunidad no encontrada.' });
     if (!opportunity.encounters.length) return res.status(400).json({ message: 'Registra al menos un encuentro antes de pedir una recomendación.' });
+    if (!process.env.GEMINI_API_KEY) return res.status(503).json({ message: 'Gemini no está configurado.' });
+    const { consumeQuota, requestQuota } = require('../subscriptions/usage.service');
+    await consumeQuota(requestQuota(req, 'aiRequests', 'opportunities'));
     let recommendation;
     try { recommendation = await recommendOpportunity(opportunity); }
     catch (error) {
@@ -144,6 +147,8 @@ async function recommend(req, res) {
     } });
     return res.json({ recommendation });
   } catch (error) {
+    const { respondAccessError } = require('../../middlewares/feature.middleware');
+    if (respondAccessError(res, error)) return;
     console.error('Recomendar oportunidad:', error.message);
     return res.status(500).json({ message: 'No fue posible preparar la recomendación.' });
   }

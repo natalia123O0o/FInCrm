@@ -23,6 +23,11 @@ import UsersPage from "../features/user/pages/UsersPage.jsx";
 import SuperAdminDashboardPage from "../features/superadmin/pages/SuperAdminDashboardPage.jsx";
 import UserDashboardPage from "../features/user/pages/UserDashboardPage.jsx";
 
+import PlansPage from "../features/plans/pages/PlansPage.jsx";
+import MyPlanPage from "../features/plans/pages/MyPlanPage.jsx";
+import FeatureGate from "../features/plans/components/FeatureGate.jsx";
+import TenantDetailPage from "../features/superadmin/pages/TenantDetailPage.jsx";
+
 // Otros módulos
 import ChatbotPage from "../features/ai/pages/ChatbotPage.jsx";
 import MessagingPage from "../features/messaging/pages/MessagingPage.jsx";
@@ -119,6 +124,8 @@ export default function AppRoutes() {
           path={PATHS.superAdminDashboard}
           element={<SuperAdminDashboardPage />}
         />
+        <Route path={PATHS.superAdminPlans} element={<PlansPage />} />
+        <Route path={PATHS.superAdminTenant} element={<TenantDetailPage />} />
       </Route>
 
       {/* ADMIN */}
@@ -132,31 +139,32 @@ export default function AppRoutes() {
             path={PATHS.dashboard}
             element={<AdminDashboardPage />}
           />
+          <Route path={PATHS.myPlan} element={<MyPlanPage />} />
 
           <Route
             path={PATHS.adminVerifyClients}
-            element={<AdminClientVerificationPage />}
+            element={<FeatureGate feature="crm"><AdminClientVerificationPage /></FeatureGate>}
           />
 
           <Route
             path={PATHS.clients}
-            element={<ClientsListPage />}
+            element={<FeatureGate feature="crm"><ClientsListPage /></FeatureGate>}
           />
 
           <Route
             path={PATHS.debts}
-            element={<DebtsListPage />}
+            element={<FeatureGate feature="crm"><DebtsListPage /></FeatureGate>}
           />
 
-          <Route path={PATHS.activities} element={<AdminActivitiesPage />} />
+          <Route path={PATHS.activities} element={<FeatureGate feature="activities"><AdminActivitiesPage /></FeatureGate>} />
 
-          <Route path={PATHS.opportunities} element={<OpportunitiesPage />} />
+          <Route path={PATHS.opportunities} element={<FeatureGate feature="opportunities"><OpportunitiesPage /></FeatureGate>} />
 
           {/* FinCotiza funcional. */}
-          <Route path={PATHS.quotes} element={<QuotesPage />} />
+          <Route path={PATHS.quotes} element={<FeatureGate feature="quotes"><QuotesPage /></FeatureGate>} />
           {/* FinCampaigns real: gestión + indicadores de seguimiento. */}
-          <Route path={PATHS.campaigns} element={<CampaignsPage />} />
-          <Route path={PATHS.campaignAnalytics} element={<CampaignAnalyticsPage />} />
+          <Route path={PATHS.campaigns} element={<FeatureGate feature="campaigns"><CampaignsPage /></FeatureGate>} />
+          <Route path={PATHS.campaignAnalytics} element={<FeatureGate feature="campaigns"><CampaignAnalyticsPage /></FeatureGate>} />
 
           <Route
             path={PATHS.users}
@@ -165,12 +173,12 @@ export default function AppRoutes() {
 
           <Route
             path={PATHS.messaging}
-            element={<MessagingPage />}
+            element={<FeatureGate feature="messaging"><MessagingPage /></FeatureGate>}
           />
 
           <Route
             path={PATHS.pos}
-            element={<PosPage />}
+            element={<FeatureGate feature="pos"><PosPage /></FeatureGate>}
           />
         </Route>
       </Route>
@@ -189,10 +197,10 @@ export default function AppRoutes() {
 
       {/* Actividades exclusivas del empleado. */}
       <Route element={<ProtectedRoute allowedRoles={["USER"]} />}>
-        <Route path={PATHS.userActivities} element={<UserActivitiesPage />} />
-        <Route path={PATHS.userOpportunities} element={<OpportunitiesPage />} />
+        <Route path={PATHS.userActivities} element={<FeatureGate feature="activities"><UserActivitiesPage /></FeatureGate>} />
+        <Route path={PATHS.userOpportunities} element={<FeatureGate feature="opportunities"><OpportunitiesPage /></FeatureGate>} />
         <Route path={PATHS.userAlerts} element={<Navigate to={PATHS.userDashboard} replace />} />
-        <Route path={PATHS.userAssistant} element={<UserAssistantPage />} />
+        <Route path={PATHS.userAssistant} element={<FeatureGate feature="ai"><UserAssistantPage /></FeatureGate>} />
       </Route>
 
       {/* INTELIGENCIA ARTIFICIAL */}
@@ -203,14 +211,14 @@ export default function AppRoutes() {
       >
         <Route
           path={PATHS.aiChat}
-          element={<ChatbotPage />}
+          element={<FeatureGate feature="ai"><ChatbotPage /></FeatureGate>}
         />
 
         {/* FINVOICE */}
         <Route element={<RoleLayout />}>
           <Route
             path={PATHS.finvoice}
-            element={<VoicePage />}
+            element={<FeatureGate feature="pos"><VoicePage /></FeatureGate>}
           />
         </Route>
       </Route>

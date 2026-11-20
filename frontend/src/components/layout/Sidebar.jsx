@@ -20,16 +20,18 @@ import {
   FileText,
   Megaphone,
   BarChart3,
+  CreditCard,
 } from "lucide-react";
 
 import "./Sidebar.css";
 
 export default function Sidebar() {
-  const { user } = useAuth();
+  const { user, hasFeature } = useAuth();
   const [menuAbierto, setMenuAbierto] = useState(false);
 
   // Enlaces disponibles según el rol del usuario
   const enlaces = [
+    { nombre: "Mi plan", ruta: PATHS.myPlan, icono: CreditCard, roles: ["ADMIN"] },
     {
       nombre: "Inicio",
       ruta: PATHS.dashboard,
@@ -39,6 +41,7 @@ export default function Sidebar() {
     {
       nombre: "Clientes",
       ruta: PATHS.clients,
+      feature: "crm",
       icono: Users,
       roles: ["ADMIN"],
     },
@@ -51,12 +54,14 @@ export default function Sidebar() {
     {
       nombre: "Actividades",
       ruta: PATHS.activities,
+      feature: "activities",
       icono: CalendarDays,
       roles: ["ADMIN"],
     },
     {
       nombre: "Oportunidades",
       ruta: PATHS.opportunities,
+      feature: "opportunities",
       icono: Target,
       roles: ["ADMIN"],
     },
@@ -65,18 +70,21 @@ export default function Sidebar() {
     {
       nombre: "Cotizaciones",
       ruta: PATHS.quotes,
+      feature: "quotes",
       icono: FileText,
       roles: ["ADMIN"],
     },
     {
       nombre: "Campañas",
       ruta: PATHS.campaigns,
+      feature: "campaigns",
       icono: Megaphone,
       roles: ["ADMIN"],
     },
     {
       nombre: "Analítica de campañas",
       ruta: PATHS.campaignAnalytics,
+      feature: "campaigns",
       icono: BarChart3,
       roles: ["ADMIN"],
     },
@@ -85,30 +93,35 @@ export default function Sidebar() {
     {
       nombre: "Deudas",
       ruta: PATHS.debts,
+      feature: "crm",
       icono: Wallet,
       roles: ["ADMIN"],
     },
     {
       nombre: "Mensajería",
       ruta: PATHS.messaging,
+      feature: "messaging",
       icono: Mail,
       roles: ["ADMIN"],
     },
     {
       nombre: "FinPOS",
       ruta: "/pos",
+      feature: "pos",
       icono: ShoppingCart,
       roles: ["ADMIN"],
     },
     {
       nombre: "FinVoice",
       ruta: "/finvoice",
+      feature: "pos",
       icono: Mic,
       roles: ["ADMIN", "USER"],
     },
     {
       nombre: "Asistente inteligente",
       ruta: PATHS.aiChat,
+      feature: "ai",
       icono: Sparkles,
       roles: ["ADMIN", "USER"],
       ia: true,
@@ -117,7 +130,7 @@ export default function Sidebar() {
 
   // Mostrar solamente los enlaces permitidos
   const enlacesVisibles = enlaces.filter((item) =>
-    item.roles.includes(user?.role)
+    item.roles.includes(user?.role) && (!item.feature || hasFeature(item.feature))
   );
 
   return (

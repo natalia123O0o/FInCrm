@@ -4,6 +4,8 @@ const {
 } = require("./llm.service");
 
 const Client = require("../clients/client.model");
+const { consumeQuota, requestQuota } = require('../subscriptions/usage.service');
+const { respondAccessError } = require('../../middlewares/feature.middleware');
 
 const consultarGemini = async (req, res) => {
   try {
@@ -34,7 +36,7 @@ const consultarGemini = async (req, res) => {
       /\b(cuantos|numero de|cantidad de|total de)\b/.test(texto) &&
       /\bclientes\b/.test(texto);
 
-    if (preguntaCantidadClientes) {
+    if (preguntaCantidadClientes && req.user.role === 'ADMIN' && req.entitlements.modules.includes('crm')) {
       // Obtenemos la empresa del usuario autenticado.
       const tenantId = req.user?.tenantId;
 
@@ -68,9 +70,12 @@ const consultarGemini = async (req, res) => {
 
     // Gemini podrá solicitar herramientas empresariales
     // utilizando únicamente los datos de esta empresa.
+    if (!process.env.GEMINI_API_KEY) return res.status(503).json({ message: 'Gemini no está configurado.' });
+    await consumeQuota(requestQuota(req, 'aiRequests'));
     const respuesta = await generarRespuestaEmpresarial(
       pregunta.trim(),
       tenantId,
+      { role: req.user.role, actorId: req.user._id, tokenVersion: req.user.tokenVersion || 0 },
     );
 
     // Devolvemos la respuesta generada.
@@ -78,6 +83,7 @@ const consultarGemini = async (req, res) => {
       respuesta,
     });
   } catch (error) {
+    if (respondAccessError(res, error)) return;
     console.error("Error al consultar Gemini:", error.message);
 
     return res.status(502).json({

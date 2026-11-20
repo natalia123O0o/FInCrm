@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../auth/context/AuthContext.jsx";
 import { PATHS } from "../../../routes/paths.js";
@@ -8,6 +8,7 @@ import { PATHS } from "../../../routes/paths.js";
 import Modal from "../../../components/common/Modal.jsx";
 import TenantForm from "../components/TenantForm.jsx";
 import TenantAdminForm from "../components/TenantAdminForm.jsx";
+import "../../plans/pages/Plans.css";
 
 const API_URL =
   import.meta.env.VITE_API_URL || "http://localhost:4000";
@@ -256,13 +257,14 @@ export default function SuperAdminDashboardPage() {
           </p>
 
           <p style={styles.subtitle}>
-            Gestiona las empresas y sus administradores.
+            Controla planes, funcionalidades contratadas y estados de usuarios.
           </p>
         </div>
       </header>
 
       {/* ACCIONES PRINCIPALES */}
       <section style={styles.actions}>
+        <Link className="fin-plans-button" to={PATHS.superAdminPlans}>Planes y funcionalidades</Link>
         <button
           type="button"
           style={styles.primaryButton}
@@ -283,7 +285,7 @@ export default function SuperAdminDashboardPage() {
       {/* MENSAJES DE CONFIRMACIÓN */}
       {empresaCreada && (
         <p role="status" style={{ color: "#047857" }}>
-          Empresa registrada: {empresaCreada.name}
+          Empresa registrada: {empresaCreada.name}. <Link to={`/super-admin/tenants/${empresaCreada._id}`}>Asignar plan y funcionalidades</Link>
         </p>
       )}
 
@@ -405,6 +407,7 @@ export default function SuperAdminDashboardPage() {
                       <th style={styles.th}>Empresa</th>
                       <th style={styles.th}>NIT</th>
                       <th style={styles.th}>Subdominio</th>
+                      <th style={styles.th}>Plan contratado</th>
                       <th style={styles.th}>Estado</th>
                       <th style={styles.th}>Acciones</th>
                     </tr>
@@ -426,13 +429,19 @@ export default function SuperAdminDashboardPage() {
                         </td>
 
                         <td style={styles.td}>
-                          {empresa.status || "Sin especificar"}
+                          <strong>{empresa.subscription?.planName || "Sin plan"}</strong>
+                          {empresa.subscription && <small style={{ display: "block", marginTop: 4 }}>{empresa.activeUsers ?? "—"} / {empresa.subscription.limits?.maxActiveUsers} usuarios activos</small>}
+                        </td>
+                        <td style={styles.td}>
+                          <span className={`fin-plans-badge fin-plans-badge--${empresa.status}`}>{empresa.status === "ACTIVE" ? "Activa" : "Suspendida"}</span>
                         </td>
 
                         <td style={styles.td}>
+                          <Link className="fin-plans-button fin-plans-button--small" style={{ marginBottom: 8 }} to={`/super-admin/tenants/${empresa._id}`}>Plan y usuarios</Link>
                           <button
                             type="button"
                             style={styles.darkButton}
+                            disabled={!empresa.subscription || empresa.status !== "ACTIVE"}
                             onClick={() =>
                               abrirModalAdministrador(empresa)
                             }
@@ -505,7 +514,8 @@ export default function SuperAdminDashboardPage() {
               ))}
             </select>
 
-            {empresaSeleccionada?._id && (
+            {empresaSeleccionada?._id && !empresaSeleccionada.subscription && <p style={{ marginTop: 16 }}>Primero <Link to={`/super-admin/tenants/${empresaSeleccionada._id}`}>asigna un plan a esta empresa</Link> para crear su administrador.</p>}
+            {empresaSeleccionada?._id && empresaSeleccionada.subscription && (
               <div style={{ marginTop: "20px" }}>
                 <TenantAdminForm
                   key={empresaSeleccionada._id}

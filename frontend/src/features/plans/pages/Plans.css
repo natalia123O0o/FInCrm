@@ -1,0 +1,95 @@
+.fin-plans-page { max-width: 1280px; margin: 0 auto; padding: 32px 28px 64px; color: #0f172a; font-family: "Plus Jakarta Sans", Arial, sans-serif; }
+.fin-plans-page *, .fin-plans-form * { box-sizing: border-box; }
+.fin-plans-page h1 { font-size: clamp(28px, 3.6vw, 40px); line-height: 1.2; letter-spacing: -.04em; margin: 8px 0 12px; }
+.fin-plans-page h2 { font-size: 22px; line-height: 1.35; margin: 0 0 12px; }
+.fin-plans-page h3 { font-size: 15px; line-height: 1.4; margin: 0 0 8px; }
+.fin-plans-page p, .fin-plans-form p { line-height: 1.6; }
+.fin-plans-back { display: inline-flex; align-items: center; gap: 8px; color: #334155; font-size: 14px; font-weight: 700; margin-bottom: 24px; }
+.fin-plans-header { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
+.fin-plans-header p { margin: 0; color: #64748b; }
+.fin-plans-eyebrow { color: #b45309 !important; font-weight: 800; font-size: 11px; letter-spacing: .11em; margin: 0 0 8px !important; }
+.fin-plans-card { background: #fff; border: 2px solid #f97316; border-radius: 16px; padding: 26px; margin-bottom: 24px; scroll-margin-top: 24px; min-width: 0; }
+.fin-plans-section-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.fin-plans-section-heading h2 { margin: 0; }
+.fin-plans-note { background: #fff7ed; border: 1px solid #fed7aa; border-left: 4px solid #f97316; border-radius: 10px; color: #7c2d12; padding: 14px 18px; font-size: 14px; line-height: 1.6; margin: 0 0 24px; }
+.fin-plans-hint { color: #64748b; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+.fin-plans-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.fin-plans-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #ea580c; border-radius: 10px; padding: 11px 17px; min-height: 42px; background: #f97316; color: #172033; font-size: 14px; font-family: inherit; line-height: 1.35; font-weight: 750; text-decoration: none; cursor: pointer; text-align: center; }
+.fin-plans-button:hover:not(:disabled) { background: #fb923c; }
+.fin-plans-button--secondary { background: #fff; border-color: #cbd5e1; color: #334155; }
+.fin-plans-button--secondary:hover:not(:disabled) { background: #f1f5f9; }
+.fin-plans-button--small { font-size: 12px; min-height: 36px; padding: 8px 12px; }
+.fin-plans-button--danger { background: #fff; color: #b91c1c; border-color: #fca5a5; }
+.fin-plans-button--danger:hover:not(:disabled) { background: #fef2f2; }
+.fin-plans-button:disabled { opacity: .5; cursor: not-allowed; }
+.fin-plans-button:focus-visible, .fin-plans-form input:focus-visible, .fin-plans-form select:focus-visible, .fin-plans-form textarea:focus-visible { outline: 3px solid #38bdf8; outline-offset: 3px; }
+.fin-plans-text-button { color: #9a3412; text-decoration: underline; font-weight: 700; background: none; border: 0; cursor: pointer; font: inherit; }
+.fin-plans-error { padding: 14px 16px; color: #991b1b; background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; }
+.fin-plans-success { padding: 14px 16px; color: #166534; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; }
+.fin-plans-table-scroll { overflow-x: auto; width: 100%; }
+.fin-plans-table { border-collapse: collapse; text-align: left; width: 100%; min-width: 720px; font-size: 13px; }
+.fin-plans-table th { font-size: 11px; text-transform: uppercase; color: #64748b; letter-spacing: .04em; background: #f8fafc; font-weight: 750; }
+.fin-plans-table td, .fin-plans-table th { padding: 16px 13px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+.fin-plans-table small { display: block; margin-top: 5px; color: #64748b; font-size: 11px; }
+.fin-plans-tags { display: flex; flex-wrap: wrap; gap: 5px; max-width: 330px; }
+.fin-plans-tags span { font-size: 10px; background: #f1f5f9; border-radius: 5px; padding: 4px 6px; color: #334155; }
+.fin-plans-badge { display: inline-block; font-size: 11px; font-weight: 750; padding: 6px 9px; border-radius: 6px; white-space: nowrap; background: #f1f5f9; color: #475569; }
+.fin-plans-badge--ACTIVE { background: #dcfce7; color: #166534; }
+.fin-plans-badge--BLOCKED, .fin-plans-badge--SUSPENDED { background: #fee2e2; color: #991b1b; }
+.fin-plans-badge--INACTIVE { background: #f1f5f9; color: #475569; }
+.fin-plans-form { display: grid; gap: 20px; color: #0f172a; }
+.fin-plans-form label { display: grid; gap: 8px; align-content: start; font-size: 13px; font-weight: 650; }
+.fin-plans-form input:not([type=checkbox]), .fin-plans-form select, .fin-plans-form textarea { display: block; width: 100%; min-width: 0; border: 1px solid #cbd5e1; padding: 11px 12px; border-radius: 8px; font: inherit; font-weight: 400; background: #fff; color: #0f172a; min-height: 43px; }
+.fin-plans-form textarea { min-height: 84px; resize: vertical; }
+.fin-plans-form input:disabled, .fin-plans-form select:disabled { background: #f8fafc; color: #64748b; }
+.fin-plans-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.fin-plans-fieldset { padding: 18px; border: 1px solid #e2e8f0; border-radius: 12px; margin: 0; min-width: 0; }
+.fin-plans-fieldset legend { font-size: 14px; font-weight: 750; padding: 0 7px; }
+.fin-plans-modules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.fin-plans-form .fin-plans-check { display: flex; align-items: center; gap: 9px; min-height: 40px; font-weight: 500; }
+.fin-plans-check input { width: 18px; height: 18px; accent-color: #ea580c; flex: 0 0 auto; }
+.fin-plans-check small { display: block; color: #64748b; font-size: 10px; margin-top: 3px; }
+.fin-plans-contract { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.fin-plans-contract h2 { font-size: 28px; margin: 14px 0 6px; }
+.fin-plans-contract dl { display: grid; gap: 14px; margin: 0; align-content: center; }
+.fin-plans-contract dl div { display: flex; justify-content: space-between; gap: 18px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0; font-size: 13px; }
+.fin-plans-contract dt { color: #64748b; }
+.fin-plans-contract dd { margin: 0; text-align: right; font-weight: 700; }
+.fin-plans-empty { padding: 46px 24px; background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; text-align: center; }
+.fin-plans-empty > svg { color: #ea580c; margin: 0 auto 18px; }
+.fin-plans-empty .fin-plans-actions { justify-content: center; }
+.fin-plans-module-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; }
+.fin-plans-module-list > div { display: flex; gap: 10px; align-items: center; padding: 15px 0; color: #64748b; font-size: 13px; border-bottom: 1px solid #e2e8f0; }
+.fin-plans-module-list svg { flex: 0 0 auto; }
+.fin-plans-module-list small { margin-left: auto; font-size: 10px; }
+.fin-plans-module-list .fin-plans-module-included { color: #166534; }
+.fin-plans-module-included span { color: #0f172a; }
+.fin-plans-usage-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; margin: 22px 0; }
+.fin-plans-usage { padding-right: 18px; border-right: 1px solid #e2e8f0; }
+.fin-plans-usage:last-child { padding: 0; border: none; }
+.fin-plans-usage p { font-size: 13px; color: #64748b; }
+.fin-plans-usage strong { color: #0f172a; font-size: 26px; }
+.fin-plans-usage progress { width: 100%; height: 9px; accent-color: #ea580c; }
+.fin-plans-usage small { color: #64748b; display: block; font-size: 10px; margin-top: 10px; line-height: 1.5; }
+.fin-plans-audit { list-style: none; margin: 22px 0 0; padding: 0; }
+.fin-plans-audit > li { border-left: 3px solid #fed7aa; padding: 2px 0 20px 18px; margin-bottom: 22px; font-size: 13px; }
+.fin-plans-audit .fin-plans-section-heading { margin-bottom: 5px; }
+.fin-plans-audit time { color: #64748b; font-size: 11px; }
+.fin-plans-audit p { margin: 4px 0 12px; }
+.fin-plans-audit summary { cursor: pointer; color: #0369a1; padding: 6px 0; }
+.fin-plans-audit details .fin-plans-form-grid { padding: 14px; border-radius: 8px; background: #f8fafc; margin-top: 8px; }
+.fin-plans-change-summary { padding-left: 18px; line-height: 1.7; }
+@media (max-width: 900px) {
+  .fin-plans-modules { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fin-plans-usage-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .fin-plans-page { padding: 24px 16px 48px; }
+  .fin-plans-card { padding: 20px 16px; }
+  .fin-plans-form-grid, .fin-plans-contract, .fin-plans-module-list { grid-template-columns: 1fr; }
+  .fin-plans-modules { grid-template-columns: 1fr; }
+  .fin-plans-section-heading { align-items: flex-start; }
+  .fin-plans-header > .fin-plans-button { width: 100%; }
+  .fin-plans-contract dl div { flex-wrap: wrap; gap: 5px; }
+  .fin-plans-contract dd { text-align: left; }
+}

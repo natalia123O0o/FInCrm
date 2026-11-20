@@ -48,14 +48,18 @@ export default function Modal({ open, onClose, title, label, children }) {
     );
 
     // Selección de todos los elementos interactivos dentro del modal para la trampa de foco (Focus Trap)
-    const focusable = panel.querySelectorAll('button, [href], input, [tabindex]:not([tabindex="-1"])');
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
+    const getFocusable = () => [...panel.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
+      .filter(element => !element.disabled && element.getAttribute('aria-hidden') !== 'true' && element.getClientRects().length > 0);
+    const first = getFocusable()[0];
 
     // Manejador de eventos de teclado (Escape para cerrar, Tab para mantener el foco atrapado)
     const onKey = (e) => {
       if (e.key === 'Escape') return handleClose();
       if (e.key === 'Tab') {
+        const focusable = getFocusable();
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (!first) { e.preventDefault(); return; }
         // Shift + Tab en el primer elemento vuelve al último elemento del modal
         if (e.shiftKey && document.activeElement === first) { 
           e.preventDefault(); 

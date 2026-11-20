@@ -1,0 +1,25 @@
+$kind: http-request
+name: http://localhost:4000/api/payments
+description: ""
+url: http://localhost:4000/api/payments
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"debtId\": \"6ae8c3c4d13d7ddd5ae149bb\",\r
+
+    \  \"amount\": 50000,\r
+
+    \  \"paymentMethod\": \"TRANSFER\",\r
+
+    \  \"reference\": \"ABONO-001\",\r
+
+    \  \"notes\": \"Primer abono\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{json_web_token_0xk9}}"
+order: 22000

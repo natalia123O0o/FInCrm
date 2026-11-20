@@ -5,6 +5,9 @@ const Notification = require('../modules/notifications/notification.model');
 const User = require('../modules/users/user.model');
 const Tenant = require('../modules/tenants/tenant.model');
 const { createNotification } = require('../modules/notifications/notification.service');
+const { assertFeature } = require('../middlewares/feature.middleware');
+const { consumeQuota } = require('../modules/subscriptions/usage.service');
+const { effectiveUserStatus } = require('../modules/users/user.status');
 
 const HOUR = 60 * 60 * 1000;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -102,10 +105,10 @@ async function deliverQueued(now) {
     try {
       const [activity, user, tenant] = await Promise.all([
         Activity.findOne({ _id: notification.activityId, tenantId: notification.tenantId, status: 'PENDING', assignedTo: notification.recipientId }).select('dueAt').lean(),
-        User.findOne({ _id: notification.recipientId, tenantId: notification.tenantId, role: 'USER', isActive: true }).select('name email').lean(),
-        Tenant.findOne({ _id: notification.tenantId, status: 'ACTIVE' }).select('_id').lean()
+        User.findOne({ _id: notification.recipientId, tenantId: notification.tenantId, role: 'USER', isActive: true }).select('name email role status isActive tokenVersion').lean(),
+        Tenant.findOne({ _id: notification.tenantId, status: 'ACTIVE' }).lean()
       ]);
-      if (!activity || !user || !tenant) {
+      if (!activity || !user || !tenant || effectiveUserStatus(user) !== 'ACTIVE') {
         await Notification.updateOne({ _id: notification._id }, { $set: { emailStatus: 'SKIPPED', emailLastError: 'La actividad o el destinatario ya no es válido' } });
         continue;
       }
@@ -121,9 +124,23 @@ async function deliverQueued(now) {
         await Notification.updateOne({ _id: notification._id }, { $set: { emailStatus: 'SKIPPED', emailLastError: 'Destinatario fuera de la lista de correos permitidos' } });
         continue;
       }
+      // Volver a comprobar la licencia al enviar, no solamente al programar.
+      assertFeature(tenant, 'activities');
+      assertFeature(tenant, 'messaging');
+      if (!process.env.BREVO_API_KEY || !EMAIL_RE.test(String(process.env.BREVO_SENDER_EMAIL || '').trim())) {
+        throw new Error('Falta configurar el proveedor de correo');
+      }
+      await consumeQuota({ tenantId: tenant._id, actorId: user._id,
+        tokenVersion: user.tokenVersion || 0, resource: 'emails', feature: 'activities' });
       await sendBrevo(notification, user);
       await Notification.updateOne({ _id: notification._id }, { $set: { emailStatus: 'SENT', emailSentAt: new Date(), emailLastError: '' } });
     } catch (error) {
+      if (error.status >= 400 && error.status < 500) {
+        await Notification.updateOne({ _id: notification._id }, { $set: {
+          emailStatus: 'SKIPPED', emailLastError: String(error.message).slice(0, 200),
+        } });
+        continue;
+      }
       const retry = notification.emailAttempts < 3;
       const backoff = new Date(Date.now() + notification.emailAttempts * 15 * 60 * 1000);
       await Notification.updateOne({ _id: notification._id }, { $set: {

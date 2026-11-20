@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Importamos el controlador que creamos previamente para registrar empleados
-const { createUser, getUsers } = require('./user.controller');
+const { createUser, getUsers, updateUserStatus } = require('./user.controller');
 
 // Importamos los middlewares de seguridad y control de acceso
 const protect = require('../../middlewares/auth.middleware');
@@ -40,5 +40,10 @@ router.get(
 );
 
 // Exportamos el enrutador para poder montarlo en la aplicación principal 
+router.patch('/:userId/status', protect, authorizeRoles('ADMIN'), updateUserStatus);
+router.delete('/:userId', protect, authorizeRoles('ADMIN'), (req, res) => res.status(405).json({
+  code: 'USER_DELETION_FORBIDDEN', message: 'Los usuarios no se eliminan. Inactívalos o bloquéalos para conservar su historial.',
+}));
+
 // (por ejemplo: app.use('/api/users', userRoutes))
 module.exports = router;

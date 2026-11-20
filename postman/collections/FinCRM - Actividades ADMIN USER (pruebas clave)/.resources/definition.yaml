@@ -1,0 +1,9 @@
+$kind: collection
+description: Configura variables y ejecuta los pasos en orden. No contiene tokens reales.
+variables:
+  baseUrl: http://localhost:4000
+  adminToken: ""
+  userToken: ""
+  employeeId: ""
+  clientId: ""
+  activityId: ""

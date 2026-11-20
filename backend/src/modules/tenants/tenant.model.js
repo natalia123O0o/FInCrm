@@ -1,5 +1,22 @@
 
 const mongoose = require('mongoose');
+const { limitsSchema } = require('../plans/plan.model');
+const { MODULES } = require('../plans/plan.catalog');
+
+// Una asignación conserva la versión contratada, aunque se edite el catálogo.
+const subscriptionSchema = new mongoose.Schema({
+  planId: { type: mongoose.Schema.Types.ObjectId, ref: 'Plan', required: true },
+  planCode: { type: String, required: true },
+  planName: { type: String, required: true },
+  planVersion: { type: Number, required: true },
+  monthlyPriceCOP: { type: Number, required: true, min: 0 },
+  modules: { type: [String], enum: MODULES.map((item) => item.key) },
+  limits: { type: limitsSchema, required: true },
+  startsAt: { type: Date, required: true },
+  endsAt: { type: Date, default: null },
+  assignedAt: { type: Date, required: true },
+  assignedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+}, { _id: false });
 
 // Configuraciones de cobranza y negociación
 const tenantSettingsSchema = new mongoose.Schema({
@@ -89,6 +106,10 @@ const tenantSchema = new mongoose.Schema({
     enum: ['ACTIVE', 'SUSPENDED'],
     default: 'ACTIVE'
   },
+  subscription: { type: subscriptionSchema, default: null },
+  managementVersion: { type: Number, default: 0 },
+  managementLock: { type: Number, default: 0 },
+  sessionVersion: { type: Number, default: 0 },
 
   // Configuraciones de FinCRM
   settings: {
