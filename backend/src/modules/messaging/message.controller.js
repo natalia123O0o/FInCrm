@@ -1,4 +1,3 @@
-
 const mongoose = require("mongoose");
 
 const Client = require("../clients/client.model");
@@ -10,7 +9,6 @@ const BREVO_URL = "https://api.brevo.com/v3/smtp/email";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// Cada tipo de comunicación utiliza una plantilla diferente.
 const TEMPLATE_ENV_BY_PURPOSE = {
   invitacion: "BREVO_TEMPLATE_INVITACION",
   seguimiento: "BREVO_TEMPLATE_SEGUIMIENTO",
@@ -25,7 +23,7 @@ const TEMPLATE_SUBJECTS = {
   fidelizacion: "Gracias por confiar en nosotros",
 };
 
-// Horarios permitidos para pruebas de cobranza en Colombia.
+// Verificar horario de cobranza en Colombia.
 function isCollectionTimeAllowed() {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: "America/Bogota",
@@ -53,6 +51,28 @@ function isCollectionTimeAllowed() {
   return minutes >= 7 * 60 && minutes < 19 * 60;
 }
 
+// En modo test solo se permite enviar a correos autorizados.
+// En modo live se utiliza el correo registrado del cliente.
+function isRecipientAllowed(email) {
+  const mode = String(
+    process.env.EMAIL_SEND_MODE || "test"
+  ).trim().toLowerCase();
+
+  if (mode === "live") {
+    return true;
+  }
+
+  const allowedRecipients = String(
+    process.env.EMAIL_ALLOWED_RECIPIENTS || ""
+  )
+    .split(",")
+    .map((item) => item.trim().toLowerCase())
+    .filter(Boolean);
+
+  return allowedRecipients.includes(email);
+}
+
+// Enviar correo al cliente seleccionado.
 async function sendEmail(req, res) {
   try {
     const tenantId = req.user?.tenantId;
@@ -66,24 +86,27 @@ async function sendEmail(req, res) {
       authorizationConfirmed,
     } = req.body || {};
 
-    // 1. Verificar usuario.
+    // 1. Verificar sesión.
     if (!tenantId || !userId) {
       return res.status(401).json({
         message: "Sesión inválida.",
       });
     }
 
-    // 2. Verificar cliente y tipo de plantilla.
+    // 2. Validar cliente y plantilla.
     if (
       !mongoose.isValidObjectId(clientId) ||
-      !Object.hasOwn(TEMPLATE_ENV_BY_PURPOSE, purpose)
+      !Object.prototype.hasOwnProperty.call(
+        TEMPLATE_ENV_BY_PURPOSE,
+        purpose
+      )
     ) {
       return res.status(400).json({
         message: "Cliente o tipo de comunicación inválido.",
       });
     }
 
-    // 3. Validar el borrador recibido desde React.
+    // 3. Validar el borrador.
     if (
       typeof subject !== "string" ||
       typeof body !== "string"
@@ -108,7 +131,7 @@ async function sendEmail(req, res) {
       });
     }
 
-    // Confirmación manual durante la fase de pruebas.
+    // 4. Confirmación obligatoria del administrador.
     if (authorizationConfirmed !== true) {
       return res.status(400).json({
         message:
@@ -116,7 +139,7 @@ async function sendEmail(req, res) {
       });
     }
 
-    // 4. Buscar únicamente clientes de la empresa.
+    // 5. Buscar el cliente dentro de la empresa autenticada.
     const client = await Client.findOne({
       _id: clientId,
       tenantId,
@@ -129,31 +152,27 @@ async function sendEmail(req, res) {
       });
     }
 
+    // 6. Obtener el correo REAL registrado en MongoDB.
     const recipient = String(client.email || "")
       .trim()
       .toLowerCase();
 
     if (!EMAIL_PATTERN.test(recipient)) {
       return res.status(400).json({
-        message: "El cliente no tiene un correo válido.",
+        message: "El cliente no tiene un correo electrónico válido.",
       });
     }
 
-    // 5. Permitir únicamente destinatarios de prueba.
-    const allowedRecipients = String(
-      process.env.EMAIL_ALLOWED_RECIPIENTS || ""
-    )
-      .split(",")
-      .map((email) => email.trim().toLowerCase())
-      .filter(Boolean);
-
-    if (!allowedRecipients.includes(recipient)) {
+    // 7. Controlar el modo de envío.
+    if (!isRecipientAllowed(recipient)) {
       return res.status(403).json({
-        message: "Este destinatario no está habilitado para pruebas.",
+        message:
+          "El destinatario no está autorizado en modo de pruebas. " +
+          "Revisa EMAIL_SEND_MODE en el archivo .env.",
       });
     }
 
-    // 6. Elegir automáticamente la plantilla de Brevo.
+    // 8. Obtener la plantilla correspondiente.
     const envName = TEMPLATE_ENV_BY_PURPOSE[purpose];
     const templateId = Number(process.env[envName]);
 
@@ -168,7 +187,7 @@ async function sendEmail(req, res) {
       });
     }
 
-    // 7. Obtener el nombre real de la empresa.
+    // 9. Obtener la empresa.
     const tenant = await Tenant.findById(tenantId)
       .select("name")
       .lean();
@@ -179,17 +198,17 @@ async function sendEmail(req, res) {
       });
     }
 
-    // 8. Verificaciones adicionales para cobranza.
+    // 10. Validaciones específicas de cobranza.
     if (purpose === "cobranza") {
-      // No contactar fuera de estos horarios.
       if (!isCollectionTimeAllowed()) {
         return res.status(403).json({
           message:
-            "El horario actual no está habilitado para comunicaciones de cobranza.",
+            "El horario actual no está habilitado para cobranza.",
         });
       }
 
-      // Solo clientes con obligaciones vencidas y saldo pendiente.
+      // Esta consulta conserva los campos del controlador original.
+      // Deben coincidir con el modelo real de Debt.
       const pendingDebt = await Debt.findOne({
         tenantId,
         clientId,
@@ -208,26 +227,28 @@ async function sendEmail(req, res) {
         });
       }
 
-      // Límite conservador para el módulo de correo.
       const recentCollection = await Message.findOne({
         tenantId,
         clientId,
         purpose: "cobranza",
         status: { $in: ["PROCESSING", "ACCEPTED"] },
         createdAt: {
-          $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+          $gte: new Date(
+            Date.now() - 7 * 24 * 60 * 60 * 1000
+          ),
         },
       });
 
       if (recentCollection) {
         return res.status(429).json({
           message:
-            "Ya existe una comunicación de cobranza registrada durante los últimos siete días.",
+            "Ya existe una comunicación de cobranza registrada " +
+            "durante los últimos siete días.",
         });
       }
     }
 
-    // 9. Limitar el número de pruebas diarias.
+    // 11. Límite diario por empresa.
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
 
@@ -238,11 +259,11 @@ async function sendEmail(req, res) {
 
     if (todayCount >= 20) {
       return res.status(429).json({
-        message: "Se alcanzó el límite diario de pruebas.",
+        message: "Se alcanzó el límite diario de envíos.",
       });
     }
 
-    // Evitar repetir correos muy rápidamente.
+    // 12. Evitar envíos repetidos en un minuto.
     const recentMessage = await Message.findOne({
       tenantId,
       clientId,
@@ -258,15 +279,15 @@ async function sendEmail(req, res) {
       });
     }
 
-    // 10. Registrar el intento antes de enviarlo.
-    // El asunto enviado realmente será el de la plantilla Brevo.
+    // 13. Registrar el intento.
     const message = await Message.create({
       tenantId,
       clientId,
       sentBy: userId,
       to: recipient,
       subject: TEMPLATE_SUBJECTS[purpose],
-      body: `Plantilla Brevo ID ${templateId}. ` +
+      body:
+        `Plantilla Brevo ID ${templateId}. ` +
         `Borrador preparado: ${cleanBody}`,
       purpose,
       authorizationConfirmed: true,
@@ -274,7 +295,7 @@ async function sendEmail(req, res) {
     });
 
     try {
-      // 11. Enviar la plantilla seleccionada a Brevo.
+      // 14. Preparar mensaje con destinatario real.
       const payload = {
         to: [
           {
@@ -289,6 +310,7 @@ async function sendEmail(req, res) {
         },
       };
 
+      // 15. Enviar a Brevo.
       const response = await fetch(BREVO_URL, {
         method: "POST",
         headers: {
@@ -300,7 +322,9 @@ async function sendEmail(req, res) {
         signal: AbortSignal.timeout(15000),
       });
 
-      const result = await response.json().catch(() => ({}));
+      const result = await response
+        .json()
+        .catch(() => ({}));
 
       if (!response.ok || !result.messageId) {
         throw new Error(
@@ -310,7 +334,7 @@ async function sendEmail(req, res) {
         );
       }
 
-      // 12. Guardar la respuesta de Brevo.
+      // 16. Actualizar historial.
       message.status = "ACCEPTED";
       message.providerId = result.messageId;
 
@@ -319,6 +343,7 @@ async function sendEmail(req, res) {
       return res.status(200).json({
         message: "Brevo aceptó el correo para su envío.",
         status: "ACCEPTED",
+        to: recipient,
         providerId: result.messageId,
         purpose,
         templateId,
@@ -346,11 +371,19 @@ async function sendEmail(req, res) {
   }
 }
 
-// Historial de comunicaciones por empresa.
+// Historial de comunicaciones de la empresa.
 async function getMessages(req, res) {
   try {
+    const tenantId = req.user?.tenantId;
+
+    if (!tenantId) {
+      return res.status(401).json({
+        message: "Sesión inválida.",
+      });
+    }
+
     const messages = await Message.find({
-      tenantId: req.user.tenantId,
+      tenantId,
     })
       .select(
         "to subject purpose status providerId createdAt"
@@ -361,6 +394,8 @@ async function getMessages(req, res) {
 
     return res.status(200).json({ messages });
   } catch (error) {
+    console.error("Error al consultar mensajes:", error.message);
+
     return res.status(500).json({
       message: "No se pudo consultar el historial.",
     });

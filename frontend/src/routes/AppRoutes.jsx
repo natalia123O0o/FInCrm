@@ -1,24 +1,45 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
+import { useAuth } from "../features/auth/context/AuthContext.jsx";
 
+// Páginas públicas
 import LandingPage from "../features/landing/pages/LandingPage.jsx";
 import LoginPage from "../features/auth/pages/LoginPage.jsx";
 
+// ADMIN
 import AdminDashboardPage from "../features/admin/pages/AdminDashboardPage.jsx";
 import ClientsListPage from "../features/clients/pages/ClientsListPage.jsx";
 import DebtsListPage from "../features/debts/pages/DebtsListPage.jsx";
 import UsersPage from "../features/user/pages/UsersPage.jsx";
 
+// SUPER_ADMIN y USER
 import SuperAdminDashboardPage from "../features/superadmin/pages/SuperAdminDashboardPage.jsx";
 import UserDashboardPage from "../features/user/pages/UserDashboardPage.jsx";
 
+// Otros módulos
 import ChatbotPage from "../features/ai/pages/ChatbotPage.jsx";
+import MessagingPage from "../features/messaging/pages/MessagingPage.jsx";
+import PosPage from "../features/pos/pages/PosPage.jsx";
+import VoicePage from "../features/voice/pages/VoicePage.jsx";
 
+// Verificación y recuperación
+import ForgotPasswordPage from "../features/auth/pages/ForgotPasswordPage.jsx";
+import VerifyMyEmailPage from "../features/auth/pages/VerifyMyEmailPage.jsx";
+import AdminClientVerificationPage from "../features/verification/pages/AdminClientVerificationPage.jsx";
+import ClientEmailVerificationPage from "../features/verification/pages/ClientEmailVerificationPage.jsx";
+
+// Seguridad y navegación
 import AdminLayout from "../components/layout/AdminLayout.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
-
-import MessagingPage from "../features/messaging/pages/MessagingPage.jsx";
-
 import { PATHS } from "./paths.js";
+
+// Conserva el menú lateral para ADMIN.
+function RoleLayout() {
+  const { user } = useAuth();
+
+  return user?.role === "ADMIN"
+    ? <AdminLayout />
+    : <Outlet />;
+}
 
 export default function AppRoutes() {
   return (
@@ -33,6 +54,32 @@ export default function AppRoutes() {
         path={PATHS.login}
         element={<LoginPage />}
       />
+
+      <Route
+        path="/forgot-password"
+        element={<ForgotPasswordPage />}
+      />
+
+      <Route
+        path="/verificar-cliente"
+        element={<ClientEmailVerificationPage />}
+      />
+
+      {/* VERIFICACIÓN PARA TODOS LOS ROLES */}
+      <Route
+        element={
+          <ProtectedRoute
+            allowedRoles={["SUPER_ADMIN", "ADMIN", "USER"]}
+          />
+        }
+      >
+        <Route element={<RoleLayout />}>
+          <Route
+            path="/verificar-mi-correo"
+            element={<VerifyMyEmailPage />}
+          />
+        </Route>
+      </Route>
 
       {/* SUPER_ADMIN */}
       <Route
@@ -53,35 +100,41 @@ export default function AppRoutes() {
         }
       >
         <Route element={<AdminLayout />}>
-          {/* Panel principal */}
           <Route
             path={PATHS.dashboard}
             element={<AdminDashboardPage />}
           />
 
-          {/* Clientes */}
+          <Route
+            path="/admin/verificar-clientes"
+            element={<AdminClientVerificationPage />}
+          />
+
           <Route
             path={PATHS.clients}
             element={<ClientsListPage />}
           />
 
-          {/* Deudas */}
           <Route
             path={PATHS.debts}
             element={<DebtsListPage />}
           />
 
-          {/* NUEVA RUTA: EMPLEADOS */}
           <Route
             path={PATHS.users}
             element={<UsersPage />}
           />
-        </Route>
 
-        <Route
-          path={PATHS.messaging}
-          element={<MessagingPage />}
-        />
+          <Route
+            path={PATHS.messaging}
+            element={<MessagingPage />}
+          />
+
+          <Route
+            path="/pos"
+            element={<PosPage />}
+          />
+        </Route>
       </Route>
 
       {/* USER */}
@@ -96,7 +149,7 @@ export default function AppRoutes() {
         />
       </Route>
 
-      {/* ASISTENTE PARA ADMIN Y USER */}
+      {/* INTELIGENCIA ARTIFICIAL */}
       <Route
         element={
           <ProtectedRoute allowedRoles={["ADMIN", "USER"]} />
@@ -106,13 +159,21 @@ export default function AppRoutes() {
           path={PATHS.aiChat}
           element={<ChatbotPage />}
         />
+
+        {/* FINVOICE */}
+        <Route element={<RoleLayout />}>
+          <Route
+            path="/finvoice"
+            element={<VoicePage />}
+          />
+        </Route>
       </Route>
 
       {/* PÁGINA NO ENCONTRADA */}
       <Route
         path="*"
         element={
-          <main style={{ padding: "32px" }}>
+          <main style={{ padding: 32 }}>
             <h1>Página no encontrada</h1>
           </main>
         }

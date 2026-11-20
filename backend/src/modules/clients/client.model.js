@@ -48,6 +48,8 @@ const clientSchema = new mongoose.Schema(
       trim: true           // Elimina espacios vacíos sobrantes
     },
 
+    emailVerifiedAt: { type: Date, default: null },
+
     // Estado del cliente (activo o inactivo)
     isActive: {
       type: Boolean,

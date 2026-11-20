@@ -36,6 +36,8 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  emailVerifiedAt: { type: Date, default: null },
+  tokenVersion: { type: Number, default: 0 },
   lastLoginAt: {
     type: Date,
     default: null,

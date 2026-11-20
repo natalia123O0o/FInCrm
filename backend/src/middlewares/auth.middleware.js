@@ -77,6 +77,11 @@ const protect = async (req, res, next) => {
 
     }
 
+    // Invalidar JWT anteriores al último restablecimiento de contraseña.
+    if ((decoded.tokenVersion ?? 0) !== (user.tokenVersion || 0)) {
+      return res.status(401).json({ message: 'Sesión vencida. Inicia sesión nuevamente.' });
+    }
+
     // Comprobamos si el usuario NO es SUPER_ADMIN.
     // !== significa "diferente de".
     // SUPER_ADMIN puede administrar todo el sistema.

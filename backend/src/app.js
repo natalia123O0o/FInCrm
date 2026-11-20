@@ -11,6 +11,8 @@ const paymentRoutes = require('./modules/payments/payment.routes')
 const collectionRoutes = require('./modules/collection/collection.routes');
 const aiRoutes = require('./modules/ai/chatbot.routes');
 const messageRoutes = require("./modules/messaging/message.routes");
+const posRoutes = require("./modules/pos/pos.routes");
+const verificationRoutes = require('./modules/verification/verification.routes');
 
 // NUEVO: Importar rutas de deudas
 const debtRoutes = require('./modules/debts/debt.routes');
@@ -31,6 +33,8 @@ app.use('/api/collection', collectionRoutes);
 app.use('/api/debts', debtRoutes);
 app.use('/api/ai', aiRoutes);
 app.use("/api/messaging", messageRoutes);
+app.use("/api/pos", posRoutes);
+app.use("/api/verification", verificationRoutes);
 
 // Verificar funcionamiento del servidor
 app.get('/api/health', (req, res) => {

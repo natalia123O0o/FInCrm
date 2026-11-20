@@ -44,6 +44,7 @@ const login = async (req, res) => {
       userId: user._id.toString(),
       role: user.role,
       tenantId: user.tenantId ? user.tenantId.toString() : null,
+      tokenVersion: user.tokenVersion || 0,
     },
     process.env.JWT_SECRET,
     { expiresIn: "7d" },

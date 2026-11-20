@@ -250,6 +250,11 @@ const updateClient = async (req, res) => {
       }
     }
 
+    // Si cambia el correo, su verificación anterior ya no es válida.
+    if (data.email !== undefined && client.isModified('email')) {
+      client.emailVerifiedAt = null;
+    }
+
     // 9. Guardar cambios en MongoDB
     await client.save();
 

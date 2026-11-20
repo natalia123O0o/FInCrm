@@ -8,6 +8,8 @@ import {
   LoaderCircle,
   LogOut,
   ShieldCheck,
+  MailCheck,
+  KeyRound,
   Sparkles,
   UsersRound,
 } from "lucide-react";
@@ -204,6 +206,21 @@ export default function AdminDashboardPage() {
           <ArrowUpRight className="fincrm-dashboard__quicklink-arrow" size={18} aria-hidden="true" />
         </Link>
       </nav>
+
+      <section className="fincrm-dashboard__session" aria-labelledby="seguridad-cuenta" style={{ marginBottom: 24 }}>
+        <h2 id="seguridad-cuenta">Seguridad de mi cuenta</h2>
+        <p style={{ marginTop: 8, marginBottom: 16 }}>
+          Verifica tu correo electrónico y gestiona las verificaciones de tus clientes.
+        </p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+          <Link className="fincrm-dashboard__button fincrm-dashboard__button--outline" to="/verificar-mi-correo">
+            <MailCheck size={18} aria-hidden="true" /> Verificar mi correo
+          </Link>
+          <Link className="fincrm-dashboard__button fincrm-dashboard__button--outline" to="/admin/verificar-clientes">
+            <KeyRound size={18} aria-hidden="true" /> Verificar correo de clientes
+          </Link>
+        </div>
+      </section>
 
       <section className="fincrm-dashboard__session" aria-labelledby="verificacion-sesion">
         <div className="fincrm-dashboard__session-content">

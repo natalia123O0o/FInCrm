@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import {
   loginUser,
@@ -132,6 +132,10 @@ export default function LoginForm() {
         required
         style={inputStyle}
       />
+
+      <Link to="/forgot-password" style={{ color: "#0F172A", alignSelf: "flex-end", fontSize: 14 }}>
+        ¿Olvidaste tu contraseña?
+      </Link>
 
       {error && (
         <p
