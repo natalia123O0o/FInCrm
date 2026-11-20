@@ -1,9 +1,17 @@
-import { Routes, Route, Outlet } from "react-router-dom";
+import { Routes, Route, Outlet, Navigate, Link } from "react-router-dom";
 import { useAuth } from "../features/auth/context/AuthContext.jsx";
 
 // Páginas públicas
 import LandingPage from "../features/landing/pages/LandingPage.jsx";
 import LoginPage from "../features/auth/pages/LoginPage.jsx";
+
+import AdminActivitiesPage from "../features/activities/pages/AdminActivitiesPage.jsx";
+import UserActivitiesPage from "../features/activities/pages/UserActivitiesPage.jsx";
+import OpportunitiesPage from "../features/opportunities/pages/OpportunitiesPage.jsx";
+import QuotesPage from "../features/quotes/pages/QuotesPage.jsx";
+import CampaignsPage from "../features/campaigns/pages/CampaignsPage.jsx";
+import CampaignAnalyticsPage from "../features/campaigns/pages/CampaignAnalyticsPage.jsx";
+import UserAssistantPage from "../features/user/pages/UserAssistantPage.jsx";
 
 // ADMIN
 import AdminDashboardPage from "../features/admin/pages/AdminDashboardPage.jsx";
@@ -41,6 +49,26 @@ function RoleLayout() {
     : <Outlet />;
 }
 
+// Temporary informational page: these modules are planned, not implemented yet.
+function PlannedModulePage({ title, description }) {
+  return (
+    <main style={{ maxWidth: 1280, margin: "0 auto", padding: "32px 24px", fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
+      <Link to={PATHS.dashboard} style={{ color: "#0F172A", textDecorationColor: "#0284C7", fontWeight: 600 }}>
+        Volver al panel
+      </Link>
+      <section style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", borderRadius: 16, padding: 24, marginTop: 24 }}>
+        <h1 style={{ color: "#0F172A", fontSize: "clamp(32px, 4vw, 40px)", fontWeight: 800, margin: "0 0 8px" }}>
+          {title}
+        </h1>
+        <p style={{ color: "#64748B", fontSize: 16, lineHeight: 1.5 }}>{description}</p>
+        <p style={{ color: "#18181B", lineHeight: 1.5 }}>
+          Módulo pendiente de desarrollo. Esta pantalla no guarda datos ni envía mensajes.
+        </p>
+      </section>
+    </main>
+  );
+}
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -56,12 +84,12 @@ export default function AppRoutes() {
       />
 
       <Route
-        path="/forgot-password"
+        path={PATHS.forgotPassword}
         element={<ForgotPasswordPage />}
       />
 
       <Route
-        path="/verificar-cliente"
+        path={PATHS.verifyClientEmail}
         element={<ClientEmailVerificationPage />}
       />
 
@@ -75,7 +103,7 @@ export default function AppRoutes() {
       >
         <Route element={<RoleLayout />}>
           <Route
-            path="/verificar-mi-correo"
+            path={PATHS.verifyMyEmail}
             element={<VerifyMyEmailPage />}
           />
         </Route>
@@ -106,7 +134,7 @@ export default function AppRoutes() {
           />
 
           <Route
-            path="/admin/verificar-clientes"
+            path={PATHS.adminVerifyClients}
             element={<AdminClientVerificationPage />}
           />
 
@@ -120,6 +148,16 @@ export default function AppRoutes() {
             element={<DebtsListPage />}
           />
 
+          <Route path={PATHS.activities} element={<AdminActivitiesPage />} />
+
+          <Route path={PATHS.opportunities} element={<OpportunitiesPage />} />
+
+          {/* FinCotiza funcional. */}
+          <Route path={PATHS.quotes} element={<QuotesPage />} />
+          {/* FinCampaigns real: gestión + indicadores de seguimiento. */}
+          <Route path={PATHS.campaigns} element={<CampaignsPage />} />
+          <Route path={PATHS.campaignAnalytics} element={<CampaignAnalyticsPage />} />
+
           <Route
             path={PATHS.users}
             element={<UsersPage />}
@@ -131,7 +169,7 @@ export default function AppRoutes() {
           />
 
           <Route
-            path="/pos"
+            path={PATHS.pos}
             element={<PosPage />}
           />
         </Route>
@@ -149,6 +187,14 @@ export default function AppRoutes() {
         />
       </Route>
 
+      {/* Actividades exclusivas del empleado. */}
+      <Route element={<ProtectedRoute allowedRoles={["USER"]} />}>
+        <Route path={PATHS.userActivities} element={<UserActivitiesPage />} />
+        <Route path={PATHS.userOpportunities} element={<OpportunitiesPage />} />
+        <Route path={PATHS.userAlerts} element={<Navigate to={PATHS.userDashboard} replace />} />
+        <Route path={PATHS.userAssistant} element={<UserAssistantPage />} />
+      </Route>
+
       {/* INTELIGENCIA ARTIFICIAL */}
       <Route
         element={
@@ -163,7 +209,7 @@ export default function AppRoutes() {
         {/* FINVOICE */}
         <Route element={<RoleLayout />}>
           <Route
-            path="/finvoice"
+            path={PATHS.finvoice}
             element={<VoicePage />}
           />
         </Route>

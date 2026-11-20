@@ -1,0 +1,46 @@
+/* Usa los mismos valores de marca y medidas que el menú ADMIN. */
+.fin-user-layout { min-height:100dvh; background:#F8FAFC; color:#18181B; font-family:'Plus Jakarta Sans',sans-serif; }
+.fin-user-layout * { box-sizing:border-box; }
+.fin-user-sidebar { position:fixed; z-index:100; inset:0 auto 0 0; width:248px; padding:24px 16px; background:#0F172A; color:#F8FAFC; display:flex; flex-direction:column; overflow-y:auto; }
+.fin-user-sidebar-brand { padding:4px 12px 28px; }
+.fin-user-logo { font-size:24px; color:#F8FAFC; font-weight:800; text-decoration:none; letter-spacing:-.03em; white-space:nowrap; }
+.fin-user-logo span { color:#F97316; }
+.fin-user-sidebar-brand small { display:block; font-size:11px; color:#CBD5E1; margin-top:5px; }
+.fin-user-sidebar-nav { display:grid; gap:4px; }
+.fin-user-nav-link { display:flex; align-items:center; gap:12px; min-height:44px; padding:10px 12px; border-radius:12px; text-decoration:none; color:#F8FAFC; font-size:14px; font-weight:500; }
+.fin-user-nav-link:hover,.fin-user-nav-link--active { background:#1E293B; }
+.fin-user-nav-link--active { font-weight:700; }
+.fin-user-sidebar-footer { margin-top:auto; border-top:1px solid #1E293B; padding:20px 10px 8px; }
+.fin-user-account-name { font-size:14px; font-weight:700; word-break:break-word; }
+.fin-user-account-role { display:block; margin:5px 0 14px; color:#CBD5E1; font-size:12px; }
+.fin-user-logout { width:100%; min-height:44px; display:flex; align-items:center; gap:10px; border:1px solid #64748B; border-radius:12px; background:transparent; color:#F8FAFC; font:600 14px 'Plus Jakarta Sans',sans-serif; padding:10px 12px; cursor:pointer; }
+.fin-user-logout:hover { background:#1E293B; }
+.fin-user-content { min-height:100dvh; margin-left:248px; padding:0 32px; }
+.fin-user-content > * { max-width:1280px; margin-left:auto; margin-right:auto; }
+.fin-user-mobile-header,.fin-user-backdrop { display:none; }
+.fin-user-layout :is(a,button):focus-visible { outline:2px solid #0284C7; outline-offset:2px; }
+@media (min-width:768px) and (max-width:1279px) {
+ .fin-user-sidebar { width:72px; padding:20px 12px; }
+ .fin-user-sidebar-brand { padding:4px 0 24px; text-align:center; }
+ .fin-user-sidebar-brand .fin-user-logo { font-size:12px; letter-spacing:-.04em; }
+ .fin-user-sidebar-brand small,.fin-user-nav-link span,.fin-user-sidebar-footer .fin-user-account-name,.fin-user-sidebar-footer .fin-user-account-role,.fin-user-logout span { display:none; }
+ .fin-user-nav-link,.fin-user-logout { justify-content:center; padding:12px; }
+ .fin-user-sidebar-footer { padding:15px 0 8px; }
+ .fin-user-content { margin-left:72px; padding:0 16px; }
+}
+@media (max-width:767px) {
+ .fin-user-mobile-header { height:56px; display:flex; align-items:center; justify-content:space-between; background:#0F172A; padding:0 16px; position:sticky; top:0; z-index:110; }
+ .fin-user-logo { font-size:22px; }
+ .fin-user-menu-toggle { width:44px; height:44px; display:grid; place-items:center; border:0; background:transparent; color:#F8FAFC; border-radius:12px; cursor:pointer; }
+ .fin-user-sidebar { width:min(280px,85vw); top:56px; height:calc(100dvh - 56px); transform:translateX(-100%); transition:transform .2s ease; z-index:105; }
+ .fin-user-sidebar--open { transform:translateX(0); }
+ .fin-user-sidebar-brand { display:none; }
+ .fin-user-backdrop { display:block; position:fixed; inset:56px 0 0; background:rgba(15,23,42,.55); border:0; width:100%; z-index:104; }
+ .fin-user-content { margin:0; padding:0 16px; min-height:calc(100dvh - 56px); }
+}
+@media (prefers-reduced-motion:reduce) { .fin-user-sidebar { transition:none; } }
+
+/* Campana compacta en la barra superior, sin pantalla independiente de alertas. */
+.fin-user-topbar { position:sticky; top:0; z-index:90; height:62px; display:flex; justify-content:flex-end; gap:16px; align-items:center; padding:8px 0; background:#F8FAFC; border-bottom:1px solid #E2E8F0; }
+.fin-user-topbar-caption { margin-right:auto; color:#64748B; font-size:13px; font-weight:600; }
+@media(max-width:767px) { .fin-user-topbar { top:56px; height:58px; } }

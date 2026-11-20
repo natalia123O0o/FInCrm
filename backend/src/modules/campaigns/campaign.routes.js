@@ -1,0 +1,15 @@
+'use strict';
+const router = require('express').Router();
+const protect = require('../../middlewares/auth.middleware');
+const roles = require('../../middlewares/role.middleware');
+const c = require('./campaign.controller');
+router.use(protect, roles('ADMIN'));
+router.get('/options', c.options);
+router.get('/analytics', c.analytics);
+router.get('/', c.list);
+router.post('/', c.create);
+router.get('/:id', c.detail);
+router.put('/:id', c.update);
+router.patch('/:id/status', c.status);
+router.post('/:id/events', c.recordEvent);
+module.exports = router;

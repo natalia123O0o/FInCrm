@@ -1,0 +1,207 @@
+
+/* FINCRM - TEMA COMPARTIDO V10 */
+
+:root {
+  --fin-navy: #0F172A;
+  --fin-slate: #1E293B;
+  --fin-ink: #18181B;
+
+  --fin-action: #F97316;
+  --fin-action-hover: #EA580C;
+  --fin-ai: #06B6D4;
+  --fin-link: #0284C7;
+
+  --fin-canvas: #F8FAFC;
+  --fin-surface: #FFFFFF;
+  --fin-panel-muted: #E2E8F0;
+
+  --fin-border: #CBD5E1;
+  --fin-border-soft: #E2E8F0;
+  --fin-muted: #64748B;
+
+  --fin-success: #10B981;
+  --fin-warning: #F59E0B;
+  --fin-danger: #EF4444;
+
+  --fin-radius-card: 16px;
+  --fin-radius-control: 12px;
+
+  --fin-card-outline: 2px solid var(--fin-slate);
+}
+
+/* ESTRUCTURA PRINCIPAL */
+
+.fincrm-admin-layout,
+.fin-user-layout {
+  background: var(--fin-canvas);
+}
+
+.fincrm-sidebar,
+.fin-user-sidebar {
+  background: var(--fin-navy);
+}
+
+.fincrm-sidebar-link--active,
+.fin-user-nav-link--active {
+  background: var(--fin-slate);
+}
+
+/* TARJETAS CON BORDE COMPLETO */
+
+.fincrm-admin-layout
+.fincrm-admin-content
+.fincrm-dashboard__quicklink,
+.fin-user-layout .fin-user-tool {
+  border: var(--fin-card-outline);
+  border-radius: var(--fin-radius-card);
+  background: var(--fin-surface);
+
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+/* EFECTO AL PASAR EL CURSOR */
+
+.fincrm-admin-layout
+.fincrm-admin-content
+.fincrm-dashboard__quicklink:hover,
+.fin-user-layout .fin-user-tool:hover {
+  border-color: var(--fin-link);
+
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+}
+
+/* INDICADORES KPI */
+
+.fincrm-admin-layout
+.fincrm-admin-content
+.fincrm-dashboard__kpi:not(
+  .fincrm-dashboard__kpi--featured
+),
+.fincrm-admin-content .fin-act-kpi,
+.fincrm-admin-content .fc-quote-kpi,
+.fincrm-admin-content
+.fc-campaign-page
+.fc-campaign-kpi:not(.fc-campaign-kpi-dark) {
+  border: var(--fin-card-outline);
+  border-radius: var(--fin-radius-card);
+}
+
+/* INDICADORES DESTACADOS */
+
+.fincrm-admin-content .fc-quote-kpi:first-child,
+.fincrm-admin-content .fin-act-kpi:first-child {
+  background: var(--fin-navy);
+  border: 2px solid var(--fin-navy);
+  color: #F8FAFC;
+}
+
+.fincrm-admin-content
+.fc-quote-kpi:first-child :is(span, strong),
+.fincrm-admin-content
+.fin-act-kpi:first-child :is(span, strong) {
+  color: #F8FAFC;
+}
+
+.fincrm-admin-content
+.fc-campaign-page
+.fc-campaign-kpi-dark {
+  border: 2px solid var(--fin-navy);
+}
+
+/* MENSAJES DE CAMPANAS */
+
+.fincrm-admin-content
+.fc-campaign-page
+.fc-campaign-message {
+  border: 2px solid var(--fin-link);
+  border-radius: var(--fin-radius-control);
+}
+
+/* MENSAJES DE ERROR */
+
+.fincrm-admin-content
+.fc-campaign-page
+.fc-campaign-message-error {
+  border-color: var(--fin-danger);
+}
+
+/* MENSAJES DE EXITO */
+
+.fincrm-admin-content
+.fc-campaign-page
+.fc-campaign-message-ok {
+  border-color: var(--fin-success);
+}
+
+/* NOTIFICACIONES DE COTIZACIONES */
+
+.fincrm-admin-content
+.fc-quote-page
+.fc-quote-feedback-error {
+  border: 2px solid var(--fin-danger);
+}
+
+.fincrm-admin-content
+.fc-quote-page
+.fc-quote-feedback-success {
+  border: 2px solid var(--fin-success);
+}
+
+/* TABLAS */
+
+.fincrm-admin-content .fc-quote-table thead th,
+.fincrm-admin-content .fin-act-table thead th {
+  background: var(--fin-navy);
+  color: #F8FAFC;
+}
+
+/* FILAS ALTERNADAS */
+
+.fincrm-admin-content
+.fc-quote-table tbody tr:nth-child(even),
+.fincrm-admin-content
+.fin-act-table tbody tr:nth-child(even) {
+  background: #F8FAFC;
+}
+
+/* EFECTO HOVER EN TABLAS */
+
+.fincrm-admin-content .fc-quote-table tbody tr:hover,
+.fincrm-admin-content .fin-act-table tbody tr:hover {
+  background: #E2E8F0;
+}
+
+/* CONTENEDORES DE FILTROS */
+
+.fincrm-admin-content .fc-quote-filter,
+.fincrm-admin-content .fin-act-filter-grid {
+  border: 1px solid var(--fin-border-soft);
+  background: #F8FAFC;
+  border-radius: var(--fin-radius-control);
+  padding: 16px;
+}
+
+/* ACCESIBILIDAD */
+
+.fincrm-admin-content
+:is(button, input, select, textarea, a):focus-visible,
+.fin-user-layout
+:is(button, input, select, textarea, a):focus-visible {
+  outline: 2px solid var(--fin-link);
+  outline-offset: 2px;
+}
+
+/* RESPETAR MOVIMIENTO REDUCIDO */
+
+@media (prefers-reduced-motion: reduce) {
+  .fincrm-admin-layout
+  .fincrm-admin-content
+  .fincrm-dashboard__quicklink,
+  .fin-user-layout .fin-user-tool {
+    transition: none;
+  }
+}

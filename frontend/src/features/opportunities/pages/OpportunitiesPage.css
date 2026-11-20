@@ -1,0 +1,29 @@
+/* FinCRM: respeta Manual de marca y Sistema de reglas de diseño 18/11/2026. */
+.fin-opp-money { font-size:clamp(16px,1.6vw,25px) !important; overflow-wrap:anywhere; }
+.fin-opp-actions { display:flex; gap:8px; align-items:center; justify-content:flex-end; }
+.fin-opp-stage { display:inline-flex; font-size:13px; font-weight:700; border-radius:8px; padding:6px 10px; color:#0F172A; background:#E2E8F0; white-space:nowrap; }
+.fin-opp-stage-won { background:#10B981; }
+.fin-opp-stage-lost { background:#EF4444; }
+.fin-opp-description { overflow-wrap:anywhere; max-width:70ch; margin:0 0 24px !important; }
+.fin-opp-subheading { border-top:1px solid #E2E8F0; padding-top:24px; margin-top:24px; }
+.fin-opp-encounter-form { padding:24px; background:#F8FAFC; border-radius:12px; border:1px solid #E2E8F0; margin-bottom:24px; }
+.fin-opp-muted { font-size:14px !important; color:#64748B !important; }
+.fin-opp-history { list-style:none; margin:0; padding:0; display:grid; gap:12px; }
+.fin-opp-history li { border:1px solid #E2E8F0; border-radius:12px; padding:16px; background:#fff; display:grid; gap:8px; overflow-wrap:anywhere; }
+.fin-opp-history p { font-size:14px !important; }
+.fin-opp-history small { font-size:12px; color:#64748B; }
+.fin-opp-ai { border-top:1px solid #E2E8F0; margin-top:32px; padding-top:24px; }
+.fin-opp-ai-button { display:inline-flex; gap:8px; align-items:center; justify-content:center; min-height:44px; background:#06B6D4; color:#0F172A; border:2px solid transparent; padding:0 20px; border-radius:12px; font:700 14px 'Plus Jakarta Sans',sans-serif; cursor:pointer; }
+.fin-opp-ai-button:hover:not(:disabled) { border-color:#0F172A; }
+.fin-opp-ai-button:disabled { background:#E2E8F0; color:#64748B; cursor:not-allowed; }
+.fin-opp-ai-answer { background:#F8FAFC; border:1px solid #CBD5E1; border-radius:12px; padding:20px; }
+.fin-opp-ai-answer > strong { color:#0F172A; }
+.fin-opp-ai-answer p { white-space:pre-wrap; overflow-wrap:anywhere; margin-top:12px !important; }
+.fin-opp-ai-answer small { display:block; margin-top:12px; color:#64748B; }
+.fin-opp-decision-form { display:grid; gap:16px; max-width:720px; padding:24px 0 0; }
+.fin-opp-decision-form h3 { margin:0; }
+.fin-opp-decision-form .fin-act-btn { justify-self:start; }
+.fin-opp-decisions { margin-top:24px; border-top:1px solid #E2E8F0; padding-top:24px; display:grid; gap:12px; }
+.fin-opp-decisions p { font-size:14px; overflow-wrap:anywhere; }
+.fin-opp-decisions small { color:#64748B; }
+@media (max-width:767px) { .fin-opp-actions { justify-content:flex-start; flex-wrap:wrap; } .fin-opp-encounter-form { padding:16px; } .fin-opp-ai-button { width:100%; } .fin-opp-decision-form .fin-act-btn { width:100%; } }
