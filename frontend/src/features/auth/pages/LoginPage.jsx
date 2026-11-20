@@ -2,9 +2,11 @@
 import { Link } from "react-router-dom";
 // Importa el componente 'LoginForm' que contiene la lógica y estructura del formulario de inicio de sesión.
 import LoginForm from "../components/LoginForm.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 // Define y exporta por defecto el componente funcional 'LoginPage' (la vista o página completa de login).
 export default function LoginPage() {
+  const { sessionError } = useAuth();
   return (
     // Etiqueta semántica principal de HTML (<main>) que envuelve el contenido de la página.
     <main
@@ -22,6 +24,7 @@ export default function LoginPage() {
       }}
     >
       {/* Renderiza el componente del formulario de inicio de sesión centrado dentro de la página */}
+      {sessionError && <p role="status" style={{ maxWidth: 460, padding: 16, color: "#991b1b", background: "#fef2f2", borderRadius: 10 }}>{sessionError}</p>}
       <LoginForm />
 
       {/* Enlace de navegación utilizando 'Link' de React Router para regresar a la página principal ("/") */}

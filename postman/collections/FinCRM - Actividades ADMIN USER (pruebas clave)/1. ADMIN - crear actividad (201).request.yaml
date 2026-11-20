@@ -1,0 +1,28 @@
+$kind: http-request
+url: "{{baseUrl}}/api/activities"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "title": "Confirmar reunión con el cliente",
+      "description": "Llamar para confirmar el horario.",
+      "type": "CALL",
+      "priority": "HIGH",
+      "dueAt": "2026-11-25T15:00:00.000Z",
+      "assignedTo": "{{employeeId}}",
+      "clientId": "{{clientId}}"
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{adminToken}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("ADMIN crea actividad (201)", function () { pm.response.to.have.status(201); });
+      if (pm.response.code === 201) { const json = pm.response.json(); if (json.activity && json.activity._id) pm.collectionVariables.set("activityId", json.activity._id); }
+    language: text/javascript
+order: 1000

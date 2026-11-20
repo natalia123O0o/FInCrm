@@ -4,6 +4,8 @@ const Client = require("../clients/client.model");
 const Tenant = require("../tenants/tenant.model");
 const Debt = require("../debts/debt.model");
 const Message = require("./message.model");
+const { withQuota, requestQuota } = require('../subscriptions/usage.service');
+const { respondAccessError } = require('../../middlewares/feature.middleware');
 
 const BREVO_URL = "https://api.brevo.com/v3/smtp/email";
 
@@ -280,7 +282,8 @@ async function sendEmail(req, res) {
     }
 
     // 13. Registrar el intento.
-    const message = await Message.create({
+    const message = await withQuota(requestQuota(req, 'emails'), async session => {
+      const [item] = await Message.create([{
       tenantId,
       clientId,
       sentBy: userId,
@@ -292,6 +295,8 @@ async function sendEmail(req, res) {
       purpose,
       authorizationConfirmed: true,
       status: "PROCESSING",
+      }], { session });
+      return item;
     });
 
     try {
@@ -363,6 +368,7 @@ async function sendEmail(req, res) {
       });
     }
   } catch (error) {
+    if (respondAccessError(res, error)) return;
     console.error("Error de mensajería:", error.message);
 
     return res.status(500).json({

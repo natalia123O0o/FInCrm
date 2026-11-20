@@ -2,6 +2,10 @@
 workspace:
   id: 1de948ea-84aa-408a-8c71-760745d1d799
 
+cloudResources:
+  collections:
+    ../postman/collections/FinCRM - Actividades ADMIN USER (pruebas clave): 1a5f4578-2bee-4952-ba17-372e71cf6b63
+
 # All resources in the `postman/` folder are automatically registered in Local View.
 # Point to additional files outside the `postman/` folder to register them individually. Example:
 #localResources:

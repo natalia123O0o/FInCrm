@@ -58,13 +58,14 @@ const generarRespuesta = async (pregunta) => {
 
 // Responde preguntas empresariales utilizando herramientas
 // autorizadas que consultan información real de MongoDB.
-const generarRespuestaEmpresarial = async (pregunta, tenantId) => {
+const generarRespuestaEmpresarial = async (pregunta, tenantId, actor = {}) => {
   if (!tenantId) {
     throw new Error("Empresa no identificada");
   }
 
   const ai = crearClienteIA();
   const inicio = Date.now();
+  const canUseCompanyTools = actor.role === 'ADMIN';
 
   const instrucciones = `
     Eres FinCRM IA, un asistente empresarial.
@@ -89,6 +90,7 @@ const generarRespuestaEmpresarial = async (pregunta, tenantId) => {
     que no fue proporcionada por las herramientas.
 
     No realices modificaciones en los datos.
+    ${canUseCompanyTools ? '' : 'No tienes herramientas para consultar cartera, clientes ni datos privados de la empresa. No afirmes conocerlos. Ayuda con orientación general y con el texto que comparte el usuario.'}
   `;
 
   try {
@@ -101,11 +103,12 @@ const generarRespuestaEmpresarial = async (pregunta, tenantId) => {
         httpOptions: {
           timeout: 30000,
         },
-        tools: [
+        maxOutputTokens: 800,
+        ...(canUseCompanyTools ? { tools: [
           {
             functionDeclarations: herramientasFinCRM,
           },
-        ],
+        ] } : {}),
       },
     });
 
@@ -127,6 +130,21 @@ const generarRespuestaEmpresarial = async (pregunta, tenantId) => {
 
     const llamada = llamadas[0];
     let resultado;
+    // No aceptar una herramienta inventada por el modelo o una sesión de
+    // empleado que intente consultar la cartera completa de la empresa.
+    if (!canUseCompanyTools) throw new Error('Herramienta no autorizada para este rol');
+    const Tenant = require('../tenants/tenant.model');
+    const User = require('../users/user.model');
+    const { effectiveUserStatus } = require('../users/user.status');
+    const { assertFeature, accessError } = require('../../middlewares/feature.middleware');
+    const currentTenant = await Tenant.findById(tenantId);
+    assertFeature(currentTenant, 'ai');
+    assertFeature(currentTenant, 'crm');
+    const currentActor = await User.findOne({ _id: actor.actorId, tenantId, role: 'ADMIN' });
+    if (!currentActor || effectiveUserStatus(currentActor) !== 'ACTIVE' ||
+        (currentActor.tokenVersion || 0) !== actor.tokenVersion) {
+      throw accessError('USER_UNAVAILABLE', 'La cuenta ya no tiene acceso.', 401);
+    }
 
     // Ejecutamos únicamente herramientas conocidas.
 
@@ -184,6 +202,7 @@ const generarRespuestaEmpresarial = async (pregunta, tenantId) => {
       ],
       config: {
         systemInstruction: instrucciones,
+        maxOutputTokens: 1200,
         httpOptions: {
           timeout: 30000,
         },

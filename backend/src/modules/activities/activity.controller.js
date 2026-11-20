@@ -19,7 +19,8 @@ function getInput(body) {
   return { data: { title: clean(title), description: clean(description), type, priority, dueAt: date, assignedTo, clientId: clientId || null } };
 }
 async function checkReferences(data, tenantId) {
-  const employee = await User.findOne({ _id: data.assignedTo, tenantId, role: 'USER', isActive: true });
+  const { activeUserFilter } = require('../users/user.status');
+  const employee = await User.findOne({ ...activeUserFilter(tenantId), _id: data.assignedTo, role: 'USER' });
   if (!employee) return 'Empleado no disponible en esta empresa';
   if (data.clientId) {
     const client = await Client.findOne({ _id: data.clientId, tenantId, isActive: true });

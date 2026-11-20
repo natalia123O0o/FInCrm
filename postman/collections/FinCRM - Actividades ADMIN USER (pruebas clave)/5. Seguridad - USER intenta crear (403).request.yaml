@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{baseUrl}}/api/activities"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "title": "No autorizado",
+      "description": "Prueba de seguridad",
+      "type": "TASK",
+      "priority": "LOW",
+      "dueAt": "2026-11-25T15:00:00.000Z",
+      "assignedTo": "{{employeeId}}",
+      "clientId": null
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{userToken}}"
+order: 5000

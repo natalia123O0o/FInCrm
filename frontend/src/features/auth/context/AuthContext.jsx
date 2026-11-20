@@ -1,66 +1,96 @@
-// Importa los ganchos (hooks) 'createContext', 'useContext' y 'useState' de React 
-// para crear un contexto global y gestionar el estado de la sesión.
-import {
-  createContext,
-  useContext,
-  useState,
-} from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { platformRequest } from '../../plans/services/plans.api.js';
+import { canUseFeature } from '../../plans/plan.utils.js';
 
-// 1. Creamos el contexto de autenticación con un valor inicial de 'null'.
 const AuthContext = createContext(null);
 
-// 2. Creamos y exportamos el componente proveedor (Provider) que envolverá a la aplicación 
-// para compartir el estado de autenticación a través de sus componentes hijos ({children}).
 export function AuthProvider({ children }) {
-  // Define el estado 'user' para almacenar la información del usuario autenticado (inicia en 'null').
+  // Se conserva la política existente: el token vive solo en memoria.
   const [user, setUser] = useState(null);
-  // Define el estado 'token' para almacenar el token de sesión (inicia en 'null').
   const [token, setToken] = useState(null);
+  const [tenant, setTenant] = useState(null);
+  const [subscription, setSubscription] = useState(null);
+  const [usage, setUsage] = useState(null);
+  const [activeUsers, setActiveUsers] = useState(null);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(false);
+  const [sessionError, setSessionError] = useState('');
+  const tokenRef = useRef(null);
+  const inFlight = useRef(null);
 
-  // 3. Función para iniciar sesión: recibe los datos de autenticación (authData) 
-  // y actualiza los estados del usuario y del token con la información recibida.
-  function login(authData) {
-    setUser(authData.user);
-    setToken(authData.token);
-  }
+  const logout = useCallback(() => {
+    tokenRef.current = null;
+    inFlight.current = null;
+    setUser(null); setToken(null); setTenant(null); setSubscription(null);
+    setUsage(null); setActiveUsers(null); setSubscriptionLoading(false); setSessionError('');
+  }, []);
 
-  // 4. Función para cerrar sesión: limpia los estados de usuario y token, reseteándolos a 'null'.
-  function logout() {
-    setUser(null);
-    setToken(null);
-  }
+  const login = useCallback(authData => {
+    tokenRef.current = authData.token;
+    setUser(authData.user); setToken(authData.token);
+    setTenant(authData.tenant || null); setSubscription(authData.subscription || null);
+    setUsage(null); setActiveUsers(null); setSessionError('');
+    setSubscriptionLoading(authData.user?.role !== 'SUPER_ADMIN');
+  }, []);
 
-  // 5. Agrupa en un objeto 'value' toda la información y funciones que se compartirán globalmente,
-  // incluyendo 'isAuthenticated', que evalúa a verdadero (true) solo si existen tanto el token como el usuario.
-  const value = {
-    user,
-    token,
-    isAuthenticated: Boolean(token && user),
-    login,
-    logout,
-  };
+  // Validación automática: no requiere un botón en el panel.
+  const refreshSession = useCallback(async () => {
+    const currentToken = tokenRef.current;
+    if (!currentToken) return;
+    if (inFlight.current?.token === currentToken) return inFlight.current.promise;
+    const promise = (async () => {
+      try {
+        const session = await platformRequest(currentToken, '/api/auth/me');
+        if (tokenRef.current !== currentToken) return;
+        setUser(session.user); setTenant(session.tenant || null);
+        setSubscription(session.subscription || null);
+        if (session.user.role !== 'SUPER_ADMIN') {
+          const detail = await platformRequest(currentToken, '/api/subscription');
+          if (tokenRef.current !== currentToken) return;
+          setSubscription(detail.subscription || null); setTenant(detail.tenant || session.tenant || null);
+          setUsage(detail.usage || null); setActiveUsers(detail.activeUsers ?? null);
+        }
+        setSessionError('');
+      } catch (error) {
+        if (tokenRef.current !== currentToken) return;
+        // Los errores de licencia no invalidan la identidad: permiten consultar Mi plan.
+        const licenseError = ['PLAN_REQUIRED', 'SUBSCRIPTION_EXPIRED', 'SUBSCRIPTION_NOT_STARTED', 'MODULE_NOT_INCLUDED'].includes(error.code);
+        if (error.status === 401 || (error.status === 403 && !licenseError)) {
+          logout();
+          setSessionError(error.message || 'Tu sesión finalizó. Inicia sesión nuevamente.');
+        } else {
+          setSessionError(error.message || 'No pudimos consultar la sesión. Intenta de nuevo.');
+        }
+      } finally {
+        if (tokenRef.current === currentToken) setSubscriptionLoading(false);
+        if (inFlight.current?.token === currentToken) inFlight.current = null;
+      }
+    })();
+    inFlight.current = { token: currentToken, promise };
+    return promise;
+  }, [logout]);
 
-  // Retorna el proveedor del contexto envolviendo a los hijos, inyectándoles el objeto 'value'.
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  useEffect(() => {
+    if (!token) return;
+    refreshSession();
+    const check = () => { if (document.visibilityState === 'visible') refreshSession(); };
+    const interval = window.setInterval(check, 30000);
+    window.addEventListener('focus', check);
+    document.addEventListener('visibilitychange', check);
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener('focus', check);
+      document.removeEventListener('visibilitychange', check);
+    };
+  }, [token, refreshSession]);
+
+  return <AuthContext.Provider value={{ user, token, tenant, subscription, usage, activeUsers,
+    subscriptionLoading, sessionError, isAuthenticated: Boolean(token && user), login, logout, refreshSession,
+    hasFeature: feature => canUseFeature(subscription, feature),
+  }}>{children}</AuthContext.Provider>;
 }
 
-// 6. Hook personalizado ('useAuth') para consumir el contexto de manera sencilla en cualquier componente.
 export function useAuth() {
-  // Obtiene el valor actual del contexto utilizando 'useContext'.
   const context = useContext(AuthContext);
-
-  // Validación de seguridad: si se intenta usar este hook fuera de un 'AuthProvider', 
-  // lanza un error para avisar al desarrollador.
-  if (!context) {
-    throw new Error(
-      "useAuth debe utilizarse dentro de AuthProvider"
-    );
-  }
-
-  // Retorna el objeto con los datos y funciones del contexto si todo es correcto.
+  if (!context) throw new Error('useAuth debe utilizarse dentro de AuthProvider');
   return context;
 }

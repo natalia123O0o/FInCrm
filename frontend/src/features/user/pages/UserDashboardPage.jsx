@@ -10,13 +10,15 @@ import './UserDashboardPage.css';
 import '../../activities/pages/ActivitiesPage.css';
 
 export default function UserDashboardPage() {
-  const { user, token } = useAuth();
+  const { user, token, subscription, subscriptionLoading, hasFeature } = useAuth();
+  const activitiesEnabled = hasFeature("activities");
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   const load = useCallback(async () => {
     if (!token) return;
+    if (!activitiesEnabled) { setActivities([]); setLoading(false); setError(''); return; }
     try {
       setLoading(true);
       setError('');
@@ -26,7 +28,7 @@ export default function UserDashboardPage() {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, activitiesEnabled]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -56,34 +58,36 @@ export default function UserDashboardPage() {
 
         {error && <div className="fin-act-feedback fin-act-feedback-error" role="alert">{error}</div>}
 
-        <section className="fin-act-kpi-grid" aria-label="Resumen de mis actividades">
+        {!subscriptionLoading && !subscription && <p className="fin-act-feedback">Tu empresa todavía no tiene un plan asignado. Comunícate con su administrador.</p>}
+
+        {activitiesEnabled && <section className="fin-act-kpi-grid" aria-label="Resumen de mis actividades">
           <div className="fin-act-kpi"><span>Pendientes</span><strong>{loading ? '—' : summary.pending}</strong></div>
           <div className="fin-act-kpi"><span>Próximos 7 días</span><strong>{loading ? '—' : summary.upcoming}</strong></div>
           <div className="fin-act-kpi"><span>Completadas</span><strong>{loading ? '—' : summary.completed}</strong></div>
           <div className="fin-act-kpi"><span>Vencidas</span><strong>{loading ? '—' : summary.overdue.length}</strong></div>
-        </section>
+        </section>}
 
         <section className="fin-act-section" aria-labelledby="tools-heading">
           <div className="fin-act-section-heading"><div><h2 id="tools-heading">Mis herramientas</h2><p>Accesos rápidos a tus funciones de trabajo.</p></div></div>
           <div className="fin-user-tools-grid">
-            <article className="fin-act-card fin-user-tool">
+            {hasFeature("opportunities") && <article className="fin-act-card fin-user-tool">
               <Target aria-hidden="true" size={23} />
               <h3>Mis oportunidades</h3>
               <p>Negocios y prospectos comerciales asignados a tu cuenta.</p>
               <Link className="fin-act-inline-link" to={PATHS.userOpportunities}>Ver mis oportunidades <ArrowRight size={17} aria-hidden="true" /></Link>
-            </article>
-            <article className="fin-act-card fin-user-tool">
+            </article>}
+            {activitiesEnabled && <article className="fin-act-card fin-user-tool">
               <CalendarDays aria-hidden="true" size={23} />
               <h3>Mis actividades</h3>
               <p>Consulta tus llamadas, reuniones y tareas; registra sus resultados.</p>
               <Link className="fin-act-inline-link" to={PATHS.userActivities}>Ver mis actividades <ArrowRight size={17} aria-hidden="true" /></Link>
-            </article>
-            <article className="fin-act-card fin-user-tool">
+            </article>}
+            {hasFeature("ai") && <article className="fin-act-card fin-user-tool">
               <Sparkles aria-hidden="true" className="fin-user-ai-icon" size={23} />
               <h3>Asistente inteligente</h3>
               <p>Consulta el asistente de FinCRM con los permisos de tu sesión.</p>
               <Link className="fin-act-inline-link" to={PATHS.userAssistant}>Abrir asistente <ArrowRight size={17} aria-hidden="true" /></Link>
-            </article>
+            </article>}
           </div>
         </section>
 

@@ -5,6 +5,8 @@ const CampaignEvent = require('./campaignEvent.model');
 const Client = require('../clients/client.model');
 const Opportunity = require('../opportunities/opportunity.model');
 const { summarize } = require('./campaign.stats');
+const { withQuota, requestQuota } = require('../subscriptions/usage.service');
+const { respondAccessError } = require('../../middlewares/feature.middleware');
 
 const isId = v => typeof v === 'string' && /^[a-f0-9]{24}$/i.test(v);
 const text = v => typeof v === 'string' ? v.trim() : '';
@@ -15,6 +17,7 @@ const EVENTS = ['CONTACTED','RESPONDED','OPPORTUNITY','OPT_OUT'];
 const NEXT = { DRAFT: ['ACTIVE'], ACTIVE: ['PAUSED','COMPLETED'], PAUSED: ['ACTIVE','COMPLETED'], COMPLETED: [] };
 
 function failure(res, err, label) {
+  if (respondAccessError(res, err)) return;
   if (err?.name === 'ValidationError' || err?.name === 'CastError') {
     return res.status(400).json({ message: 'Datos inválidos. Revisa los campos.' });
   }
@@ -70,7 +73,10 @@ async function create(req,res) {
   try {
     const tenantId=req.user.tenantId;
     if (!await verifyClients(tenantId,payload.clientIds)) return res.status(404).json({message:'Alguno de los clientes no pertenece a tu empresa o está inactivo.'});
-    const campaign=await Campaign.create({...payload,tenantId,createdBy:req.user._id});
+    const campaign=await withQuota(requestQuota(req,'campaigns'),async session=>{
+      const [item]=await Campaign.create([{...payload,tenantId,createdBy:req.user._id}],{session});
+      return item;
+    });
     return res.status(201).json({campaign});
   } catch(err){failure(res,err,'create');}
 }

@@ -1,0 +1,16 @@
+$kind: http-request
+url: "{{baseUrl}}/api/activities/{{activityId}}/complete"
+method: PATCH
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "result": "El cliente confirmó la reunión. Se registró el seguimiento."
+    }
+auth:
+  type: bearer
+  credentials:
+    token: "{{userToken}}"
+order: 3000

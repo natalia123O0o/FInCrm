@@ -2,12 +2,19 @@ import { useEffect, useState } from "react";
 import { Users, UserPlus, X, RefreshCw } from "lucide-react";
 import { useAuth } from "../../auth/context/AuthContext.jsx";
 import "./UsersPage.css";
+import UserStatusDialog from '../../plans/components/UserStatusDialog.jsx';
+import { STATUS_LABELS, userStatus, subscriptionProblem } from '../../plans/plan.utils.js';
+import '../../plans/pages/Plans.css';
 
 const API_URL =
   import.meta.env.VITE_API_URL || "http://localhost:4000";
 
 export default function UsersPage() {
-  const { token } = useAuth();
+  const { token, subscription, activeUsers, refreshSession } = useAuth();
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const maxUsers = subscription?.limits?.maxActiveUsers;
+  const licenseProblem = subscriptionProblem(subscription);
+  const atCapacity = maxUsers != null && activeUsers != null && activeUsers >= maxUsers;
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -154,6 +161,7 @@ export default function UsersPage() {
 
       // Consultar de nuevo para mostrar el empleado registrado.
       await loadUsers();
+      await refreshSession();
     } catch (err) {
       setFormError(err.message || "Error al registrar empleado.");
     } finally {
@@ -171,7 +179,7 @@ export default function UsersPage() {
 
           <h1>Empleados</h1>
           <p>
-            Registra y consulta los usuarios de tu empresa.
+            Gestiona el acceso de tus empleados y conserva su historial.
           </p>
         </div>
 
@@ -179,6 +187,7 @@ export default function UsersPage() {
           type="button"
           className="fin-users-primary"
           onClick={openModal}
+          disabled={Boolean(licenseProblem) || atCapacity}
         >
           <UserPlus size={18} />
           Nuevo empleado
@@ -197,6 +206,13 @@ export default function UsersPage() {
           </strong>
         </div>
       </section>
+
+      <p className="fin-plans-hint">
+        {subscription ? `Usuarios activos de la empresa: ${activeUsers ?? "—"} de ${maxUsers}. El cupo incluye al ADMIN.` : "El SUPER_ADMIN debe asignar un plan para registrar empleados."}
+        {subscription && licenseProblem && ` ${licenseProblem}`}
+        {atCapacity && " Alcanzaste el límite de usuarios activos. Puedes inactivar una cuenta o solicitar más cupos."}
+        {" "}Los usuarios inactivos y bloqueados conservan su información.
+      </p>
 
       {success && (
         <p className="fin-users-success" role="status">
@@ -247,6 +263,7 @@ export default function UsersPage() {
                   <th>Correo</th>
                   <th>Rol</th>
                   <th>Estado</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
 
@@ -261,17 +278,14 @@ export default function UsersPage() {
                       </span>
                     </td>
                     <td>
-                      <span
-                        className={
-                          employee.isActive === false
-                            ? "fin-users-inactive"
-                            : "fin-users-active"
-                        }
-                      >
-                        {employee.isActive === false
-                          ? "Inactivo"
-                          : "Activo"}
+                      <span className={`fin-plans-badge fin-plans-badge--${userStatus(employee)}`}>
+                        {STATUS_LABELS[userStatus(employee)]}
                       </span>
+                    </td>
+                    <td>
+                      {employee.role === 'USER' && <button type="button" className="fin-plans-button fin-plans-button--small fin-plans-button--secondary" onClick={() => setSelectedEmployee(employee)}>
+                        Cambiar estado de {employee.name}
+                      </button>}
                     </td>
                   </tr>
                 ))}
@@ -280,6 +294,10 @@ export default function UsersPage() {
           </div>
         )}
       </section>
+
+      {selectedEmployee && <UserStatusDialog key={selectedEmployee._id || selectedEmployee.id}
+        user={selectedEmployee} token={token} onClose={() => setSelectedEmployee(null)}
+        onSaved={async () => { setSuccess("Estado actualizado. El historial del empleado se conservó."); await loadUsers(); await refreshSession(); }} />}
 
       {showModal && (
         <div

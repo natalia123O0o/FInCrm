@@ -1,5 +1,9 @@
 'use strict';
 const Notification = require('./notification.model');
+const Tenant = require('../tenants/tenant.model');
+const User = require('../users/user.model');
+const { effectiveUserStatus } = require('../users/user.status');
+const { assertFeature } = require('../../middlewares/feature.middleware');
 
 const TITLES = {
   ACTIVITY_ASSIGNED: 'Nueva actividad asignada',
@@ -16,6 +20,13 @@ function eventKey(activity, type) {
 
 async function createNotification(activity, type) {
   if (!activity?.tenantId || !activity?.assignedTo || activity.status !== 'PENDING') return null;
+  const [tenant, recipient] = await Promise.all([
+    Tenant.findById(activity.tenantId).lean(),
+    User.findOne({ _id: activity.assignedTo, tenantId: activity.tenantId, role: 'USER' }).lean(),
+  ]);
+  if (effectiveUserStatus(recipient) !== 'ACTIVE') return null;
+  try { assertFeature(tenant, 'activities'); }
+  catch (error) { if (error.status === 403) return null; throw error; }
   const descriptions = {
     ACTIVITY_ASSIGNED: `Tienes una actividad nueva: ${activity.title}`,
     ACTIVITY_DUE_SOON: `Tu actividad "${activity.title}" vence dentro de las próximas 24 horas.`,
