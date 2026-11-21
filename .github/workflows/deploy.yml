@@ -1,4 +1,3 @@
-
 name: Publicar FinCRM en GitHub Pages
 
 on:
@@ -43,6 +42,8 @@ jobs:
         run: npm ci
 
       - name: Compilar React
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
         run: npm run build
 
       - name: Configurar GitHub Pages
@@ -56,3 +57,4 @@ jobs:
       - name: Publicar pagina
         id: deployment
         uses: actions/deploy-pages@v4
+
