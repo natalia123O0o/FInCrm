@@ -1,11 +1,21 @@
-// No simular el envío: solo se confirma éxito si el backend lo confirma.
-const BASE=(import.meta.env.VITE_API_URL||'').replace(/\/$/,'') || (import.meta.env.DEV?'http://localhost:4000':'');
-export async function sendContact(data){
+import { requireApiUrl } from '../../../config/api.js';
+
+// Nunca simula un envío. Brevo debe llamarse desde Express, nunca desde la landing.
+export async function sendContact(data) {
+  const base = requireApiUrl();
   let response;
-  try{response=await fetch(`${BASE}/api/contact`,{
-    method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data),
-  });}catch{throw new Error('No fue posible conectar con FinCRM. Revisa tu conexión e inténtalo de nuevo.');}
-  const result=await response.json().catch(()=>({}));
-  if(!response.ok||!result.ok)throw new Error(result.message||'No se pudo enviar tu solicitud en este momento.');
+  try {
+    response = await fetch(`${base}/api/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+  } catch {
+    throw new Error('No se pudo conectar con el servidor de FinCRM. Comprueba que esté publicado y activo.');
+  }
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || result.ok !== true) {
+    throw new Error(result.message || 'No fue posible enviar la solicitud.');
+  }
   return result;
 }
