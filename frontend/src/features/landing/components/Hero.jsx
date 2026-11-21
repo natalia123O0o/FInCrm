@@ -126,22 +126,28 @@ export default function Hero({ ready }) {
           <h1 className="hero__h1">
             <span className="hero__line">
               <span className="hero__line-inner">
-                Optimiza tu flujo de caja
+                Convierte relaciones en ventas
               </span>
             </span>
 
             <span className="hero__line">
               <span className="hero__line-inner">
-                y cumple la Ley 2300.
+                con inteligencia a tu lado.
               </span>
             </span>
           </h1>
 
           <p className="hero__sub">
-            CRM SaaS de cobranza para PYMES colombianas. Facturación
-            electrónica simulada, control preventivo y un chatbot que
-            negocia acuerdos de pago sin salirse de la norma.
+            Clientes, oportunidades, actividades, cotizaciones y campañas en una
+            sola plataforma. Tu asistente con IA te ayuda a preparar propuestas,
+            dar seguimiento y tomar decisiones con información de tu negocio.
           </p>
+
+          <div className="hero__benefits" aria-label="Soluciones destacadas">
+            <span>Cotizaciones + IA</span>
+            <span>Campañas personalizadas</span>
+            <span>Cartera y pagos</span>
+          </div>
 
           <div className="hero__actions">
             <button
@@ -149,7 +155,7 @@ export default function Hero({ ready }) {
               onClick={() => scrollToSection('#contacto')}
               aria-label="Solicitar demo"
             >
-              Solicitar demo
+                Solicitar demostración
             </button>
 
             <button
@@ -157,7 +163,7 @@ export default function Hero({ ready }) {
               onClick={() => scrollToSection('#modulos')}
               aria-label="Ver módulos"
             >
-              Ver módulos
+                Explorar funcionalidades
             </button>
           </div>
         </div>
@@ -184,7 +190,7 @@ export default function Hero({ ready }) {
 
             <div className="hero__kpi">
               <span className="hero__kpi-label">
-                Facturas pendientes
+                Oportunidades abiertas
               </span>
 
               <strong data-count="42">
@@ -194,7 +200,7 @@ export default function Hero({ ready }) {
 
             <div className="hero__kpi">
               <span className="hero__kpi-label">
-                Contactos permitidos hoy
+                Cotizaciones del mes
               </span>
 
               <strong data-count="7">
@@ -207,7 +213,7 @@ export default function Hero({ ready }) {
           <div className="hero__chart">
 
             <div className="hero__chart-title">
-              Recaudo últimos 8 meses
+              Actividad comercial · ejemplo
             </div>
 
             <div className="hero__bars">
@@ -223,6 +229,8 @@ export default function Hero({ ready }) {
             </div>
 
           </div>
+
+          <p className="hero__mockup-disclaimer">Indicadores ilustrativos, no datos reales de clientes.</p>
 
           {/* Formas geométricas */}
           <span

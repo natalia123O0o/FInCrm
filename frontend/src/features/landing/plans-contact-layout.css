@@ -1,0 +1,414 @@
+/* ================================================================
+   FinCRM / Landing publica - planes y formulario de contacto
+   La hoja se carga DESPUES de commercial-redesign.css.
+   No afecta a SUPER_ADMIN, ADMIN ni USER.
+   ================================================================ */
+
+/* Usar mejor el ancho en pantallas grandes sin pegar el contenido a los bordes. */
+.fincrm-public {
+  --container: 1480px;
+}
+.fincrm-public .container,
+.fincrm-public .fincrm-wide-container {
+  width: min(calc(100% - 72px), 1480px);
+  max-width: 1480px;
+  margin-inline: auto;
+}
+
+/* ================================================================
+   Planes - adaptacion de UL product plan cards a la identidad FinCRM
+   ================================================================ */
+.fincrm-public .fincrm-plans-section {
+  background: linear-gradient(180deg, #f7f9fb 0%, #fff 88%);
+  padding-block: clamp(72px, 7.5vw, 112px);
+}
+.fincrm-public .fincrm-plans-head {
+  max-width: 800px;
+  text-align: left;
+  margin-bottom: clamp(32px, 4vw, 58px);
+}
+.fincrm-public .fincrm-plans-head h2 {
+  font-size: clamp(30px, 3vw, 44px);
+  line-height: 1.14;
+}
+.fincrm-public .fincrm-plans-head > p:last-child {
+  max-width: 730px;
+  color: #52647b;
+}
+.fincrm-public ul.fincrm-product-plans {
+  list-style: none;
+  width: 100%;
+  margin: 0;
+  padding: 20px 30px 34px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(18px, 2.5vw, 34px);
+  align-items: stretch;
+}
+.fincrm-public li.product-plan {
+  --plan-accent: #0e4c5c;
+  --plan-ink: #fff;
+  --fold: 28px;
+  position: relative;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: #fff;
+  color: #0a2540;
+  border: 1px solid #dbe4ec;
+  border-radius: 64px 15px 64px 15px;
+  padding: 34px 27px 30px;
+  box-shadow: 5px 9px 26px rgba(10, 37, 64, .10);
+  transition: box-shadow .24s ease, transform .24s ease;
+  overflow: visible;
+}
+.fincrm-public li.product-plan:hover {
+  transform: translateY(-5px);
+  box-shadow: 6px 19px 38px rgba(10, 37, 64, .16);
+}
+.fincrm-public li.product-plan--essential {
+  --plan-accent: #0e4c5c;
+}
+.fincrm-public li.product-plan--business {
+  --plan-accent: #ff7a1a;
+  --plan-ink: #0a2540;
+}
+.fincrm-public li.product-plan--intelligent {
+  --plan-accent: #0a2540;
+}
+.fincrm-public li.product-plan--recommended {
+  border: 2px solid #ff7a1a;
+  background: #fffdfb;
+  padding: 33px 26px 29px;
+}
+.fincrm-public .product-plan__badge {
+  position: absolute;
+  top: -15px;
+  left: 37px;
+  display: inline-block;
+  border-radius: 100px;
+  background: #ff7a1a;
+  padding: 6px 14px;
+  color: #0a2540;
+  font: 750 11px/1.2 var(--font-body);
+  letter-spacing: .06em;
+}
+.fincrm-public .product-plan__intro {
+  min-height: 122px;
+  padding: 6px 0 16px;
+}
+.fincrm-public .product-plan__title {
+  font: 700 clamp(23px, 2.1vw, 30px)/1.14 var(--font-title);
+  color: var(--plan-accent);
+  letter-spacing: -.03em;
+  margin-bottom: 12px;
+}
+.fincrm-public .product-plan__intro p {
+  color: #54677c;
+  font-size: 13.5px;
+  line-height: 1.52;
+}
+.fincrm-public .product-plan__price {
+  align-self: flex-end;
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 5px;
+  position: relative;
+  margin-right: calc(-1 * (27px + var(--fold)));
+  width: max-content;
+  max-width: calc(100% + 27px + var(--fold));
+  background: var(--plan-accent);
+  color: var(--plan-ink);
+  padding: 12px 22px 12px 27px;
+  min-height: 58px;
+  box-shadow: 0 4px 12px rgba(10,37,64,.07);
+}
+.fincrm-public .product-plan__price::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: var(--fold);
+  height: var(--fold);
+  background: color-mix(in srgb, var(--plan-accent) 63%, #0a2540);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+.fincrm-public .product-plan__price strong {
+  font: 750 clamp(22px, 2vw, 30px)/1.1 var(--font-title);
+  letter-spacing: -.035em;
+  white-space: nowrap;
+}
+.fincrm-public .product-plan__price small {
+  font: 600 12px/1.1 var(--font-body);
+  white-space: nowrap;
+}
+.fincrm-public .product-plan__source {
+  min-height: 35px;
+  margin: 14px 0 7px;
+  font: 500 11px/1.5 var(--font-body);
+  color: #61728a;
+}
+.fincrm-public ul.product-plan__features {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  width: 100%;
+}
+.fincrm-public .product-plan__features li {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 11px;
+  align-items: start;
+  padding: 10px 1px;
+  border-bottom: 1px solid #e7edf2;
+  font: 500 13.5px/1.4 var(--font-body);
+}
+.fincrm-public .product-plan__features li svg {
+  margin-top: 1px;
+  flex: none;
+}
+.fincrm-public .product-plan__features .check svg { color: #148a76; }
+.fincrm-public .product-plan__features .cross { color: #8a96a5; }
+.fincrm-public .product-plan__features .cross svg { color: #a4adba; }
+.fincrm-public .product-plan__visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.fincrm-public .product-plan__limits {
+  display: grid;
+  gap: 5px;
+  margin-top: auto;
+  padding: 15px 17px 18px;
+  background: #f3f7fa;
+  border-radius: 11px;
+  color: #495f74;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.fincrm-public .product-plan__limits strong {
+  font: 700 12px/1.4 var(--font-body);
+  color: #0a2540;
+  margin-bottom: 2px;
+}
+.fincrm-public .product-plan__select {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  align-self: flex-start;
+  position: relative;
+  margin: 23px 0 0 calc(-1 * (27px + var(--fold)));
+  width: calc(100% - 9px);
+  max-width: calc(100% + var(--fold));
+  padding: 15px 18px 15px 27px;
+  min-height: 51px;
+  background: var(--plan-accent);
+  color: var(--plan-ink);
+  font: 700 14px/1.3 var(--font-body);
+  text-align: left;
+  border: none;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  transition: filter .2s ease, transform .16s ease;
+}
+.fincrm-public .product-plan__select::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  width: var(--fold);
+  height: var(--fold);
+  background: color-mix(in srgb, var(--plan-accent) 63%, #0a2540);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+.fincrm-public .product-plan__select:hover { filter: brightness(.94); }
+.fincrm-public .product-plan__select:active { transform: scale(.985); }
+.fincrm-public .product-plan__select:focus-visible {
+  outline: 3px solid #06b6d4;
+  outline-offset: 4px;
+}
+.fincrm-public .fincrm-plans-note {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3px 15px 0;
+  text-align: center;
+  color: #66768b;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+/* ================================================================
+   Contacto - cuadrícula oscura + 2 columnas + tarjeta elevada
+   Conserva todos los campos y el servicio Brevo del ContactForm.
+   ================================================================ */
+.fincrm-public .cta-final#contacto {
+  padding: clamp(82px, 8vw, 132px) 0;
+  background-color: #0a2540;
+}
+.fincrm-public .contact-layout {
+  width: min(calc(100% - 72px), 1460px);
+  max-width: 1460px;
+  display: grid;
+  grid-template-columns: minmax(0, .96fr) minmax(0, 1.04fr);
+  align-items: center;
+  gap: clamp(40px, 5vw, 90px);
+}
+.fincrm-public .contact-copy {
+  width: 100%;
+  text-align: left;
+}
+.fincrm-public .contact-copy h2 {
+  font-size: clamp(31px, 3.0vw, 44px);
+  line-height: 1.19;
+  letter-spacing: -.035em;
+  max-width: 660px;
+  margin-bottom: 22px;
+}
+.fincrm-public .contact-copy h2 > span { display: block; }
+.fincrm-public .contact-copy p:not(.eyebrow) {
+  max-width: 570px;
+  font-size: 17px;
+  line-height: 1.65;
+  color: #cbddea;
+}
+.fincrm-public .contact-copy .ledger {
+  display: inline-block;
+  margin-top: 22px;
+  line-height: 1.6;
+  color: #9fd8e7;
+}
+.fincrm-public .contact-card {
+  min-width: 0;
+  background: #fff;
+  color: #0a2540;
+  border: 1px solid #d8e4ed;
+  border-radius: 22px;
+  box-shadow: 0 29px 76px rgba(0,0,0,.27);
+  padding: clamp(28px, 3vw, 48px);
+}
+.fincrm-public .contact-card h3 {
+  margin: 0 0 27px;
+  color: #0a2540;
+  font-size: 26px;
+  line-height: 1.2;
+}
+.fincrm-public .contact-card .cf { gap: 17px; }
+.fincrm-public .contact-card .cf__two { gap: 16px; }
+.fincrm-public .contact-card .cf__field { gap: 8px; min-width: 0; }
+.fincrm-public .contact-card .cf__field label {
+  margin-bottom: 0;
+  color: #0a2540;
+  font-size: 13px;
+  font-weight: 650;
+}
+.fincrm-public .contact-card .cf__field input:not([type='checkbox']),
+.fincrm-public .contact-card .cf__field select,
+.fincrm-public .contact-card .cf__field textarea {
+  border: 1px solid #cbd7e4;
+  background: #f7f9fb;
+  color: #0a2540;
+  border-radius: 11px;
+  padding: 13px 15px;
+  font-size: 14px;
+  margin: 0;
+}
+.fincrm-public .contact-card .cf__field input:not([type='checkbox']),
+.fincrm-public .contact-card .cf__field select { min-height: 49px; }
+.fincrm-public .contact-card .cf__field textarea {
+  min-height: 135px;
+  resize: vertical;
+}
+.fincrm-public .contact-card .cf__field input::placeholder,
+.fincrm-public .contact-card .cf__field textarea::placeholder { color: #7e8ca0; }
+.fincrm-public .contact-card .cf__counter {
+  padding: 0 2px;
+  color: #6b7a8f;
+  text-align: right;
+  font-size: 12px;
+}
+.fincrm-public .contact-card .cf__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  font-size: 12px;
+  line-height: 1.55;
+  font-weight: 500;
+  cursor: pointer;
+}
+.fincrm-public .contact-card .cf__consent input[type='checkbox'] {
+  width: 17px;
+  height: 17px;
+  min-width: 17px;
+  margin: 2px 0 0;
+  padding: 0;
+  border-radius: 3px;
+  accent-color: #ff7a1a;
+}
+.fincrm-public .contact-card .cf__submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  border-radius: 11px;
+  background: #ff7a1a;
+  color: #0a2540;
+  font-size: 15px;
+  font-weight: 750;
+  transition: background .2s ease;
+}
+.fincrm-public .contact-card .cf__submit:not(:disabled):hover { background: #ff9647; }
+.fincrm-public .contact-card .cf__fineprint {
+  margin: 0;
+  color: #6b7a8f;
+  font-size: 11.8px;
+  line-height: 1.6;
+}
+
+@media (max-width: 1220px) {
+  .fincrm-public ul.fincrm-product-plans { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .fincrm-public .fincrm-product-plans .product-plan:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    width: min(100%, 500px);
+    justify-self: center;
+  }
+  .fincrm-public .contact-layout { gap: 36px; }
+  .fincrm-public .contact-copy h2 { font-size: clamp(28px, 3vw, 39px); }
+}
+@media (max-width: 950px) {
+  .fincrm-public .container, .fincrm-public .fincrm-wide-container { width: calc(100% - 46px); }
+  .fincrm-public .contact-layout {
+    width: min(calc(100% - 46px), 760px);
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+  .fincrm-public .contact-copy h2 { font-size: clamp(31px, 4.7vw, 43px); }
+}
+@media (max-width: 680px) {
+  .fincrm-public .container, .fincrm-public .fincrm-wide-container { width: calc(100% - 32px); }
+  .fincrm-public ul.fincrm-product-plans { padding: 18px 27px 20px; grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .fincrm-public .fincrm-product-plans .product-plan:last-child:nth-child(odd) { grid-column: auto; width: 100%; }
+  .fincrm-public li.product-plan { border-radius: 49px 12px 49px 12px; padding: 29px 22px 24px; --fold: 24px; }
+  .fincrm-public li.product-plan--recommended { padding: 28px 21px 23px; }
+  .fincrm-public .product-plan__intro { min-height: unset; }
+  .fincrm-public .product-plan__price { margin-right: calc(-1 * (22px + var(--fold))); }
+  .fincrm-public .product-plan__select { margin-left: calc(-1 * (22px + var(--fold))); }
+  .fincrm-public .contact-layout { width: calc(100% - 32px); }
+  .fincrm-public .contact-copy h2 > span { display: inline; }
+  .fincrm-public .contact-copy h2 > span + span::before { content: ' '; }
+  .fincrm-public .contact-card { padding: 25px 20px; border-radius: 18px; }
+  .fincrm-public .contact-card .cf__two { grid-template-columns: 1fr; gap: 17px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fincrm-public li.product-plan,
+  .fincrm-public .product-plan__select { transition: none; }
+  .fincrm-public li.product-plan:hover { transform: none; }
+}

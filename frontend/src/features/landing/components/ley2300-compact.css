@@ -1,0 +1,11 @@
+.ley-mini{background:#0f172a;color:#f8fafc;padding:clamp(58px,7vw,100px) 0;position:relative;overflow:hidden}
+.ley-mini:before{content:'';position:absolute;inset:0 0 auto auto;width:min(36vw,430px);height:100%;background:radial-gradient(circle at 100% 0%,rgba(6,182,212,.16),transparent 68%);pointer-events:none}
+.ley-mini__content{display:grid;grid-template-columns:70px minmax(0,1fr);column-gap:26px;row-gap:22px;align-items:start;position:relative}
+.ley-mini__icon{height:64px;width:64px;border:1px solid rgba(6,182,212,.45);border-radius:18px;display:grid;place-items:center;background:rgba(6,182,212,.1);color:#06b6d4}
+.ley-mini__eyebrow{color:#22d3ee!important}
+.ley-mini h2{color:#fff;font-size:clamp(1.85rem,3.3vw,3rem);line-height:1.12;letter-spacing:-.035em;margin:12px 0 16px}
+.ley-mini p{color:#cbd5e1;max-width:820px;font-size:clamp(.98rem,1.5vw,1.08rem);line-height:1.75;margin:0}
+.ley-mini__facts{grid-column:2;display:flex;flex-wrap:wrap;gap:12px}
+.ley-mini__facts span{border:1px solid rgba(148,163,184,.38);padding:10px 14px;border-radius:100px;color:#e2e8f0;display:inline-flex;align-items:center;gap:9px;font-weight:650;font-size:.82rem}
+.ley-mini__facts svg{color:#f97316}
+@media(max-width:640px){.ley-mini__content{grid-template-columns:1fr;gap:16px}.ley-mini__facts{grid-column:1;gap:8px}.ley-mini__facts span{font-size:.76rem}}

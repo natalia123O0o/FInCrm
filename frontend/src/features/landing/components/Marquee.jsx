@@ -1,13 +1,15 @@
 import './marquee.css';
 
 const WORDS = [
-  'Facturación electrónica DIAN',
+  'Cotizaciones inteligentes',
+  'Asistente con IA',
+  'Oportunidades comerciales',
+  'Campañas personalizadas',
+  'Gestión de actividades',
+  'Clientes y cartera',
+  'FinPOS',
+  'FinRadar',
   'Ley 2300',
-  'RNE',
-  'Chatbot IA',
-  'Flujo de caja',
-  'Cartera',
-  'Bitácora auditable',
 ];
 
 const COLORS = [

@@ -1,0 +1,7 @@
+/* Solo complementa el hero original; el video sigue intacto. */
+.hero__benefits { display:flex; flex-wrap:wrap; gap:8px; margin:-12px 0 24px; }
+.hero__benefits span { display:inline-flex; align-items:center; background:rgba(248,250,252,.82); border:1px solid rgba(15,23,42,.18); box-shadow:0 3px 12px rgba(15,23,42,.04); padding:7px 11px; border-radius:99px; font-size:.78rem; font-weight:750; color:var(--navy); backdrop-filter:blur(8px); }
+.hero__benefits span:before { content:''; width:6px; height:6px; border-radius:50%; background:var(--orange); margin-right:7px; }
+.hero__benefits span:nth-child(2):before { background:var(--cyan); }
+.hero__mockup-disclaimer { color:rgba(248,250,252,.62); font-size:.7rem; margin:12px 0 0; }
+@media(max-width:639px){.hero__benefits span{font-size:.72rem}.hero__benefits{gap:6px}}

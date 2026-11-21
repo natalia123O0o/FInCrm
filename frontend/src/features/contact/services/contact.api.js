@@ -1,16 +1,11 @@
-// Importa la función auxiliar 'apiPost' encargada de realizar peticiones HTTP POST (o simularlas en desarrollo)
-import { apiPost } from '../../../services/apiClient.js';
-
-// Importa el diccionario de constantes centralizadas con los endpoints de la API
-import { ENDPOINTS } from '../../../services/endpoints.js';
-
-/**
- * Servicio encargado de enviar la información del formulario de contacto hacia el backend.
- *
- * @param {Object} data - Objeto con los datos del formulario ya validados (nombre, empresa, correo, teléfono, mensaje).
- * @returns {Promise<Object>} Promesa que resuelve la respuesta del servidor o la simulación.
- */
-export function sendContact(data) {
-  // Invoca apiPost pasando el endpoint centralizado de contacto (ej. '/api/v1/contact') y los datos del usuario
-  return apiPost(ENDPOINTS.contact, data);
+// No simular el envío: solo se confirma éxito si el backend lo confirma.
+const BASE=(import.meta.env.VITE_API_URL||'').replace(/\/$/,'') || (import.meta.env.DEV?'http://localhost:4000':'');
+export async function sendContact(data){
+  let response;
+  try{response=await fetch(`${BASE}/api/contact`,{
+    method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data),
+  });}catch{throw new Error('No fue posible conectar con FinCRM. Revisa tu conexión e inténtalo de nuevo.');}
+  const result=await response.json().catch(()=>({}));
+  if(!response.ok||!result.ok)throw new Error(result.message||'No se pudo enviar tu solicitud en este momento.');
+  return result;
 }

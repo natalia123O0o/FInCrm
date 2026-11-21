@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import './manifesto.css';
 
 const TEXT =
-  'Cobrar con tranquilidad: cada contacto cumple la Ley 2300 y cada decisión queda registrada.';
+  'Vende con contexto, cotiza con inteligencia y cuida cada relación. FinCRM también te ayuda a organizar tu cartera y dar seguimiento responsable.';
 
 export default function Manifesto() {
   const rootRef = useRef(null);

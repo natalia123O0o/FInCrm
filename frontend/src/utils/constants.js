@@ -4,7 +4,9 @@
  */
 export const NAV_LINKS = [
   { label: 'Inicio', href: '#inicio' },
+  { label: 'Funciones', href: '#funciones' },
   { label: 'Módulos', href: '#modulos' },
+  { label: 'Planes', href: '#planes' },
   { label: 'Ley 2300', href: '#ley-2300' },
   { label: 'Contacto', href: '#contacto' },
 ];

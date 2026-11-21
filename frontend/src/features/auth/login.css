@@ -1,0 +1,252 @@
+/* Login: estilos aislados para no afectar landing ni dashboards. */
+.fincrm-login {
+  --login-navy: #0a2540;
+  --login-navy-deep: #081c30;
+  --login-cyan: #06b6d4;
+  --login-orange: #f97316;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 56px 20px;
+  overflow: hidden;
+  background: var(--login-navy);
+  color: #fff;
+}
+
+.fincrm-login__media,
+.fincrm-login__veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.fincrm-login__media { z-index: -2; }
+.fincrm-login__media video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.fincrm-login__veil {
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 88% 15%, rgba(6,182,212,.16), transparent 42%),
+    linear-gradient(110deg, rgba(4,17,32,.81), rgba(10,37,64,.68) 45%, rgba(4,17,32,.82));
+}
+
+.fincrm-login__content {
+  width: min(100%, 460px);
+  position: relative;
+  z-index: 1;
+}
+.fincrm-login__topline {
+  margin-bottom: 17px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 9px;
+  color: #d3e7ef;
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-align: center;
+}
+.fincrm-login__topline-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--login-orange);
+  box-shadow: 0 0 12px rgba(249,115,22,.7);
+}
+
+.fincrm-login-card {
+  width: 100%;
+  padding: clamp(28px, 5vw, 42px);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid rgba(6,182,212,.5);
+  border-top: 3px solid var(--login-orange);
+  border-radius: 19px;
+  background: rgba(8,28,48,.95);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 24px 64px rgba(0,0,0,.39), 0 0 35px rgba(6,182,212,.09);
+  text-align: left;
+}
+.fincrm-login-card__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 26px;
+  font-size: 1.28rem;
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: -.04em;
+  color: #fff;
+}
+.fincrm-login-card__brand > span:last-child > span { color: var(--login-orange); }
+.fincrm-login-card__mark { display: flex; align-items: end; gap: 3px; height: 24px; }
+.fincrm-login-card__mark i { display: block; width: 6px; border-radius: 3px; }
+.fincrm-login-card__mark i:nth-child(1) { height: 12px; background: var(--login-orange); }
+.fincrm-login-card__mark i:nth-child(2) { height: 18px; background: var(--login-cyan); }
+.fincrm-login-card__mark i:nth-child(3) { height: 24px; background: #fff; }
+
+.fincrm-login-card .fincrm-login-card__title {
+  margin: 0 0 7px;
+  color: #fff;
+  font-size: clamp(1.65rem, 4.3vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -.035em;
+  line-height: 1.15;
+}
+.fincrm-login-card .fincrm-login-card__subtitle {
+  margin: 0 0 29px;
+  color: #c5d6e4;
+  font-size: .91rem;
+  line-height: 1.5;
+}
+.fincrm-login-card__group { margin-bottom: 20px; }
+.fincrm-login-card__label {
+  display: block;
+  margin-bottom: 9px;
+  color: #f1f7fc;
+  font-size: .85rem;
+  font-weight: 650;
+}
+.fincrm-login-card__field {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 52px;
+  padding: 0 14px;
+  border: 1px solid #547085;
+  border-radius: 9px;
+  background: rgba(3,17,30,.88);
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.fincrm-login-card__field:focus-within {
+  border-color: var(--login-cyan);
+  box-shadow: 0 0 0 3px rgba(6,182,212,.22);
+}
+.fincrm-login-card__icon {
+  height: 19px;
+  width: 19px;
+  flex: 0 0 19px;
+  color: #6cdae9;
+}
+.fincrm-login-card__field input {
+  width: 100%;
+  min-width: 0;
+  height: 50px;
+  padding: 0;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+  color: #fff;
+  caret-color: var(--login-orange);
+  font: inherit;
+  font-size: .91rem;
+}
+.fincrm-login-card__field input::placeholder { color: #a8bdcc; opacity: 1; }
+.fincrm-login-card__field input:disabled { opacity: .72; }
+.fincrm-login-card__toggle {
+  flex: 0 0 auto;
+  padding: 5px;
+  border: 0;
+  background: transparent;
+  color: #83dfec;
+  font: inherit;
+  font-size: .75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.fincrm-login-card__toggle:hover { color: #fff; }
+.fincrm-login-card__links {
+  text-align: right;
+  margin: -2px 0 23px;
+}
+.fincrm-login-card__links a,
+.fincrm-login__back {
+  text-decoration: none;
+  color: #9de7f0;
+  font-size: .8rem;
+  font-weight: 650;
+}
+.fincrm-login-card__links a:hover,
+.fincrm-login__back:hover { color: #fff; text-decoration: underline; }
+.fincrm-login-card__error,
+.fincrm-login__session-error {
+  color: #fff;
+  background: rgba(172, 41, 41, .28);
+  border: 1px solid rgba(255,148,148,.6);
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: .84rem;
+  line-height: 1.5;
+}
+.fincrm-login-card__error { margin: 0 0 16px; }
+.fincrm-login__session-error { margin: 0 0 14px; }
+.fincrm-login-card__submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  width: 100%;
+  min-height: 51px;
+  padding: 12px 18px;
+  border: 1px solid var(--login-orange);
+  border-radius: 9px;
+  background: var(--login-orange);
+  color: #0a2540;
+  font-family: inherit;
+  font-size: .92rem;
+  font-weight: 850;
+  cursor: pointer;
+  transition: background-color .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease;
+  box-shadow: 0 8px 25px rgba(249,115,22,.22);
+}
+.fincrm-login-card__submit:hover:not(:disabled) {
+  background: #ff9a4b;
+  border-color: #ff9a4b;
+  box-shadow: 0 10px 27px rgba(249,115,22,.3);
+  transform: translateY(-1px);
+}
+.fincrm-login-card__submit:disabled { opacity: .75; cursor: wait; }
+.fincrm-login-card .fincrm-login-card__footnote {
+  margin: 17px 0 0;
+  color: #b6ccd9;
+  font-size: .73rem;
+  text-align: center;
+}
+.fincrm-login__back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: fit-content;
+  margin: 23px auto 0;
+  padding: 6px;
+  color: #e4f2f8;
+}
+.fincrm-login-card__toggle:focus-visible,
+.fincrm-login-card__submit:focus-visible,
+.fincrm-login-card__links a:focus-visible,
+.fincrm-login__back:focus-visible {
+  outline: 3px solid var(--login-cyan);
+  outline-offset: 4px;
+}
+@media (max-width: 480px) {
+  .fincrm-login { padding: 28px 15px; }
+  .fincrm-login-card { border-radius: 14px; }
+  .fincrm-login-card__brand { margin-bottom: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fincrm-login__media video { display: none; }
+  .fincrm-login-card__submit, .fincrm-login-card__field { transition: none; }
+}
