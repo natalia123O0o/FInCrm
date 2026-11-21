@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../../../config/api.js';
 import {
   ArrowRight, BarChart3, CalendarClock, Check, ChevronRight,
   FileText, MailCheck, Menu, Radar, ShieldCheck, ShoppingBasket,
@@ -22,11 +23,11 @@ const EXAMPLE_PLANS = [
   { code: 'BUSINESS', name: 'Negocio', monthlyPriceCOP: 79900,
     description: 'Campañas personalizadas y mayor capacidad comercial.',
     modules: ['crm', 'activities', 'opportunities', 'quotes', 'campaigns', 'messaging', 'ai'],
-    limits: { maxActiveUsers: 10, aiRequestsPerMonth: 200, quotesPerMonth: 200 } },
+    limits: { maxActiveUsers: 8, aiRequestsPerMonth: 250, quotesPerMonth: 150 } },
   { code: 'INTELLIGENT', name: 'Inteligente', monthlyPriceCOP: 129900,
     description: 'CRM, campañas, IA y FinPOS con inventario.',
     modules: ['crm', 'activities', 'opportunities', 'quotes', 'campaigns', 'messaging', 'ai', 'pos'],
-    limits: { maxActiveUsers: 25, aiRequestsPerMonth: 600, quotesPerMonth: 1000 } },
+    limits: { maxActiveUsers: 15, aiRequestsPerMonth: 1000, quotesPerMonth: 500 } },
 ];
 const money = value => new Intl.NumberFormat('es-CO', {
   style: 'currency', currency: 'COP', maximumFractionDigits: 0,
@@ -42,6 +43,21 @@ const NAV_LINKS = [
   ['#productos', 'Módulos'], ['#planes', 'Planes'], ['#ley-2300', 'Ley 2300'],
   ['#contacto', 'Contacto'],
 ];
+
+
+// Los enlaces a secciones no deben reemplazar el hash de HashRouter.
+function SectionLink({ target, onNavigate, children, ...props }) {
+  function handleClick(event) {
+    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+    event.preventDefault();
+    onNavigate?.();
+    document.getElementById(target)?.scrollIntoView({
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'start',
+    });
+  }
+  return <a href={`#/?section=${encodeURIComponent(target)}`} onClick={handleClick} {...props}>{children}</a>;
+}
 
 function Brand({ compact = false }) {
   return <span className={compact ? 'dash__logo fincrm-brand' : 'logo fincrm-brand'} aria-label="FinCRM">
@@ -76,9 +92,9 @@ function Navigation() {
   }, []);
   return <header id="nav" className={`nav ${compact ? 'is-compact' : ''}`}>
     <div className="container nav__inner">
-      <a href="#inicio" onClick={() => setOpen(false)} aria-label="FinCRM - Inicio"><Brand /></a>
+      <SectionLink target="inicio" onNavigate={() => setOpen(false)} aria-label="FinCRM - Inicio"><Brand /></SectionLink>
       <nav className={`nav__links ${open ? 'is-open' : ''}`} id="commercial-nav-links" aria-label="Navegación principal">
-        {NAV_LINKS.map(([href, text]) => <a href={href} key={href} onClick={() => setOpen(false)}>{text}</a>)}
+        {NAV_LINKS.map(([href, text]) => <SectionLink target={href.slice(1)} key={href} onNavigate={() => setOpen(false)}>{text}</SectionLink>)}
         <Link to="/login" className="btn btn-primary nav__cta">Iniciar sesión</Link>
       </nav>
       <button type="button" className="nav__toggle fincrm-mobile-menu" aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
@@ -127,8 +143,8 @@ function Hero() {
         <Reveal as="h1" className="hero__h1" delay={0.08}>Convierte relaciones en ventas con inteligencia a tu lado.</Reveal>
         <Reveal as="p" className="hero__sub" delay={0.14}>Clientes, oportunidades, actividades, cotizaciones y campañas en una sola plataforma. Tu asistente con IA te ayuda a preparar propuestas, dar seguimiento y tomar decisiones con información de tu negocio.</Reveal>
         <Reveal className="hero__actions" delay={0.22}>
-          <a href="#contacto" className="btn btn-primary">Solicitar demostración <ArrowRight size={18}/></a>
-          <a href="#productos" className="btn btn-secondary">Explorar funcionalidades</a>
+          <SectionLink target="contacto" className="btn btn-primary">Solicitar demostración <ArrowRight size={18}/></SectionLink>
+          <SectionLink target="productos" className="btn btn-secondary">Explorar funcionalidades</SectionLink>
         </Reveal>
         <Reveal className="hero__trust" delay={0.29}>
           <span>COTIZACIONES + IA</span><span className="sep">·</span><span>CAMPAÑAS PERSONALIZADAS</span><span className="sep">·</span><span>CARTERA Y PAGOS</span>
@@ -199,7 +215,7 @@ function CommercialFlow() {
         <h3>Cotizaciones inteligentes y asistente empresarial</h3>
         <p>La inteligencia artificial ayuda a preparar propuestas, consultar información autorizada y sugerir próximos pasos. Las funciones y los cupos dependen del plan contratado.</p>
         <div className="fincrm-flow-tags"><span>Oportunidades</span><span>Actividades</span><span>Seguimiento</span></div>
-        <a href="#planes" className="btn btn-primary">Ver planes <ChevronRight size={17}/></a>
+        <SectionLink target="planes" className="btn btn-primary">Ver planes <ChevronRight size={17}/></SectionLink>
       </div>
     </Reveal>
   </div></section>;
@@ -219,7 +235,7 @@ function Products() {
         <details className="fincrm-module-details"><summary>Más información <ChevronRight size={16}/></summary>
           <p>{mod.detail.technical}</p><p>{mod.detail.interop}</p><p>{mod.detail.impact}</p>
         </details>
-        <a href="#contacto" className="module-link">Solicitar información <ArrowRight size={16}/></a>
+        <SectionLink target="contacto" className="module-link">Solicitar información <ArrowRight size={16}/></SectionLink>
       </Reveal>;
     })}</div>
     <p className="availability-note">La disponibilidad de cada módulo depende del plan y del avance del desarrollo.</p>
@@ -244,10 +260,13 @@ function Pricing({ onChoosePlan }) {
   const [catalogChecked, setCatalogChecked] = useState(false);
 
   useEffect(() => {
+    // GitHub Pages no ejecuta Express: sin URL pública no hacemos llamadas falsas.
+    if (!API_BASE_URL) {
+      setCatalogChecked(true);
+      return;
+    }
     const controller = new AbortController();
-    const apiBase = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '') ||
-      (import.meta.env.DEV ? 'http://localhost:4000' : '');
-    fetch(`${apiBase}/api/public/plans`, { signal: controller.signal })
+    fetch(`${API_BASE_URL}/api/public/plans`, { signal: controller.signal })
       .then(async response => {
         if (!response.ok) throw new Error('No fue posible consultar los planes');
         return response.json();
@@ -350,11 +369,11 @@ function Contact({ selectedPlan }) {
 
 function Footer() {
   return <footer className="footer"><div className="container"><div className="footer__grid">
-    <div className="footer__brand"><a href="#inicio" aria-label="Inicio FinCRM"><Brand/></a><p>FinCRM — relaciones comerciales, cobranza y decisiones con inteligencia.</p></div>
-    <div className="footer__col"><h4>Plataforma</h4><a href="#productos">FinCRM</a><a href="#productos">FinPOS</a><a href="#productos">FinRadar</a></div>
-    <div className="footer__col"><h4>Funciones</h4><a href="#productos">Cotizaciones con IA</a><a href="#funciones">Oportunidades</a><a href="#productos">Campañas</a></div>
-    <div className="footer__col"><h4>Conoce más</h4><a href="#planes">Planes</a><a href="#ley-2300">Ley 2300</a><a href="#contacto">Contacto</a></div>
-    </div><div className="footer__bottom"><p>© {new Date().getFullYear()} FinCRM. Hecho en Colombia.</p><div className="footer__bottom-links"><a href="#inicio">Inicio</a><Link to="/login">Iniciar sesión</Link><a href="#contacto">Contacto</a></div></div>
+    <div className="footer__brand"><SectionLink target="inicio" aria-label="Inicio FinCRM"><Brand/></SectionLink><p>FinCRM — relaciones comerciales, cobranza y decisiones con inteligencia.</p></div>
+    <div className="footer__col"><h4>Plataforma</h4><SectionLink target="productos">FinCRM</SectionLink><SectionLink target="productos">FinPOS</SectionLink><SectionLink target="productos">FinRadar</SectionLink></div>
+    <div className="footer__col"><h4>Funciones</h4><SectionLink target="productos">Cotizaciones con IA</SectionLink><SectionLink target="funciones">Oportunidades</SectionLink><SectionLink target="productos">Campañas</SectionLink></div>
+    <div className="footer__col"><h4>Conoce más</h4><SectionLink target="planes">Planes</SectionLink><SectionLink target="ley-2300">Ley 2300</SectionLink><SectionLink target="contacto">Contacto</SectionLink></div>
+    </div><div className="footer__bottom"><p>© {new Date().getFullYear()} FinCRM. Hecho en Colombia.</p><div className="footer__bottom-links"><SectionLink target="inicio">Inicio</SectionLink><Link to="/login">Iniciar sesión</Link><SectionLink target="contacto">Contacto</SectionLink></div></div>
   </div></footer>;
 }
 
@@ -368,6 +387,13 @@ export default function LandingPage() {
     };
     update(); window.addEventListener('scroll', update, { passive: true });
     return () => window.removeEventListener('scroll', update);
+  }, []);
+  useEffect(() => {
+    const hashQuery = window.location.hash.split('?')[1] || '';
+    const section = new URLSearchParams(hashQuery).get('section');
+    if (!section) return;
+    const raf = requestAnimationFrame(() => document.getElementById(section)?.scrollIntoView({ block: 'start' }));
+    return () => cancelAnimationFrame(raf);
   }, []);
   const selectPlan = code => {
     setSelectedPlan(code || '');
