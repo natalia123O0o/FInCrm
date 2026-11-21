@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from 'react';
 import {
   ArrowRight, BarChart3, CalendarClock, Check, ChevronRight,
@@ -78,7 +79,7 @@ function Navigation() {
       <a href="#inicio" onClick={() => setOpen(false)} aria-label="FinCRM - Inicio"><Brand /></a>
       <nav className={`nav__links ${open ? 'is-open' : ''}`} id="commercial-nav-links" aria-label="Navegación principal">
         {NAV_LINKS.map(([href, text]) => <a href={href} key={href} onClick={() => setOpen(false)}>{text}</a>)}
-        <a href="/login" className="btn btn-primary nav__cta">Iniciar sesión</a>
+        <Link to="/login" className="btn btn-primary nav__cta">Iniciar sesión</Link>
       </nav>
       <button type="button" className="nav__toggle fincrm-mobile-menu" aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
         aria-expanded={open} aria-controls="commercial-nav-links" onClick={() => setOpen(value => !value)}>
@@ -353,7 +354,7 @@ function Footer() {
     <div className="footer__col"><h4>Plataforma</h4><a href="#productos">FinCRM</a><a href="#productos">FinPOS</a><a href="#productos">FinRadar</a></div>
     <div className="footer__col"><h4>Funciones</h4><a href="#productos">Cotizaciones con IA</a><a href="#funciones">Oportunidades</a><a href="#productos">Campañas</a></div>
     <div className="footer__col"><h4>Conoce más</h4><a href="#planes">Planes</a><a href="#ley-2300">Ley 2300</a><a href="#contacto">Contacto</a></div>
-    </div><div className="footer__bottom"><p>© {new Date().getFullYear()} FinCRM. Hecho en Colombia.</p><div className="footer__bottom-links"><a href="#inicio">Inicio</a><a href="/login">Iniciar sesión</a><a href="#contacto">Contacto</a></div></div>
+    </div><div className="footer__bottom"><p>© {new Date().getFullYear()} FinCRM. Hecho en Colombia.</p><div className="footer__bottom-links"><a href="#inicio">Inicio</a><Link to="/login">Iniciar sesión</Link><a href="#contacto">Contacto</a></div></div>
   </div></footer>;
 }
 
