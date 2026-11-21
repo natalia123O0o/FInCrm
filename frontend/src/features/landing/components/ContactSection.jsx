@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import ContactForm from '../../contact/components/ContactForm.jsx';
 import './contact-section.css';
 
-export default function ContactSection() {
+export default function ContactSection({ selectedPlan = "" }) {
   const rootRef = useRef(null);
   const formWrapRef = useRef(null);
   const [success, setSuccess] = useState(false);
@@ -63,15 +63,15 @@ export default function ContactSection() {
             </span>
 
             <h2 className="contact__title">
-              Solicita tu demo.
+              Conoce FinCRM para tu empresa.
             </h2>
 
             <p className="contact__lead">
-              Cuéntanos sobre tu PYME y te mostramos
-              FinCRM en una sesión de 20 minutos.
+              Cuéntanos qué necesitas y recibe información sobre
+              cotizaciones, IA, campañas y nuestros planes.
             </p>
 
-            <ContactForm onSuccess={handleSuccess} />
+            <ContactForm onSuccess={handleSuccess} selectedPlan={selectedPlan} />
           </div>
         ) : (
           <div className="cf-success">
@@ -98,8 +98,8 @@ export default function ContactSection() {
             </h3>
 
             <p>
-              Nuestro equipo te contactará en las
-              próximas 24 horas hábiles.
+              Tu solicitud fue aceptada para envío. Te responderemos
+              usando los datos que nos compartiste.
             </p>
           </div>
         )}

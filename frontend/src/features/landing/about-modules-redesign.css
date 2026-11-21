@@ -1,0 +1,381 @@
+/* ===========================================================
+   FinCRM | ¿Qué es? y Módulos CRM
+   Solo afecta la landing pública. Conserva las variables,
+   tipografía y colores ya utilizados por commercial-redesign.css.
+   =========================================================== */
+
+/* 1. Presentación de FinCRM, sin el círculo decorativo anterior */
+.fincrm-public .fincrm-about {
+  padding-block: clamp(76px, 8vw, 122px);
+  background:
+    radial-gradient(ellipse at 94% 18%, rgba(20, 112, 138, .065), transparent 32%),
+    linear-gradient(180deg, var(--white) 0%, var(--gray-50) 100%);
+}
+.fincrm-public .fincrm-about__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr);
+  gap: clamp(34px, 5.5vw, 96px);
+  align-items: center;
+}
+.fincrm-public .fincrm-about__copy {
+  min-width: 0;
+  max-width: 780px;
+}
+.fincrm-public .fincrm-about__overline {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font: 650 12px/1.5 var(--font-mono);
+  letter-spacing: .13em;
+  color: var(--petrol-700);
+  margin-bottom: 22px;
+}
+.fincrm-public .fincrm-about__overline > span {
+  width: 30px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--orange-500);
+}
+.fincrm-public .fincrm-about__copy h2 {
+  max-width: 780px;
+  margin: 0 0 24px;
+  font-size: clamp(31px, 3.25vw, 49px);
+  font-weight: 750;
+  line-height: 1.17;
+  letter-spacing: -.037em;
+}
+.fincrm-public .fincrm-about__copy h2 em {
+  font-style: normal;
+  color: var(--petrol-700);
+  text-decoration: underline;
+  text-decoration-color: var(--orange-500);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 8px;
+}
+.fincrm-public .fincrm-about__copy > p {
+  font-size: clamp(15px, 1.2vw, 17px);
+  color: var(--gray-700);
+  max-width: 690px;
+  line-height: 1.85;
+  margin-bottom: 17px;
+}
+.fincrm-public .fincrm-about__chips {
+  margin-top: 30px;
+  gap: 10px;
+}
+.fincrm-public .fincrm-about__chips .chip {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  box-shadow: 0 4px 12px rgba(10, 37, 64, .035);
+  font-size: 12px;
+  padding: 9px 13px;
+}
+
+/* Tarjeta informativa de flujo: sustituye completamente al diagrama circular. */
+.fincrm-public .fincrm-about__panel {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 24px;
+  box-shadow: 0 24px 58px rgba(10, 37, 64, .095);
+}
+.fincrm-public .fincrm-about__panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--orange-500), var(--petrol-500), var(--navy-900));
+}
+.fincrm-public .fincrm-about__panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 30px 32px 22px;
+}
+.fincrm-public .fincrm-about__panel-kicker {
+  color: var(--orange-500);
+  display: block;
+  margin-bottom: 9px;
+  font: 700 11px/1.3 var(--font-mono);
+  letter-spacing: .1em;
+}
+.fincrm-public .fincrm-about__panel-head h3 {
+  font-size: clamp(18px, 2vw, 24px);
+  line-height: 1.3;
+  font-weight: 700;
+  max-width: 370px;
+}
+.fincrm-public .fincrm-about__panel-mark {
+  flex: 0 0 43px;
+  height: 43px;
+  border-radius: 12px;
+  background: rgba(255, 122, 26, .11);
+  color: var(--orange-500);
+  display: grid;
+  place-items: center;
+}
+.fincrm-public .fincrm-about__journey {
+  display: grid;
+  list-style: none;
+  padding: 0 32px 28px;
+  margin: 0;
+}
+.fincrm-public .fincrm-about__step {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  padding: 16px 0;
+  border-top: 1px solid var(--gray-200);
+}
+.fincrm-public .fincrm-about__step-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  height: 44px;
+  border-radius: 12px;
+  color: var(--petrol-700);
+  background: rgba(20, 112, 138, .075);
+  transition: background .2s ease, color .2s ease;
+}
+.fincrm-public .fincrm-about__step:hover .fincrm-about__step-icon {
+  color: var(--white);
+  background: var(--petrol-700);
+}
+.fincrm-public .fincrm-about__step-copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+.fincrm-public .fincrm-about__step-copy > span {
+  color: var(--gray-500);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.fincrm-public .fincrm-about__step-copy > strong {
+  color: var(--navy-900);
+  font-weight: 650;
+  font-size: clamp(13px, 1.15vw, 16px);
+  line-height: 1.4;
+}
+.fincrm-public .fincrm-about__step-no {
+  font-family: var(--font-mono);
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--gray-500);
+}
+.fincrm-public .fincrm-about__panel-footer {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 17px 30px;
+  color: var(--petrol-700);
+  background: var(--gray-50);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.5;
+  border-top: 1px solid var(--gray-200);
+}
+.fincrm-public .fincrm-about__panel-footer svg { flex: none; }
+
+/* 2. Módulos: adaptación del efecto card/glow, sin morado ni rosa. */
+.fincrm-public #productos {
+  background: linear-gradient(180deg, var(--gray-50) 0%, var(--white) 100%);
+}
+.fincrm-public #productos .section__head {
+  max-width: 770px;
+  text-align: left;
+  margin-bottom: clamp(42px, 5vw, 66px);
+}
+.fincrm-public #productos .section__head h2 {
+  font-size: clamp(31px, 3vw, 45px);
+  margin-bottom: 16px;
+}
+.fincrm-public #productos .section__head > p:last-child {
+  max-width: 730px;
+  margin: 0;
+  color: var(--gray-700);
+}
+.fincrm-public #productos .products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(22px, 2.6vw, 36px);
+  padding: 15px 8px 35px;
+  align-items: stretch;
+}
+.fincrm-public #productos .module-card.fincrm-module-card {
+  --module-glow: var(--petrol-500);
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  min-height: 338px;
+  padding: clamp(23px, 2.25vw, 33px);
+  background:
+    linear-gradient(155deg, var(--navy-900) 7%, var(--navy-800) 100%) padding-box,
+    linear-gradient(135deg, var(--module-glow), var(--orange-500)) border-box;
+  color: var(--white);
+  border: 2px solid transparent;
+  border-radius: 16px;
+  overflow: visible;
+  box-shadow: 0 15px 35px rgba(10, 37, 64, .14);
+  transform: translateY(0);
+  transition: transform .35s cubic-bezier(.175,.885,.32,1.275), box-shadow .35s ease;
+}
+.fincrm-public #productos .module-card--crm { --module-glow: var(--petrol-500); }
+.fincrm-public #productos .module-card--pos { --module-glow: var(--orange-500); }
+.fincrm-public #productos .module-card--radar { --module-glow: var(--petrol-700); }
+.fincrm-public #productos .module-card.fincrm-module-card::before,
+.fincrm-public #productos .module-card.fincrm-module-card::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border-radius: 18px;
+  transition: transform .55s cubic-bezier(.175,.885,.32,1.275), filter .35s ease, opacity .35s ease;
+}
+.fincrm-public #productos .module-card.fincrm-module-card::before {
+  inset: -4px;
+  z-index: -1;
+  background: linear-gradient(-45deg, var(--orange-500), var(--module-glow), var(--petrol-500));
+  opacity: .5;
+}
+.fincrm-public #productos .module-card.fincrm-module-card::after {
+  inset: -8px;
+  z-index: -2;
+  background: linear-gradient(-45deg, var(--orange-500), var(--module-glow));
+  filter: blur(15px);
+  opacity: .16;
+  transform: scale(.96);
+}
+.fincrm-public #productos .module-card.fincrm-module-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 22px 44px rgba(10, 37, 64, .24);
+}
+.fincrm-public #productos .module-card.fincrm-module-card:hover::before {
+  transform: rotate(-2deg) scale(1.015);
+  opacity: .88;
+}
+.fincrm-public #productos .module-card.fincrm-module-card:hover::after {
+  opacity: .45;
+  filter: blur(25px);
+  transform: scale(1.025);
+}
+.fincrm-public #productos .fincrm-module-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 2px;
+}
+.fincrm-public #productos .fincrm-module-card__index {
+  margin-top: 8px;
+  color: rgba(255,255,255,.57);
+  font: 650 10px/1.4 var(--font-mono);
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+.fincrm-public #productos .module-card .module-icon {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  border: 1px solid rgba(255,255,255,.15);
+  background: rgba(255,255,255,.08);
+  border-radius: 13px;
+  color: var(--orange-500);
+}
+.fincrm-public #productos .module-card .module-icon svg { stroke: currentColor; }
+.fincrm-public #productos .module-card h3 {
+  color: var(--white);
+  font-size: clamp(18px, 1.7vw, 22px);
+  line-height: 1.33;
+  font-weight: 720;
+  letter-spacing: -.02em;
+  margin: 7px 0 0;
+}
+.fincrm-public #productos .module-card .module-tag {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: rgba(255,255,255,.78);
+  min-height: 0;
+  margin: 0 0 6px;
+}
+.fincrm-public #productos .module-card .module-badge {
+  background: var(--orange-500);
+  color: var(--navy-900);
+  flex: none;
+}
+.fincrm-public #productos .module-card .fincrm-module-details {
+  border-top: 1px solid rgba(255,255,255,.15);
+  padding-top: 13px;
+  color: rgba(255,255,255,.75);
+  margin: auto 0 4px;
+  font-size: 13px;
+}
+.fincrm-public #productos .module-card .fincrm-module-details summary {
+  color: var(--orange-500);
+  font-size: 13px;
+  font-weight: 700;
+}
+.fincrm-public #productos .module-card .fincrm-module-details p {
+  color: rgba(255,255,255,.78);
+  line-height: 1.6;
+}
+.fincrm-public #productos .module-card .module-link {
+  color: var(--white);
+  width: fit-content;
+  margin-top: 0;
+  padding-top: 12px;
+  font-weight: 700;
+  font-size: 13px;
+  border-top: 0;
+}
+.fincrm-public #productos .module-card .module-link svg {
+  color: var(--orange-500);
+  transition: transform .2s ease;
+}
+.fincrm-public #productos .module-card .module-link:hover svg { transform: translateX(4px); }
+.fincrm-public #productos .module-card:focus-within {
+  outline: 2px solid var(--orange-500);
+  outline-offset: 6px;
+}
+.fincrm-public #productos .availability-note {
+  margin-top: 8px;
+  color: var(--gray-500);
+  font-size: 12px;
+}
+
+@media (max-width: 1100px) {
+  .fincrm-public .fincrm-about__layout { grid-template-columns: 1fr 1fr; gap: 34px; }
+  .fincrm-public #productos .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .fincrm-public .fincrm-about { padding-block: 70px; }
+  .fincrm-public .fincrm-about__layout { grid-template-columns: 1fr; gap: 34px; }
+  .fincrm-public .fincrm-about__copy h2 { font-size: clamp(29px, 7vw, 39px); }
+  .fincrm-public .fincrm-about__panel { border-radius: 18px; }
+  .fincrm-public .fincrm-about__panel-head { padding: 24px 22px 17px; }
+  .fincrm-public .fincrm-about__journey { padding: 0 22px 18px; }
+  .fincrm-public .fincrm-about__panel-footer { padding: 15px 21px; }
+  .fincrm-public #productos .products-grid { grid-template-columns: 1fr; gap: 26px; padding: 12px 5px 25px; }
+  .fincrm-public #productos .module-card.fincrm-module-card { min-height: 315px; padding: 27px; }
+  .fincrm-public #productos .section__head { margin-bottom: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fincrm-public #productos .module-card.fincrm-module-card,
+  .fincrm-public #productos .module-card.fincrm-module-card::before,
+  .fincrm-public #productos .module-card.fincrm-module-card::after { transition: none; }
+  .fincrm-public #productos .module-card.fincrm-module-card:hover { transform: none; }
+}

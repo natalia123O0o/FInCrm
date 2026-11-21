@@ -27,11 +27,18 @@ const subscriptionRoutes = require('./modules/subscriptions/subscription.routes'
 const protect = require('./middlewares/auth.middleware');
 const { requireFeature } = require('./middlewares/feature.middleware');
 
+const publicContactRoutes = require('./modules/publicSite/contact.routes');
+const publicPlanRoutes = require('./modules/publicSite/publicPlans.routes');
+
 const app = express();
 
 // Middlewares
 app.use(cors());
 app.use(express.json());
+
+// Rutas públicas de la landing (no requieren JWT).
+app.use('/api/contact', publicContactRoutes);
+app.use('/api/public/plans', publicPlanRoutes);
 
 // Rutas de FinCRM
 app.use('/api/plans', planRoutes);

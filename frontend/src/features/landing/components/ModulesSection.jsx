@@ -57,18 +57,20 @@ export default function ModulesSection() {
         <h2 className="modules__title">
           <span className="modules__title-line">
             <span className="modules__title-line-inner">
-              Cuatro módulos,
+              Todo tu negocio,
             </span>
           </span>
 
           <span className="modules__title-line">
             <span className="modules__title-line-inner">
-              una sola operación.
+              conectado en FinCRM.
             </span>
           </span>
         </h2>
 
+        <p className="modules__lead">Del primer contacto a la cotización, la venta y la cobranza. Explora lo que puedes gestionar desde FinCRM.</p>
         <ModuleGrid onOpen={setOpenId} />
+        <p className="modules__disclaimer">Algunas herramientas están en desarrollo o dependen del plan contratado. La disponibilidad y los cupos se configuran por empresa.</p>
       </div>
 
       <ModuleDetailModal

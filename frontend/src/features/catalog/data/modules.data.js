@@ -1,46 +1,57 @@
+// Contenido comercial de FinCRM. La disponibilidad real depende del plan y del avance del desarrollo.
 export const MODULES = [
   {
-    id: 'facturacion',
-    title: 'Facturación Electrónica DIAN',
-    short: 'Simulación de documento electrónico DIAN con JSON, listo para integración real.',
-    color: 'orange',
-    detail: {
-      technical: 'Genera el JSON del documento electrónico (emisor, receptor, ítems, impuestos, totales) y la respuesta simulada de la DIAN con CUFE, QR, estado ACEPTADO y fecha de validación.',
-      interop: 'Estructura compatible con el estándar de la DIAN. Intercambio vía JSON con posibilidad de integración a un proveedor tecnológico autorizado.',
-      impact: 'Reduce tiempos de emisión y elimina errores de digitación, acelerando el recaudo y mejorando la trazabilidad.',
-    },
+    id:'crm', title:'FinCRM · Relaciones comerciales', color:'navy',
+    short:'Clientes, oportunidades, reuniones, actividades y seguimiento para no perder ninguna venta.',
+    detail:{
+      technical:'Gestiona fichas de clientes, oportunidades y actividades con responsable, prioridad, fecha y estado. Integra cartera, deudas y pagos.',
+      interop:'Roles SUPER_ADMIN, ADMIN y USER; los datos de cada empresa se aíslan mediante tenantId.',
+      impact:'Permite priorizar oportunidades y reducir el trabajo disperso entre múltiples herramientas.'
+    }
   },
   {
-    id: 'ley2300',
-    title: 'Algoritmo de Control Preventivo',
-    short: 'Verifica RNE, horarios y frecuencia antes de cualquier contacto de cobranza.',
-    color: 'cyan',
-    detail: {
-      technical: 'Motor de reglas aislado que evalúa horarios L–V 7:00–19:00, Sáb 8:00–15:00, domingos y festivos prohibidos, con máximo un contacto semanal por deudor. Consulta previa al RNE.',
-      interop: 'Bitácora auditable por tenant, exportable a CSV. Job programado reevalúa encolados cada minuto.',
-      impact: 'Elimina el riesgo de sanciones y protege la reputación de la PYME.',
-    },
+    id:'quotes', title:'Cotizaciones inteligentes', color:'orange',
+    short:'Prepara propuestas comerciales, calcula totales y apóyate en IA para comunicar mejor su valor.',
+    detail:{
+      technical:'Cotizaciones con productos o servicios, cantidades, precios, descuentos y estados. Posibilidad de generar documentos PDF.',
+      interop:'Las cotizaciones se relacionan con los clientes y las oportunidades; el acceso y los cupos se controlan por plan.',
+      impact:'Reduce errores de cálculo y agiliza la respuesta a clientes potenciales.'
+    }
   },
   {
-    id: 'ia',
-    title: 'Recomendador Financiero y Chatbot IA',
-    short: 'Clasifica el riesgo del cliente y negocia acuerdos de pago por chat.',
-    color: 'navy',
-    detail: {
-      technical: 'Motor híbrido: reglas deterministas que deciden cuotas y descuentos dentro de los límites del tenant, y un LLM que solo redacta la respuesta. Si el LLM falla, se usan plantillas de respaldo.',
-      interop: 'Chatbot embebido en el portal de pago del deudor, con identificación de tenant y cliente desde el token.',
-      impact: 'Aumenta la tasa de recaudo efectivo y reduce la carga operativa del equipo humano.',
-    },
+    id:'assistant', title:'Asistente con inteligencia artificial', color:'cyan',
+    short:'Consulta la información autorizada del negocio y recibe ayuda para redactar y decidir.',
+    detail:{
+      technical:'Asistente integrado con Google Gemini para preguntas sobre clientes, cartera y actividad de la empresa, según permisos.',
+      interop:'Las consultas deben respetar la empresa, los roles, la privacidad y la cuota de IA del plan contratado.',
+      impact:'Agiliza la consulta de información y la preparación de propuestas sin sustituir la aprobación humana.'
+    }
   },
   {
-    id: 'cartera',
-    title: 'Panel de Control de Flujo de Caja y Cartera',
-    short: 'Vista consolidada de saldos, facturas pendientes y días de mora.',
-    color: 'blue',
-    detail: {
-      technical: 'Panel con saldo consolidado por cliente, facturas pendientes, cálculo de días de mora y bitácora de cobranza. Filtros por estado, canal y rango de fechas.',
-      interop: 'Aislado por tenant. SUPER_ADMIN puede ver el consolidado global.',
-      impact: 'Toma decisiones de cobranza con información en tiempo real y proyecta el flujo de caja.',
-    },
+    id:'campaigns', title:'Campañas y comunicaciones', color:'blue',
+    short:'Organiza campañas, mensajes de seguimiento y comunicaciones más personales con tus clientes.',
+    detail:{
+      technical:'Planifica campañas con público, objetivos, historial y estadísticas. Las plantillas admiten datos del destinatario.',
+      interop:'Los envíos reales requieren proveedor, autorizaciones y validaciones de frecuencia y finalidad.',
+      impact:'Ayuda a mantener una relación activa con los clientes sin perder el contexto de cada conversación.'
+    }
+  },
+  {
+    id:'pos', title:'FinPOS · Ventas e inventario', color:'orange',
+    short:'Registra ventas, controla existencias y consulta productos. FinVoice propone comandos por voz.',
+    detail:{
+      technical:'Productos, ventas, medios de pago, inventario y cierre de caja. FinVoice es una extensión para consultas y operaciones asistidas.',
+      interop:'Comparte información del negocio y aplica los permisos de los módulos contratados.',
+      impact:'Facilita el registro operativo y el control de inventario en temporadas de alta demanda.'
+    }
+  },
+  {
+    id:'radar', title:'FinRadar · Analítica', color:'navy',
+    short:'Indicadores, alertas y recomendaciones para anticipar riesgos y entender mejor el negocio.',
+    detail:{
+      technical:'Propuesta de análisis de ventas, cartera, rentabilidad y simulación de decisiones mediante datos e IA.',
+      interop:'Se plantea como extensión avanzada y su disponibilidad se habilitará conforme avance el desarrollo.',
+      impact:'Ofrece un panorama de indicadores para fundamentar decisiones comerciales y financieras.'
+    }
   },
 ];

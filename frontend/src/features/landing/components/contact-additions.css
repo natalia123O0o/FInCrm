@@ -1,0 +1,8 @@
+.cf__two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cf__field select{width:100%;padding:14px 16px;border-radius:var(--r-sm);border:2px solid var(--border);background:var(--bg);color:var(--ink);font:inherit}
+.cf__field select:focus{outline:none;border-color:var(--cyan)}
+.cf__consent{display:flex;align-items:flex-start;gap:10px;line-height:1.55;cursor:pointer;font-size:.82rem!important;font-weight:500!important}
+.cf__consent input{width:18px;min-width:18px;height:18px;margin-top:3px;accent-color:var(--orange)}
+.cf__fineprint{max-width:540px;font-size:.78rem;line-height:1.55}
+.cf__honeypot{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+@media(max-width:600px){.cf__two{grid-template-columns:1fr}}
